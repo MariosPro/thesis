@@ -1,0 +1,3 @@
+<launch>
+  <node name="$(anon ogm_gui_node)" pkg="ogm_gui" type="ogm_gui_node" output="screen"/>
+</launch>
