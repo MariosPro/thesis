@@ -36,14 +36,14 @@ namespace ogm_gui{
   {
     map_state_ = NORMAL;
 
-    loader_.map->setScaledContents(true);
+    //loader_.mapGraphicsView->setScaledContents(true);
 
-    loader_.map->installEventFilter(this);
+    //loader_.mapGraphicsView->viewport()->installEventFilter(this);
 
-    QObject::connect(
+    /*QObject::connect(
       this,SIGNAL(signalUpdateImage(QImage *)),
       this, SLOT(serveImage(QImage *)));
-
+*/
     QPixmap p((
       ogm_gui_tools::getRosPackagePath("ogm_gui") +
       std::string("/resources/images/zoom_in.png")).c_str());
@@ -137,16 +137,19 @@ namespace ogm_gui{
   **/
   bool CMapConnector::eventFilter( QObject* watched, QEvent* event ) 
   {
+
     if ( ! map_initialized_ )
     {
+     ROS_INFO("EVENT FILTER");
       return false;
     }
-    if(watched == loader_.map)
+    if(watched == loader_.mapGraphicsView->viewport())
     {
+      //ROS_INFO("EVENT FILTER");
       if(event->type() == QEvent::MouseButtonPress)
       {
 
-        loader_.map->setFocus(Qt::MouseFocusReason);
+        loader_.mapGraphicsView->setFocus(Qt::MouseFocusReason);
 
         const QMouseEvent* const me = 
           static_cast<const QMouseEvent*>( event );
@@ -154,7 +157,7 @@ namespace ogm_gui{
         if(me->button() == Qt::RightButton)
         {
           map_state_ = NORMAL;
-          loader_.map->setCursor(QCursor(Qt::CrossCursor));
+          loader_.mapGraphicsView->setCursor(QCursor(Qt::CrossCursor));
           Q_EMIT itemClicked(p,Qt::RightButton);
         }
         else if(me->button() == Qt::LeftButton)
@@ -178,12 +181,20 @@ namespace ogm_gui{
         const QWheelEvent* const me = 
           static_cast<const QWheelEvent*>( event );
         QPoint p = me->pos();
+        loader_.mapGraphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+        qreal factor = 1.2;
+        
         if(me->delta() > 0)
         {
+          loader_.mapGraphicsView->scale(factor, factor);
           Q_EMIT zoomInPressed(p);
         }
         else
         {
+           factor = 1.0 * factor;
+           loader_.mapGraphicsView->scale(1.0/factor, 1.0/factor);
+          Q_EMIT zoomInPressed(p);
+
           Q_EMIT zoomOutPressed(p);
         }
       }
@@ -222,9 +233,10 @@ namespace ogm_gui{
   @param img [QImage*] The image to be updated
   @return void
   **/
-  void CMapConnector::updateImage(QImage *img)
+  void CMapConnector::updateImage(QImage *img, bool groundTruth)
   {
-    Q_EMIT signalUpdateImage(img);
+    //Q_EMIT signalUpdateImage(img);
+    loader_.updateImage(img, groundTruth);
   }
 
   /**
@@ -232,10 +244,10 @@ namespace ogm_gui{
   @param img [QImage*] The image to be painted
   @return void
   **/
-  void CMapConnector::serveImage(QImage *img)
-  {
-    loader_.updateImage(img);
-  }
+/*  void CMapConnector::serveImage(QImage *img)*/
+  //{
+    //loader_.updateImage(img);
+  /*}*/
 
   /**
   @brief Calls the Qt function that gets the real point that the event happened
@@ -261,12 +273,12 @@ namespace ogm_gui{
     if(state)
     {
       map_state_ = ZOOMIN;
-      loader_.map->setCursor(zoom_in_cursor_);
+      loader_.mapGraphicsView->setCursor(zoom_in_cursor_);
     }
     else
     {
       map_state_ = NORMAL;
-      loader_.map->setCursor(QCursor(Qt::CrossCursor));
+      loader_.mapGraphicsView->setCursor(QCursor(Qt::CrossCursor));
     }
   }
 
@@ -284,12 +296,12 @@ namespace ogm_gui{
     if(state)
     {
       map_state_ = ZOOMOUT;
-      loader_.map->setCursor(zoom_out_cursor_);
+      loader_.mapGraphicsView->setCursor(zoom_out_cursor_);
     }
     else
     {
       map_state_ = NORMAL;
-      loader_.map->setCursor(QCursor(Qt::CrossCursor));
+      loader_.mapGraphicsView->setCursor(QCursor(Qt::CrossCursor));
     }
   }
 
@@ -306,7 +318,7 @@ namespace ogm_gui{
     }
     loader_.resetZoom();
     map_state_ = NORMAL;
-    loader_.map->setCursor(QCursor(Qt::CrossCursor));
+    loader_.mapGraphicsView->setCursor(QCursor(Qt::CrossCursor));
   }
 
   /**

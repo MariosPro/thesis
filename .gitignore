@@ -65,7 +65,4 @@ cscope.files
 
 # Images #
 ##########
-*.png
-*.jp*g
-*.bmp
 *.bag

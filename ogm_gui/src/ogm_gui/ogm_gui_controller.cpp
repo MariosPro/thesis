@@ -155,13 +155,19 @@ namespace ogm_gui
     {
       initial_map_ = running_map_ = QImage((
         ogm_gui_tools::getRosPackagePath("ogm_gui") +
-        std::string("/resources/maps/sparse_obstacles.png")).c_str());
+        std::string("/resources/maps/slam_env_2.png")).c_str());
+    
+      slam_map_ = QImage((
+        ogm_gui_tools::getRosPackagePath("ogm_gui") +
+        std::string("/resources/maps/slam_final_2.png")).c_str());
+
 
       map_msg_.info.width = initial_map_.width();
       map_msg_.info.height = initial_map_.height();
       //map_msg_.info.resolution = 0.02;
 
-      map_connector_.updateImage(&running_map_);
+      map_connector_.updateImage(&running_map_, true);
+      map_connector_.updateImage(&slam_map_, false);
 
       gui_connector_.addToGrid(map_connector_.getLoader(), 0, 1, -1, -1);
 
@@ -285,9 +291,12 @@ namespace ogm_gui
     map_lock_ = true;
     running_map_ = initial_map_;
     if(gui_connector_.isGridEnabled())
+    {
       map_connector_.drawGrid(&running_map_, 0.02); //map_msg_.info.resolution);
-
-    map_connector_.updateImage(&running_map_);
+      map_connector_.drawGrid(&slam_map_, 0.02); //map_msg_.info.resolution);
+    }
+    map_connector_.updateImage(&running_map_, true);
+    map_connector_.updateImage(&slam_map_, false);
 
       gui_connector_.setStatusBarMessage(
       QString("Time elapsed : ") +

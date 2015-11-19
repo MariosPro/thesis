@@ -33,9 +33,19 @@ namespace ogm_gui
     argv_(argv)
   {
     setupUi(this);
-    internal_img_ = new QImage(100,100,QImage::Format_RGB32);
-    map_min_ = QPoint(0,0);
-    map_max_ = QPoint(0,0);
+    scene = new QGraphicsScene(mapGraphicsView);
+    ground_truth_map = new CMapItem();
+    slam_map = new CMapItem();
+    scene->addItem(ground_truth_map);
+    scene->addItem(slam_map);
+    slam_map->setFlag(QGraphicsItem::ItemIsMovable);
+    slam_map->setFlag(QGraphicsItem::ItemIsFocusable);
+    slam_map->setFocus();
+    mapGraphicsView->setScene(scene);
+    mapGraphicsView->setInteractive(true);
+    internal_img_ = new QImage(100, 100, QImage::Format_RGB32);
+    map_min_ = QPoint(0, 0);
+    map_max_ = QPoint(0, 0);
     zoom_ = 0;
   }
   
@@ -46,7 +56,7 @@ namespace ogm_gui
   **/
   void CMapLoader::resizeEvent(QResizeEvent *e)
   {
-    updateImage(internal_img_);
+    updateImage(internal_img_, true);
   }
   
   /**
@@ -79,23 +89,61 @@ namespace ogm_gui
   @param img [QImage*] The image to be updated
   @return void
   **/
-  void CMapLoader::updateImage(QImage *img)
+  void CMapLoader::updateImage(QImage *img, bool groundTruth)
   {
     internal_img_ = img;
-    std::pair<int,int> newDims = checkDimensions(img->width(),img->height());
-    map->setPixmap(
-      QPixmap().fromImage(
-        (*img).
-          copy(map_min_.x(),
-              map_min_.y(),
-              map_max_.x() - map_min_.x(),
-              map_max_.y() - map_min_.y()).
-          scaled(newDims.first,newDims.second,
-              Qt::IgnoreAspectRatio,
-              Qt::SmoothTransformation)));
-    map->resize(newDims.first,newDims.second);
+    std::pair<int,int> newDims = checkDimensions(img->width(), img->height());
+    if(groundTruth)
+    {
+      ground_truth_map->setPixmap(
+        QPixmap().fromImage(
+          (*img).
+            copy(map_min_.x(),
+                map_min_.y(),
+                map_max_.x() - map_min_.x(),
+                map_max_.y() - map_min_.y()).
+            scaled(newDims.first,newDims.second,
+                Qt::IgnoreAspectRatio,
+                Qt::SmoothTransformation)));
+      mapGraphicsView->resize(newDims.first, newDims.second);
+      scene->setSceneRect(0, 0, newDims.first, newDims.second);
+    }
+      else
+      {
+       QPixmap pixmap = QPixmap::fromImage(
+              (*img).
+              copy(map_min_.x(),
+                  map_min_.y(),
+                  map_max_.x() - map_min_.x(),
+                  map_max_.y() - map_min_.y()).
+              scaled(newDims.first, newDims.second,
+                  Qt::IgnoreAspectRatio,
+                  Qt::SmoothTransformation));
+       makeTransparent(&pixmap, 0.5);
+       slam_map->setPixmap(pixmap);
+
+      mapGraphicsView->resize(newDims.first, newDims.second);
+      scene->setSceneRect(0, 0, newDims.first, newDims.second);
+    }
   }
-  
+
+  /**
+  @brief Makes the image transparent
+  @param img [QImage*] The image to be made transparent
+  @param opacity [double] The map opacity
+  @return void
+  **/
+  void CMapLoader::makeTransparent(QPixmap *img, double opacity)  
+  {
+    QImage image(img->size(), QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
+    QPainter p(&image);
+    p.setOpacity(opacity);
+    p.drawPixmap(0, 0, *img);
+    p.end();
+    *img = QPixmap::fromImage(image);
+  }
+
   /**
   @brief Draws a grid in an image
   @param img [QImage*] The image for the grid to be drawn on
@@ -105,7 +153,7 @@ namespace ogm_gui
   void CMapLoader::drawGrid(QImage *img,float resolution)
   {
     QPainter painter(img);
-    painter.setPen(QColor(100,100,100,150));
+    painter.setPen(QColor(100, 100, 100, 150));
     int pix = 1.0 / resolution;
     for(unsigned int i = 1 ; i <= img->width() / pix + 1 ; i++)
     {
@@ -147,7 +195,7 @@ namespace ogm_gui
     float newHeight = internal_img_->height() / pow(ZOOM_RATIO,zoom_);
     QPoint evOriginal = np;
     
-    float xmin,xmax,ymin,ymax;
+    float xmin, xmax, ymin, ymax;
     float prevxmin, prevymin, prevWidth, prevHeight;
     prevxmin = map_min_.x();
     prevymin = map_min_.y();
@@ -181,8 +229,8 @@ namespace ogm_gui
       ymin -= ymax - internal_img_->height() + 1;
       ymax = internal_img_->height() - 1;
     }
-    map_min_ = QPoint(xmin,ymin);
-    map_max_ = QPoint(xmax,ymax);
+    map_min_ = QPoint(xmin, ymin);
+    map_max_ = QPoint(xmax, ymax);
   }
   
   /**
@@ -234,7 +282,7 @@ namespace ogm_gui
     QPoint evOriginal = p;
     //~ evOriginal.setY(internal_img_->height() - evOriginal.y());
     
-    float xmin,xmax,ymin,ymax;
+    float xmin, xmax, ymin, ymax;
     xmin = evOriginal.x() - newWidth / 2;
     xmax = evOriginal.x() + newWidth / 2;
     ymin = evOriginal.y() - newHeight / 2;
@@ -259,8 +307,8 @@ namespace ogm_gui
       ymin -= ymax - internal_img_->height() + 1;
       ymax = internal_img_->height() - 1;
     }
-    map_min_ = QPoint(xmin,ymin);
-    map_max_ = QPoint(xmax,ymax);
+    map_min_ = QPoint(xmin, ymin);
+    map_max_ = QPoint(xmax, ymax);
   }
   
   /**
@@ -274,7 +322,7 @@ namespace ogm_gui
     float x = p.x();
     float y = p.y();
     float initialWidth = internal_img_->width();
-    float currentWidth = map->width();
+    float currentWidth = mapGraphicsView->width();
     //~ ROS_ERROR("InitialW, CurrW : %f %f",initialWidth,currentWidth);
     float climax = initialWidth / currentWidth;
     newPoint.setX(x * climax);
@@ -289,8 +337,8 @@ namespace ogm_gui
   void CMapLoader::resetZoom(void)
   {
     zoom_ = 0;
-    map_min_ = QPoint(0,0);
-    map_max_ = QPoint(internal_img_->width() - 1,internal_img_->height() - 1);
+    map_min_ = QPoint(0, 0);
+    map_max_ = QPoint(internal_img_->width() - 1, internal_img_->height() - 1);
   }
     
   /**

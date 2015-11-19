@@ -45,21 +45,21 @@ namespace ogm_gui
       loader_.actionExit,SIGNAL(triggered(bool)),
       this,SLOT(actionExitTriggered()));
 
-    QObject::connect(
-      loader_.actionLoadMap,SIGNAL(triggered(bool)),
-      this,SLOT(actionLoadMapTriggered()));
+    //QObject::connect(
+      //loader_.actionLoadMap,SIGNAL(triggered(bool)),
+      //this,SLOT(actionLoadMapTriggered()));
 
-    QObject::connect(
-      loader_.actionZoomIn,SIGNAL(triggered(bool)),
-      this,SLOT(actionZoomInTriggered()));
+    //QObject::connect(
+      //loader_.actionZoomIn,SIGNAL(triggered(bool)),
+      //this,SLOT(actionZoomInTriggered()));
 
-    QObject::connect(
-      loader_.actionZoomOut,SIGNAL(triggered(bool)),
-      this,SLOT(actionZoomOutTriggered()));
+    //QObject::connect(
+      //loader_.actionZoomOut,SIGNAL(triggered(bool)),
+      //this,SLOT(actionZoomOutTriggered()));
 
-    QObject::connect(
-      loader_.actionAdjusted,SIGNAL(triggered(bool)),
-      this,SLOT(actionAdjustedTriggered()));
+    //QObject::connect(
+      //loader_.actionAdjusted,SIGNAL(triggered(bool)),
+      /*this,SLOT(actionAdjustedTriggered()));*/
 
     QObject::connect(
       loader_.actionGrid,SIGNAL(triggered(bool)),

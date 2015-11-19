@@ -22,6 +22,7 @@
 #define OGM_MAP_LOADER
 
 #include "ui_map.h"
+#include "ogm_gui/ogm_map_item.h"
 #include "ogm_gui/ogm_tools.h"
 
 #define ZOOM_RATIO 1.1
@@ -48,6 +49,15 @@ namespace ogm_gui
       char**  argv_;
       //!< Current zoom. Calculated as pow(2,zoom_) * initial image size
       int   zoom_;
+
+      //!< The scene that is used to add the maps
+      QGraphicsScene* scene;
+
+      //!< the pixmap that is used to display the ground thuth map
+      CMapItem* ground_truth_map;
+
+      //!< the pixmap that is used to display the slam-produced map
+      CMapItem* slam_map;
       
       //!< Internal image used before a map is loaded
       QImage*  internal_img_;
@@ -106,7 +116,7 @@ namespace ogm_gui
       @param img [QImage*] The image to be updated
       @return void
       **/
-      void updateImage(QImage *img);
+      void updateImage(QImage *img, bool groundTruth);
       
       /**
       @brief Draws a grid in an image
@@ -150,6 +160,15 @@ namespace ogm_gui
       @return QPoint : The new point
       **/
       QPoint getGlobalPoint(QPoint p);
+
+      /**
+      @brief Makes the image transparent
+      @param img [QImage*] The image to be made transparent
+      @param opacity [double] The map opacity
+      @return void
+      **/
+      void makeTransparent(QPixmap *img, double opacity);
+
 
   };  
 }

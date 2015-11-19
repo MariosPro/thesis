@@ -93,7 +93,7 @@ namespace ogm_gui
       @param img [QImage*] The image to be updated
       @return void
       **/
-      void updateImage(QImage *img);
+      void updateImage(QImage *img, bool groundTruth);
 
       /**
       @brief Sets map initial size to the loader
@@ -168,7 +168,7 @@ namespace ogm_gui
       @param img [QImage*] The image to be painted
       @return void
       **/
-      void serveImage(QImage *img);
+      //void serveImage(QImage *img);
 
       /**
       @brief Called when zoom in event happens

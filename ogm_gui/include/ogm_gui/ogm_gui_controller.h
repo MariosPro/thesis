@@ -89,6 +89,9 @@ namespace ogm_gui
       //!< QImage that initiates as initial_map and the elements are painted on it
       QImage running_map_;
 
+      //!< QImage that contains the map produced by a SLAM algorithm
+      QImage slam_map_;
+
       //!< Object of CGuiConnector
       CGuiConnector gui_connector_;
 

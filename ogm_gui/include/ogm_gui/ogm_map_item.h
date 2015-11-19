@@ -18,53 +18,46 @@
    * Manos Tsardoulias, etsardou@gmail.com
 ******************************************************************************/
 
-#ifndef OGM_MAP_LOADER_H
-#define OGM_MAP_LOADER_H
+#ifndef OGM_MAP_ITEM
+#define OGM_MAP_ITEM
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <libgen.h>
-#include <fstream>
+#include <QtGui/QKeyEvent>
+#include <QtWidgets/QGraphicsPixmapItem>
+#include "ogm_gui/ogm_tools.h"
 
-#include <string>
-#include "ros/ros.h"
-#include "map_server/image_loader.h"
-#include "nav_msgs/MapMetaData.h"
-#include "yaml-cpp/yaml.h"
-
-
-#ifdef HAVE_NEW_YAMLCPP
-//! The >> operator disappeared in yaml-cpp 0.5, so this function is
-//! added to provide support for code written under the yaml-cpp 0.3 API.
-template<typename T>
-void operator >> (const YAML::Node& node, T& i)
-{
-  i = node.as<T>();
-}
-#endif
 
 /**
-@namespace ogm_server
-@brief The main namespace for OGM Server
+@namespace ogm_gui
+@brief The main namespace for OGM GUI
 **/
-namespace ogm_server {
-
+namespace ogm_gui
+{
   /**
-  @namespace map_loader
-  @brief The namespace for OGM map loader
-  **/
-  namespace map_loader {
+  @class CMapItem
+  @brief Implements the QGraphicsPixmapItem for map display.
+  **/ 
+  class CMapItem : public QGraphicsPixmapItem 
+  {
+    //------------------------------------------------------------------------//
+    private:
+           qreal factor;
 
-    /**
-    @brief Loads a map from an image file
-    @param fname [const std::string&] The file name
-    @return nav_msgs::OccupancyGrid
-    **/
-    nav_msgs::OccupancyGrid loadMap(const std::string& fname);
+    //------------------------------------------------------------------------//
+    public:
 
-  } // end of namespace map_loader
+      /**
+      @brief Default contructor
+      @return void
+      **/
+      CMapItem();
 
-} // end of namespace ogm_server
-
+      /**
+      @brief Captures the keypress event
+      @param event [QKeyEvent*] The key event
+      @return void
+      **/
+      void keyPressEvent(QKeyEvent *event);
+  };
+}
 
 #endif
