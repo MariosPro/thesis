@@ -59,6 +59,20 @@ namespace ogm_gui
     actionLoadMap->setIcon(iconLoadMap);
     toolBar->addAction(actionLoadMap);
 
+    actionLoadSlamMap = new QAction(this);
+    actionLoadSlamMap->setObjectName(QString::fromUtf8("actionLoadSlamMap"));
+    actionLoadSlamMap->setCheckable(false);
+    actionLoadSlamMap->setIconText(QString("Load SLAM-produced map"));
+    QIcon iconLoadSlamMap;
+    iconLoadSlamMap.addFile(QString::fromUtf8((
+      ogm_gui_tools::getRosPackagePath("ogm_gui") +
+        std::string("/resources/images/load_map.png")).c_str()),
+      QSize(),
+      QIcon::Normal,
+      QIcon::Off);
+    actionLoadSlamMap->setIcon(iconLoadSlamMap);
+    toolBar->addAction(actionLoadSlamMap);
+
     toolBar->addSeparator();
 
     actionGrid = new QAction(this);

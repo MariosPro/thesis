@@ -82,9 +82,13 @@ namespace ogm_gui
       @brief Return the dimensions according to the container size
       @param w [int] Image width
       @param h [int] Image height
+      @param containerWidth [int] The container width
+      @param containerHeight [int] The container height
       @return std::pair<int,int> : The size the map must be resized to
       **/
-      std::pair<int,int> checkDimensions(int w,int h);
+      std::pair<int,int> checkDimensions(int w, int h,
+                                         int containerWidth,
+                                         int containerHeight);
       
     //------------------------------------------------------------------------//  
     public:

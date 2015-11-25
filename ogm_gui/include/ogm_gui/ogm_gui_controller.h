@@ -25,7 +25,7 @@
 #include <cstdlib>
 #include <boost/thread.hpp>
 
-#include "nav_msgs/OccupancyGrid.h"
+#include "ogm_msgs/MapMsg.h"
 
 #include <QtCore/QThread>
 #include <QtCore/QTime>
@@ -74,8 +74,8 @@ namespace ogm_gui
       //!< ROS tf transform listener
       //tf::TransformListener listener_;
 
-      //!< The occypancy grid map
-      nav_msgs::OccupancyGrid map_msg_;
+      //!< The MapMsg 
+      ogm_msgs::MapMsg map_msg_;
 
       //!< Timer for the drawing event
       QTimer* timer_;
@@ -89,7 +89,11 @@ namespace ogm_gui
       //!< QImage that initiates as initial_map and the elements are painted on it
       QImage running_map_;
 
-      //!< QImage that contains the map produced by a SLAM algorithm
+    //!< QImage created one time, contains the map produced by a SLAM algorithm
+     QImage initial_slam_map_;
+
+      //!< QImage that contains the map produced by a SLAM algorithm and the
+      //!< elements are painted on it
       QImage slam_map_;
 
       //!< Object of CGuiConnector
@@ -99,7 +103,7 @@ namespace ogm_gui
       CValidationConnector validation_connector_;
 
       //!< Object of CAlignmentConnector
-      CAlignmentConnector alignment_connector_;
+      //CAlignmentConnector alignment_connector_;
 
       //!< Object of CMapConnector
       CMapConnector map_connector_;
@@ -135,10 +139,10 @@ namespace ogm_gui
 
       /**
       @brief Receives the occupancy grid map from ogm_server. Connects to "map" ROS topic
-      @param msg [const nav_msgs::OccupancyGrid&] The OGM message
+      @param msg [const ogm_msgs::MapMsg&] The OGM message
       @return void
       **/
-      void receiveMap(const nav_msgs::OccupancyGrid& msg);
+      void receiveMap(const ogm_msgs::MapMsg& msg);
 
       /**
       @brief Initializes the ROS spin and Qt threads

@@ -21,6 +21,9 @@
 #ifndef OGM_GUI_CONNECTOR
 #define OGM_GUI_CONNECTOR
 
+#include "ogm_server/map_loader.h"
+#include <ogm_msgs/LoadExternalMap.h>
+#include <ogm_msgs/MapMsg.h>
 #include "ogm_gui/ogm_gui_loader.h"
 
 /**
@@ -161,6 +164,12 @@ namespace ogm_gui
       @return void
       **/
       void actionLoadMapTriggered(void);
+
+      /**
+      @brief Qt slot that is called when the LoadSlamMap tool button is pressed
+      @return void
+      **/
+      void actionLoadSlamMapTriggered(void);
 
       /**
       @brief Qt slot that is called when the zoom in tool button is pressed

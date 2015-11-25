@@ -6,9 +6,11 @@ set(CMAKE_INCLUDE_CURRENT_DIR_ON)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   roslib
-  # ogm_msgs
-  # nav_msgs
-  # map_server
+  tf
+  ogm_msgs
+  ogm_server
+  nav_msgs
+  map_server
 )
 
 find_package(Qt5 REQUIRED COMPONENTS
@@ -55,9 +57,10 @@ catkin_package(
   CATKIN_DEPENDS
     roscpp
     roslib
-    #ogm_msgs
-    # nav_msgs
-    # map_server
+    ogm_server
+    ogm_msgs
+    nav_msgs
+    map_server
   INCLUDE_DIRS include
   LIBRARIES
 )

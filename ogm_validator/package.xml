@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ogm_validator</name> <!-- This is a meta package! -->
+  <version>0.1.0</version>
+  <description>A 2D Occupancy Grid Map Validator .</description>
+
+  <maintainer email="protopapasmarios@gmail.com">Marios Protopapas</maintainer>
+
+  <license>GPLv3</license>
+
+  <url type="bugtracker">https://github.com/MariosPro/thesis/issues</url>
+  <url type="repository">https://github.com/MariosPro/thesis</url>
+
+  <author>Marios Protopapas</author>
+  <author>Manos Tsardoulias</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>ogm_msgs</exec_depend>
+  <exec_depend>ogm_server</exec_depend>
+  <exec_depend>ogm_gui</exec_depend>
+  <exec_depend>ogm_launchers</exec_depend>
+  <exec_depend>ogm_resources</exec_depend>
+
+  <export>
+    <metapackage/>
+  </export>
+</package>

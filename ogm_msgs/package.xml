@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>ogm_gui</name>
+  <name>ogm_msgs</name>
   <version>0.1.0</version>
-  <description>A gui in Qt5 for 2d Occupancy Map Grid Validation.</description>
+  <description>Provides msgs, services for OGM Validator.</description>
 
   <maintainer email="protopapasmarios@gmail.com">Marios Protopapas</maintainer>
 
@@ -17,15 +17,12 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>roslint</build_depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
 
-  <depend>roscpp</depend>
-  <depend>roslib</depend>
-  <depend>tf</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
-  <depend>ogm_msgs</depend>
-  <depend>ogm_server</depend>
-  <depend>map_server</depend>
-  <depend>libqt5-dev</depend>
 
   <export>
   </export>

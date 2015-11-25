@@ -41,7 +41,6 @@ namespace ogm_gui
   CGuiController::CGuiController(int argc,char **argv):
     gui_connector_(argc, argv),
     validation_connector_(argc, argv),
-    alignment_connector_(argc, argv),
     map_connector_(argc, argv),
     argc_(argc),
     argv_(argv)
@@ -70,7 +69,7 @@ namespace ogm_gui
   {
     map_subscriber_ = n_.subscribe(
       "map",
-      1,
+      1000,
       &CGuiController::receiveMap,
       this);
 
@@ -98,33 +97,33 @@ namespace ogm_gui
      &map_connector_,SIGNAL(itemClicked(QPoint,Qt::MouseButton)),
       this, SLOT(itemClicked(QPoint,Qt::MouseButton)));
 
-    QObject::connect(
-      &alignment_connector_, SIGNAL(moveUpMapPressed()),
-      &map_connector_, SLOT(moveUp()));
+    //QObject::connect(
+      //&alignment_connector_, SIGNAL(moveUpMapPressed()),
+      //&map_connector_, SLOT(moveUp()));
 
-    QObject::connect(
-      &alignment_connector_, SIGNAL(moveDownMapPressed()),
-      &map_connector_, SLOT(moveDown()));
+    //QObject::connect(
+      //&alignment_connector_, SIGNAL(moveDownMapPressed()),
+      //&map_connector_, SLOT(moveDown()));
 
-    QObject::connect(
-      &alignment_connector_, SIGNAL(moveLeftMapPressed()),
-      &map_connector_, SLOT(moveLeft()));
+    //QObject::connect(
+      //&alignment_connector_, SIGNAL(moveLeftMapPressed()),
+      //&map_connector_, SLOT(moveLeft()));
 
-    QObject::connect(
-      &alignment_connector_, SIGNAL(moveRightMapPressed()),
-       &map_connector_, SLOT(moveRight()));
+    //QObject::connect(
+      //&alignment_connector_, SIGNAL(moveRightMapPressed()),
+       //&map_connector_, SLOT(moveRight()));
 
-    QObject::connect(
-      &alignment_connector_, SIGNAL(rotateLeftMapPressed()),
-      &map_connector_, SLOT(rotateLeft()));
+    //QObject::connect(
+      //&alignment_connector_, SIGNAL(rotateLeftMapPressed()),
+      //&map_connector_, SLOT(rotateLeft()));
 
-    QObject::connect(
-      &alignment_connector_, SIGNAL(rotateRightMapPressed()),
-      &map_connector_, SLOT(rotateRight()));
+    //QObject::connect(
+      //&alignment_connector_, SIGNAL(rotateRightMapPressed()),
+      //&map_connector_, SLOT(rotateRight()));
 
-    QObject::connect(
-      &alignment_connector_, SIGNAL(scaleMapPressed()),
-      &map_connector_, SLOT(scale()));
+    //QObject::connect(
+      //&alignment_connector_, SIGNAL(scaleMapPressed()),
+      /*&map_connector_, SLOT(scale()));*/
 
        timer_ = new QTimer(this);
     connect(
@@ -154,17 +153,18 @@ namespace ogm_gui
     }
     {
       initial_map_ = running_map_ = QImage((
-        ogm_gui_tools::getRosPackagePath("ogm_gui") +
-        std::string("/resources/maps/slam_env_2.png")).c_str());
+        ogm_gui_tools::getRosPackagePath("ogm_resources") +
+        std::string("/maps/slam_env_2.png")).c_str());
     
-      slam_map_ = QImage((
-        ogm_gui_tools::getRosPackagePath("ogm_gui") +
-        std::string("/resources/maps/slam_final_2.png")).c_str());
+      initial_slam_map_ = slam_map_ = QImage((
+        ogm_gui_tools::getRosPackagePath("ogm_resources") +
+        std::string("/maps/slam_final_2.png")).c_str());
 
 
-      map_msg_.info.width = initial_map_.width();
-      map_msg_.info.height = initial_map_.height();
-      //map_msg_.info.resolution = 0.02;
+      //map_msg_.map.info.width = initial_map_.width();
+      /*map_msg_.map.info.height = initial_map_.height();*/
+      map_msg_.map.info.resolution = 0.02;
+      map_msg_.ground_truth = true;
 
       map_connector_.updateImage(&running_map_, true);
       map_connector_.updateImage(&slam_map_, false);
@@ -174,7 +174,7 @@ namespace ogm_gui
       gui_connector_.setGridColumnStretch(1, 100);
       gui_connector_.setGridColumnStretch(0, 0);
 
-      gui_connector_.addToGrid(alignment_connector_.getLoader(), 1, 0, 0, 0);
+      //gui_connector_.addToGrid(alignment_connector_.getLoader(), 1, 0, 0, 0);
     }
   }
 
@@ -198,48 +198,73 @@ namespace ogm_gui
   /**
   @brief Receives the occupancy grid map from ogm_server. Connects to "map" \
   ROS topic
-  @param msg [const nav_msgs::OccupancyGrid&] The OGM message
+  @param msg [const ogm_msgs::MapMsg&] The OGM message
   @return void
   **/
-  void CGuiController::receiveMap(const nav_msgs::OccupancyGrid& msg)
+  void CGuiController::receiveMap(const ogm_msgs::MapMsg& msg)
   {
-    //ROS_INFO("RECEIVE MAP");
+    ROS_INFO_STREAM("RECEIVE MAP");
+    while(map_lock_)
+    {
+      usleep(100);
+    }
+    map_lock_= true;
+    ROS_INFO_STREAM(" "<< msg.ground_truth <<" " 
+                        <<msg.map.info.width << " " <<
+                    msg.map.info.height << " " <<
+                    msg.map.info.resolution << " " << 
+                    msg.map.info.origin.position.x << " " <<
+                    msg.map.info.origin.position.y 
+                    );
+
     map_msg_ = msg;
-    initial_map_ = running_map_ =
-      QImage(msg.info.width,msg.info.height,QImage::Format_RGB32);
+    if(msg.ground_truth)
+    {
+       initial_map_ = running_map_ = QImage(msg.map.info.width, msg.map.info.height, QImage::Format_RGB32);
+    }
+
+    else
+    {
+       initial_slam_map_ = running_map_ = QImage(msg.map.info.width, msg.map.info.height, QImage::Format_RGB32);
+    }
+
     QPainter painter(&running_map_);
     int d(0);
     QColor c;
-    for( unsigned int i = 0 ; i < msg.info.width ; i++ )
+    for( unsigned int i = 0 ; i < msg.map.info.width ; i++ )
     {
-      for( unsigned int j = 0 ; j < msg.info.height ; j++ )
+      for( unsigned int j = 0 ; j < msg.map.info.height ; j++ )
       {
-        if( msg.data[j * msg.info.width + i] == -1 )
+        if( msg.map.data[j * msg.map.info.width + i] == -1 )
         {
           c=QColor(127,127,127);
         }
         else
         {
-          d = (100.0 - msg.data[j * msg.info.width + i]) / 100.0 * 255.0;
+          d = (100.0 - msg.map.data[j * msg.map.info.width + i]) / 100.0 * 255.0;
           c=QColor(d,d,d);
         }
         painter.setPen(c);
-        painter.drawPoint(i,j);
+        painter.drawPoint(i, j);
       }
     }
-    int originx = msg.info.origin.position.x / msg.info.resolution;
-    int originy = msg.info.origin.position.y / msg.info.resolution;
+    int originx = msg.map.info.origin.position.x / msg.map.info.resolution;
+    int originy = msg.map.info.origin.position.y / msg.map.info.resolution;
     painter.setPen(Qt::blue);
     painter.drawLine(originx, originy - 20, originx, originy + 20);
     painter.drawLine(originx - 20, originy, originx + 20, originy);
 
-    initial_map_ = running_map_;
+    if(msg.ground_truth)
+      initial_map_ = running_map_;
+    else
+      initial_slam_map_ = running_map_;
 
     /*info_connector_.updateMapInfo( msg.info.width * msg.info.resolution,*/
                   //msg.info.height * msg.info.resolution,
                   /*msg.info.resolution);*/
     map_connector_.setInitialImageSize(
-      QSize(initial_map_.width(),initial_map_.height()));
+      QSize(running_map_.width(),running_map_.height()));
+
 
     elapsed_time_.start();
 
@@ -248,6 +273,8 @@ namespace ogm_gui
     gui_connector_.setMapInitialized(true);
 
     timer_->start(50);
+
+    map_lock_=false;
   }
 
   /**
@@ -284,20 +311,23 @@ namespace ogm_gui
   **/
   void CGuiController::updateMapInternal(void)
   {
+    //ROS_INFO("UPDATE MAP INTERNAL");
     while(map_lock_)
     {
       usleep(100);
     }
     map_lock_ = true;
-    running_map_ = initial_map_;
+      running_map_ = initial_map_;
+      slam_map_ = initial_slam_map_;
     if(gui_connector_.isGridEnabled())
     {
-      map_connector_.drawGrid(&running_map_, 0.02); //map_msg_.info.resolution);
-      map_connector_.drawGrid(&slam_map_, 0.02); //map_msg_.info.resolution);
+      map_connector_.drawGrid(&running_map_, map_msg_.map.info.resolution);
+      map_connector_.drawGrid(&slam_map_, map_msg_.map.info.resolution);
     }
     map_connector_.updateImage(&running_map_, true);
     map_connector_.updateImage(&slam_map_, false);
 
+    //ROS_INFO("IMAGES UPDATED");
       gui_connector_.setStatusBarMessage(
       QString("Time elapsed : ") +
       ogm_gui_tools::getLiteralTime(elapsed_time_.elapsed()));

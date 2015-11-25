@@ -41,8 +41,11 @@ namespace ogm_gui
     slam_map->setFlag(QGraphicsItem::ItemIsMovable);
     slam_map->setFlag(QGraphicsItem::ItemIsFocusable);
     slam_map->setFocus();
+    mapGraphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    mapGraphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     mapGraphicsView->setScene(scene);
     mapGraphicsView->setInteractive(true);
+    //mapGraphicsView->show();
     internal_img_ = new QImage(100, 100, QImage::Format_RGB32);
     map_min_ = QPoint(0, 0);
     map_max_ = QPoint(0, 0);
@@ -65,10 +68,11 @@ namespace ogm_gui
   @param h [int] Image height
   @return std::pair<int,int> : The size the map must be resized to
   **/
-  std::pair<int,int> CMapLoader::checkDimensions(int w,int h)
+  std::pair<int,int> CMapLoader::checkDimensions(int w, int h, 
+                      int containerWidth, int containerHeight)
   {
-    float containerWidth = this->width();
-    float containerHeight = this->height();
+    /*float containerWidth = this->width();*/
+    /*float containerHeight = this->height();*/
     float aspectRatio = (float)w / (float)h;
     float finalW,finalH;
     if(containerHeight * aspectRatio > containerWidth)
@@ -92,12 +96,14 @@ namespace ogm_gui
   void CMapLoader::updateImage(QImage *img, bool groundTruth)
   {
     internal_img_ = img;
-    std::pair<int,int> newDims = checkDimensions(img->width(), img->height());
+    //ROS_INFO_STREAM("DIMENSIONS=" << img->width() << " "<<  img->height());
     if(groundTruth)
     {
+     std::pair<int,int> newDims = checkDimensions(img->width(), img->height(), 
+                                                 this->width(), this->height());
       ground_truth_map->setPixmap(
-        QPixmap().fromImage(
-          (*img).
+        QPixmap().fromImage((
+            *img).
             copy(map_min_.x(),
                 map_min_.y(),
                 map_max_.x() - map_min_.x(),
@@ -107,23 +113,28 @@ namespace ogm_gui
                 Qt::SmoothTransformation)));
       mapGraphicsView->resize(newDims.first, newDims.second);
       scene->setSceneRect(0, 0, newDims.first, newDims.second);
+      mapGraphicsView->fitInView(scene->sceneRect());
     }
       else
       {
-       QPixmap pixmap = QPixmap::fromImage(
+        std::pair<int,int> newDims = checkDimensions(img->width(), img->height(), 
+                                                 ground_truth_map->boundingRect().width(),
+                                                 ground_truth_map->boundingRect().height());
+        QPixmap pixmap = QPixmap::fromImage(
               (*img).
               copy(map_min_.x(),
-                  map_min_.y(),
-                  map_max_.x() - map_min_.x(),
-                  map_max_.y() - map_min_.y()).
+                map_min_.y(),
+                map_max_.x() - map_min_.x(),
+                map_max_.y() - map_min_.y()).
               scaled(newDims.first, newDims.second,
                   Qt::IgnoreAspectRatio,
                   Qt::SmoothTransformation));
-       makeTransparent(&pixmap, 0.5);
-       slam_map->setPixmap(pixmap);
+        makeTransparent(&pixmap, 0.5);
+        slam_map->setPixmap(pixmap);
 
-      mapGraphicsView->resize(newDims.first, newDims.second);
-      scene->setSceneRect(0, 0, newDims.first, newDims.second);
+      /*mapGraphicsView->resize(newDims.first, newDims.second);*/
+      //scene->setSceneRect(0, 0, newDims.first, newDims.second);
+      //mapGraphicsView->fitInView(scene->sceneRect());
     }
   }
 
@@ -155,11 +166,11 @@ namespace ogm_gui
     QPainter painter(img);
     painter.setPen(QColor(100, 100, 100, 150));
     int pix = 1.0 / resolution;
-    for(unsigned int i = 1 ; i <= img->width() / pix + 1 ; i++)
+    for(unsigned int i = 1 ; i <= img->width(); i++) // / pix + 1 ; i++)
     {
       painter.drawLine(0, i * pix, img->width() - 1, i * pix);
     }
-    for(unsigned int i = 1 ; i <= img->height() / pix + 1 ; i++)
+    for(unsigned int i = 1 ; i <= img->height(); i++)// / pix + 1 ; i++)
     {
       painter.drawLine(i * pix, 0, i * pix, img->height() - 1);
     }
