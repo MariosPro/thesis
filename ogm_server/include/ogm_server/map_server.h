@@ -20,11 +20,10 @@
 
 
 #include "ros/ros.h"
-#include "tf/tf.h"
-#include "tf/transform_broadcaster.h"
-#include "nav_msgs/MapMetaData.h"
-#include "nav_msgs/OccupancyGrid.h"
-#include "ogm_msgs/MapMsg.h"
+/*#include "tf/tf.h"*/
+//#include "tf/transform_broadcaster.h"
+//#include "nav_msgs/MapMetaData.h"
+/*#include "nav_msgs/OccupancyGrid.h"*/
 #include "ogm_server/map_loader.h"
 
 /**
@@ -46,14 +45,16 @@ namespace ogm_server {
       @param fname [const std::string&] The file name
       @return void
       **/
-      explicit MapServer(const std::string& fname, bool ground_truth);
+      explicit MapServer(const std::string& fname);
       
       /**
       @brief Constructor by occupancy grid map
       @param map [const nav_msgs::OccupancyGrid&] The occupancy grid map
       @return void
       **/
-      explicit MapServer(const ogm_msgs::MapMsg& map);
+      explicit MapServer(const nav_msgs::OccupancyGrid& map);
+
+      nav_msgs::OccupancyGrid getMap();
       
     private:
       
@@ -75,17 +76,17 @@ namespace ogm_server {
       //!< The ROS node handle
       ros::NodeHandle n;
       //!< ROS publisher for posting the map
-      ros::Publisher map_pub;
-      //!< ROS publisher for posting the map metadata
-      ros::Publisher metadata_pub;
-      //!< ROS timer for tf posting
-      ros::Timer tfTimer;
-      //!< ROS tf broadcaster
-      tf::TransformBroadcaster tfBroadcaster;
+      /*ros::Publisher map_pub;*/
+      ////!< ROS publisher for posting the map metadata
+      //ros::Publisher metadata_pub;
+      ////!< ROS timer for tf posting
+      //ros::Timer tfTimer;
+      ////!< ROS tf broadcaster
+      //tf::TransformBroadcaster tfBroadcaster;
       //!< ROS map metadata message
       nav_msgs::MapMetaData meta_data_message_;
       //!< ROS occupancy grid message
-      ogm_msgs::MapMsg map_;
+      nav_msgs::OccupancyGrid map_;
 
   };
 }

@@ -28,29 +28,34 @@ namespace ogm_server
   **/ 
   Server::Server(int argc, char** argv) 
   {
-    if (argc > 5)
+    if (argc > 3)
     {
       ROS_ERROR("%s", USAGE);
       exit(-1);
     }
 
-    if (argc == 5)
+    if (argc == 3)
     {
       std::string fname(argv[1]);
-      _mapServer.reset(new MapServer(fname, argv[2]));
-      _mapServers.push_back(_mapServer);
-    
-    std::string fname1(argv[3]);
-     _mapServer.reset(new MapServer(fname1, argv[4]));
-     _mapServers.push_back(_mapServer);
-
+      std::string fname1(argv[2]);
+      _groundTruthMap.reset(new MapServer(fname));
+      _slamMap.reset(new MapServer(fname1));
     }
-    _loadMapService = _nh.advertiseService(
-      "/ogm_server/load_static_map", &Server::loadMapCallback, this);
+
+    _maps.groundTruthMap = _groundTruthMap->getMap();
+    _maps.slamMap =  _slamMap->getMap();
+    //publishData();
+
+   /* _loadMapService = _nh.advertiseService(*/
+      /*"/ogm_server/load_static_map", &Server::loadMapCallback, this);*/
 
     _loadExternalMapService = _nh.advertiseService(
       "/ogm_server/load_static_map_external", 
         &Server::loadExternalMapCallback, this);
+
+    _loadMapsService = _nh.advertiseService(
+     "/ogm_server/load_maps", &Server::loadMapsCallback, this);
+
   }
 
   /**
@@ -59,18 +64,41 @@ namespace ogm_server
   @param res [ogm_msgs::LoadMap::Response&] The service response
   @return bool
   **/
-  bool Server::loadMapCallback(
-    ogm_msgs::LoadMap::Request& req,
-    ogm_msgs::LoadMap::Response& res) 
-  {
-/*    if (_mapServer) */
+ /* bool Server::loadMapCallback(*/
+    //ogm_msgs::LoadMap::Request& req,
+    //ogm_msgs::LoadMap::Response& res) 
+  //{
+    //if(req.groundTruth)
     //{
-      //ROS_WARN("Map already loaded!");
-      //return false;
-    /*}*/
-    _mapServer.reset(new MapServer(req.mapFile, true));
+      //_groundTruthMap.reset(new MapServer(req.mapFile));
+      //res.map = _groundTruthMap.getMap();
+    //}
+    //else
+    //{
+      //_slamMap.reset(new MapServer(req.mapFile));
+      //res.map = _slamMap.getMap();
+    //}
+    
+    //ROS_INFO("Sending Map to GUI");
 
-    return true;
+    //return true;
+  /*}*/
+
+  /**
+  @brief Service callback for loading both default maps
+  @param req [ogm_msgs::LoadMaps::Request&] The service request
+  @param res [ogm_msgs::LoadMaps::Response&] The service response
+  @return bool
+  **/
+  bool Server::loadMapsCallback(ogm_msgs::LoadMaps::Request& req,
+        ogm_msgs::LoadMaps::Response& res)
+  {
+      res.groundTruthMap = _groundTruthMap->getMap();
+      res.slamMap = _slamMap->getMap();
+      ROS_INFO("Sending both Maps to GUI");
+
+      return true;
+
   }
 
   /**
@@ -83,12 +111,70 @@ namespace ogm_server
     ogm_msgs::LoadExternalMap::Request& req,
     ogm_msgs::LoadExternalMap::Response& res)
   {
-    /*if (_mapServer) {*/
-      //ROS_WARN("Map already loaded!");
-      //return false;
-    /*}*/
-    _mapServer.reset(new MapServer(req.map));
+    if(req.groundTruth)
+    {
+      _groundTruthMap.reset(new MapServer(req.mapFile));
+      res.map = _groundTruthMap->getMap();
+    }
+    else
+    {
+      _slamMap.reset(new MapServer(req.mapFile));
+      res.map = _slamMap->getMap();
+    }
+    ROS_INFO("Sending Map to GUI");
 
     return true;
   }
+
+  /**
+  @brief Publishes the map data and metadata
+  @return void
+  **/
+  void Server::publishData(void) 
+  {
+    /*ROS_INFO_STREAM("PUB");*/
+    //ROS_INFO_STREAM(" "<< map_.ground_truth <<" " 
+                        //<<map_.map.info.width << " " <<
+                    //map_.map.info.height << " " <<
+                    //map_.map.info.resolution << " " << 
+                    //map_.map.info.origin.position.x << " " <<
+                    //map_.map.info.origin.position.y 
+                    /*);*/
+
+
+    tfTimer = _nh.createTimer(ros::Duration(0.1), 
+      &Server::publishTransform, this);
+
+    //!< Latched publisher for metadata
+    /*metadata_pub= _nh.advertise<nav_msgs::MapMetaData>("map_metadata", 1, true);*/
+    /*metadata_pub.publish( meta_data_message_ );*/
+
+    //!< Latched publisher for data
+    map_pub = _nh.advertise<ogm_msgs::MapsMsg>("map", 1, true);
+    map_pub.publish( _maps );
+  }
+
+  /**
+  @brief Publishes the map to map_static transform
+  @param ev [const ros::TimerEvent&] A ROS timer event
+  @return void
+  **/
+  void Server::publishTransform(const ros::TimerEvent&) {
+
+    /*tf::Vector3 translation(*/
+      //map_.info.origin.position.x, 
+      //map_.info.origin.position.y, 
+      //0);
+
+    //tf::Quaternion rotation;
+
+    //rotation.setRPY(0, 0, tf::getYaw(map_.info.origin.orientation));
+
+    //tf::Transform worldTomap(rotation, translation);
+
+    //tfBroadcaster.sendTransform(
+      /*tf::StampedTransform(worldTomap, ros::Time::now(), "map", "map_static"));*/
+
+  }
+
 } // end of namespace ogm_server

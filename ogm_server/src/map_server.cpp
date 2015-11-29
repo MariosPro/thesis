@@ -27,17 +27,14 @@ namespace ogm_server {
   @param fname [const std::string&] The file name
   @return void
   **/
-  MapServer::MapServer(const std::string& fname, bool ground_truth)
+  MapServer::MapServer(const std::string& fname)
   {
 
-    map_.ground_truth = ground_truth;
-    ROS_INFO_STREAM("ground_truth=" << ground_truth);
-
-    map_.map = map_loader::loadMap(fname);
+    map_ = map_loader::loadMap(fname);
  
-    meta_data_message_ = map_.map.info;
+    meta_data_message_ = map_.info;
 
-    publishData();  
+    //publishData();  
   }
 
   /**
@@ -45,66 +42,70 @@ namespace ogm_server {
   @param map [const ogm _msgs::MapMsg&] The occupancy grid map
   @return void
   **/
-  MapServer::MapServer(const ogm_msgs::MapMsg& map) 
+  MapServer::MapServer(const nav_msgs::OccupancyGrid& map) 
   {
 
     map_ = map;
 
-    meta_data_message_ = map_.map.info;
+    meta_data_message_ = map_.info;
 
-    publishData();
+    //publishData();
   }
 
+  nav_msgs::OccupancyGrid MapServer::getMap()
+  {
+    return map_;
+  }
   /**
   @brief Publishes the map data and metadata
   @return void
   **/
-  void MapServer::publishData(void) 
-  {
-    ROS_INFO_STREAM("PUB");
-    ROS_INFO_STREAM(" "<< map_.ground_truth <<" " 
-                        <<map_.map.info.width << " " <<
-                    map_.map.info.height << " " <<
-                    map_.map.info.resolution << " " << 
-                    map_.map.info.origin.position.x << " " <<
-                    map_.map.info.origin.position.y 
-                    );
+/*  void MapServer::publishData(void) */
+  //{
+    //[>ROS_INFO_STREAM("PUB");<]
+    ////ROS_INFO_STREAM(" "<< map_.ground_truth <<" " 
+                        ////<<map_.map.info.width << " " <<
+                    ////map_.map.info.height << " " <<
+                    ////map_.map.info.resolution << " " << 
+                    ////map_.map.info.origin.position.x << " " <<
+                    ////map_.map.info.origin.position.y 
+                    //[>);<]
 
 
-    tfTimer = n.createTimer(ros::Duration(0.1), 
-      &MapServer::publishTransform, this);
+    //tfTimer = n.createTimer(ros::Duration(0.1), 
+      //&MapServer::publishTransform, this);
 
-    //!< Latched publisher for metadata
-    metadata_pub= n.advertise<nav_msgs::MapMetaData>("map_metadata", 1000);
-    metadata_pub.publish( meta_data_message_ );
+    ////!< Latched publisher for metadata
+    //metadata_pub= n.advertise<nav_msgs::MapMetaData>("map_metadata", 1, true);
+    //metadata_pub.publish( meta_data_message_ );
 
-    //!< Latched publisher for data
-    map_pub = n.advertise<ogm_msgs::MapMsg>("map", 1000, true);
-    map_pub.publish( map_ );
-  }
+    ////!< Latched publisher for data
+    //map_pub = n.advertise<nav_msgs::OccupancyGrid>("map", 1, true);
+    //map_pub.publish( map_ );
+  //}
 
-  /**
-  @brief Publishes the map to map_static transform
-  @param ev [const ros::TimerEvent&] A ROS timer event
-  @return void
-  **/
-  void MapServer::publishTransform(const ros::TimerEvent&) {
+  //[>*
+  //@brief Publishes the map to map_static transform
+  //@param ev [const ros::TimerEvent&] A ROS timer event
+  //@return void
+  //**/
+  //void MapServer::publishTransform(const ros::TimerEvent&) {
     
-    tf::Vector3 translation(
-      map_.map.info.origin.position.x, 
-      map_.map.info.origin.position.y, 
-      0);
+    //tf::Vector3 translation(
+      //map_.info.origin.position.x, 
+      //map_.info.origin.position.y, 
+      //0);
     
-    tf::Quaternion rotation;
+    //tf::Quaternion rotation;
     
-    rotation.setRPY(0, 0, tf::getYaw(map_.map.info.origin.orientation));
+    //rotation.setRPY(0, 0, tf::getYaw(map_.info.origin.orientation));
 
-    tf::Transform worldTomap(rotation, translation);
+    //tf::Transform worldTomap(rotation, translation);
 
-    tfBroadcaster.sendTransform(
-      tf::StampedTransform(worldTomap, ros::Time::now(), "map", "map_static"));
+    //tfBroadcaster.sendTransform(
+      //tf::StampedTransform(worldTomap, ros::Time::now(), "map", "map_static"));
     
-  }
+  /*}*/
 
 } // end of namespace ogm_server
 

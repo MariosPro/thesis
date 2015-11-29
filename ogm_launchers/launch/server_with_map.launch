@@ -1,6 +1,3 @@
 <launch>
   <node type="ogm_server_node" pkg="ogm_server" name="ogm_server" output="screen" args="$(find ogm_resources)/maps/sparse_obstacles.yaml"/>
-
-  <node pkg="tf" type="static_transform_publisher" name="world2map" args="0 0 0 0 0 0  world map 100" />
-
 </launch>

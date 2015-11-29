@@ -19,7 +19,6 @@
 ******************************************************************************/
 
 #include "ogm_server/map_loader.h"
-#include "ogm_msgs/MapMsg.h"
 #include <ogm_msgs/LoadExternalMap.h>
 
 #define USAGE "USAGE: load_map <map_file.yaml> true/false (true for ground truth)"
@@ -37,16 +36,6 @@ int main(int argc, char** argv) {
   ros::NodeHandle nh;
 
   if (argc == 3) {
-
-    ogm_msgs::MapMsg map;
-
-    if(argv[2])
-      map.ground_truth = true;
-    else
-      map.ground_truth = false;
-
-    map.map = ogm_server::map_loader::loadMap(std::string(argv[1]));
-
     ros::ServiceClient client;
 
     while (!ros::service::waitForService(
@@ -60,7 +49,12 @@ int main(int argc, char** argv) {
 
     ogm_msgs::LoadExternalMap srv;
 
-    srv.request.map = map;
+    if(argv[2])
+      srv.request.groundTruth = true;
+    else
+      srv.request.groundTruth = false;
+
+    srv.request.mapFile = std::string(argv[1]);
 
     if (client.call(srv)) {
       ROS_INFO("Map successfully loaded");

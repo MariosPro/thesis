@@ -67,11 +67,6 @@ namespace ogm_gui
   **/
   void CGuiController::initializeCommunications(void)
   {
-    map_subscriber_ = n_.subscribe(
-      "map",
-      1000,
-      &CGuiController::receiveMap,
-      this);
 
     QObject::connect(
       &gui_connector_,SIGNAL(setZoomInCursor(bool)),
@@ -86,44 +81,25 @@ namespace ogm_gui
       &map_connector_, SLOT(setCursorAdjusted(bool)));
 
     QObject::connect(
-      &map_connector_,SIGNAL(zoomInPressed(QPoint)),
-      this, SLOT(zoomInPressed(QPoint)));
+      &gui_connector_,SIGNAL(requestMap(QString, bool)),
+      this, SLOT(receiveMapfromService(QString, bool)));
 
     QObject::connect(
-      &map_connector_,SIGNAL(zoomOutPressed(QPoint)),
-      this, SLOT(zoomOutPressed(QPoint)));
+      &gui_connector_,SIGNAL(loadDefaultMaps()),
+      this, SLOT(receiveMapsFromServer()));
 
-    QObject::connect(
-     &map_connector_,SIGNAL(itemClicked(QPoint,Qt::MouseButton)),
-      this, SLOT(itemClicked(QPoint,Qt::MouseButton)));
 
-    //QObject::connect(
-      //&alignment_connector_, SIGNAL(moveUpMapPressed()),
-      //&map_connector_, SLOT(moveUp()));
+ /*   QObject::connect(*/
+      //&map_connector_,SIGNAL(zoomInPressed(QPoint)),
+      //this, SLOT(zoomInPressed(QPoint)));
 
     //QObject::connect(
-      //&alignment_connector_, SIGNAL(moveDownMapPressed()),
-      //&map_connector_, SLOT(moveDown()));
+      //&map_connector_,SIGNAL(zoomOutPressed(QPoint)),
+      //this, SLOT(zoomOutPressed(QPoint)));
 
     //QObject::connect(
-      //&alignment_connector_, SIGNAL(moveLeftMapPressed()),
-      //&map_connector_, SLOT(moveLeft()));
-
-    //QObject::connect(
-      //&alignment_connector_, SIGNAL(moveRightMapPressed()),
-       //&map_connector_, SLOT(moveRight()));
-
-    //QObject::connect(
-      //&alignment_connector_, SIGNAL(rotateLeftMapPressed()),
-      //&map_connector_, SLOT(rotateLeft()));
-
-    //QObject::connect(
-      //&alignment_connector_, SIGNAL(rotateRightMapPressed()),
-      //&map_connector_, SLOT(rotateRight()));
-
-    //QObject::connect(
-      //&alignment_connector_, SIGNAL(scaleMapPressed()),
-      /*&map_connector_, SLOT(scale()));*/
+     //&map_connector_,SIGNAL(itemClicked(QPoint,Qt::MouseButton)),
+      /*this, SLOT(itemClicked(QPoint,Qt::MouseButton)));*/
 
        timer_ = new QTimer(this);
     connect(
@@ -161,10 +137,9 @@ namespace ogm_gui
         std::string("/maps/slam_final_2.png")).c_str());
 
 
-      //map_msg_.map.info.width = initial_map_.width();
-      /*map_msg_.map.info.height = initial_map_.height();*/
-      map_msg_.map.info.resolution = 0.02;
-      map_msg_.ground_truth = true;
+      //map_msg__.map.info.width = initial_map_.width();
+      /*map_msg__.map.info.height = initial_map_.height();*/
+      map_msg_.info.resolution = 0.02;
 
       map_connector_.updateImage(&running_map_, true);
       map_connector_.updateImage(&slam_map_, false);
@@ -195,66 +170,128 @@ namespace ogm_gui
     return true;
   }
 
+
   /**
-  @brief Receives the occupancy grid map from ogm_server. Connects to "map" \
-  ROS topic
-  @param msg [const ogm_msgs::MapMsg&] The OGM message
+  @brief Receives the defauts map as loaded from ogm_server.
   @return void
   **/
-  void CGuiController::receiveMap(const ogm_msgs::MapMsg& msg)
+  void CGuiController::receiveMapsFromServer()
   {
-    ROS_INFO_STREAM("RECEIVE MAP");
+    while(map_lock_)
+    {
+      usleep(100);
+    }
+    map_lock_ = true;
+    
+    ros::ServiceClient client;
+    ogm_msgs::LoadMaps srv;
+
+   while (!ros::service::waitForService
+       ("/ogm_server/load_maps", ros::Duration(.1)) &&
+         ros::ok())
+    {
+       ROS_WARN
+         ("Trying to register to /ogm_server/load_maps...");
+    }
+
+    client = n_.serviceClient<ogm_msgs::LoadMaps>
+       ("/ogm_server/load_maps", true);
+
+    srv.request.request = "Send Maps";
+
+    if (client.call(srv)) 
+    {
+      ROS_INFO("Maps successfully loaded from server");
+       maps_msg_.groundTruthMap = srv.response.groundTruthMap;
+       maps_msg_.slamMap = srv.response.slamMap;
+    }
+    else
+    {
+       ROS_ERROR("Could not load Maps, maybe already loaded...");
+    }
+
+    initial_map_ = running_map_ = QImage(maps_msg_.groundTruthMap.info.width, maps_msg_.groundTruthMap.info.height, QImage::Format_RGB32);
+
+    initial_slam_map_ = slam_map_ = QImage(maps_msg_.slamMap.info.width, maps_msg_.slamMap.info.height, QImage::Format_RGB32);
+
+    running_map_ = convertOccupancyGridToQImage(running_map_, maps_msg_.groundTruthMap);
+    slam_map_ = convertOccupancyGridToQImage(slam_map_, maps_msg_.slamMap);
+
+    initial_map_ = running_map_;
+    initial_slam_map_ = slam_map_;
+
+    ////[>info_connector_.updateMapInfo( msg.info.width * msg.info.resolution,<]
+                  //////msg.info.height * msg.info.resolution,
+                  ////[>msg.info.resolution);<]
+
+    map_connector_.setInitialImageSize(
+      QSize(running_map_.width(),running_map_.height()));
+
+    elapsed_time_.start();
+
+    map_initialized_ = true;
+    map_connector_.setMapInitialized(true);
+    gui_connector_.setMapInitialized(true);
+
+    timer_->start(50);
+
+    map_lock_ = false;
+  }
+
+  /**
+  @brief Receives the occupancy grid map from ogm_server.
+  @param file_name [QString] The name of the mapFile to be loaded
+  @param groundTruth [bool] var that shows if the map is groundTruth
+  @return void
+  **/
+  void CGuiController::receiveMapfromService(QString file_name, bool groundTruth)
+  {
     while(map_lock_)
     {
       usleep(100);
     }
     map_lock_= true;
-    ROS_INFO_STREAM(" "<< msg.ground_truth <<" " 
-                        <<msg.map.info.width << " " <<
-                    msg.map.info.height << " " <<
-                    msg.map.info.resolution << " " << 
-                    msg.map.info.origin.position.x << " " <<
-                    msg.map.info.origin.position.y 
-                    );
 
-    map_msg_ = msg;
-    if(msg.ground_truth)
+    ros::ServiceClient client;
+    ogm_msgs::LoadExternalMap srv;
+
+    while (!ros::service::waitForService
+       ("/ogm_server/load_static_map_external", ros::Duration(.1)) &&
+         ros::ok())
     {
-       initial_map_ = running_map_ = QImage(msg.map.info.width, msg.map.info.height, QImage::Format_RGB32);
+       ROS_WARN
+         ("Trying to register to /ogm_server/load_static_map_external...");
+    }
+
+    client = n_.serviceClient<ogm_msgs::LoadExternalMap>
+       ("/ogm_server/load_static_map_external", true);
+
+    srv.request.mapFile = file_name.toStdString();
+    srv.request.groundTruth = groundTruth;
+
+    if (client.call(srv)) 
+    {
+      ROS_INFO("Ground Truth Map successfully loaded from GUI");
+       map_msg_ = srv.response.map;
+    }
+    else
+    {
+       ROS_ERROR("Could not load Ground Truth Map, maybe already loaded...");
+    }
+  
+    if(groundTruth)
+    {
+       initial_map_ = running_map_ = QImage(map_msg_.info.width, map_msg_.info.height, QImage::Format_RGB32);
     }
 
     else
     {
-       initial_slam_map_ = running_map_ = QImage(msg.map.info.width, msg.map.info.height, QImage::Format_RGB32);
+       initial_slam_map_ = running_map_ = QImage(map_msg_.info.width, map_msg_.info.height, QImage::Format_RGB32);
     }
 
-    QPainter painter(&running_map_);
-    int d(0);
-    QColor c;
-    for( unsigned int i = 0 ; i < msg.map.info.width ; i++ )
-    {
-      for( unsigned int j = 0 ; j < msg.map.info.height ; j++ )
-      {
-        if( msg.map.data[j * msg.map.info.width + i] == -1 )
-        {
-          c=QColor(127,127,127);
-        }
-        else
-        {
-          d = (100.0 - msg.map.data[j * msg.map.info.width + i]) / 100.0 * 255.0;
-          c=QColor(d,d,d);
-        }
-        painter.setPen(c);
-        painter.drawPoint(i, j);
-      }
-    }
-    int originx = msg.map.info.origin.position.x / msg.map.info.resolution;
-    int originy = msg.map.info.origin.position.y / msg.map.info.resolution;
-    painter.setPen(Qt::blue);
-    painter.drawLine(originx, originy - 20, originx, originy + 20);
-    painter.drawLine(originx - 20, originy, originx + 20, originy);
+    running_map_ = convertOccupancyGridToQImage(running_map_, map_msg_);
 
-    if(msg.ground_truth)
+    if(groundTruth)
       initial_map_ = running_map_;
     else
       initial_slam_map_ = running_map_;
@@ -262,9 +299,9 @@ namespace ogm_gui
     /*info_connector_.updateMapInfo( msg.info.width * msg.info.resolution,*/
                   //msg.info.height * msg.info.resolution,
                   /*msg.info.resolution);*/
+
     map_connector_.setInitialImageSize(
       QSize(running_map_.width(),running_map_.height()));
-
 
     elapsed_time_.start();
 
@@ -277,6 +314,39 @@ namespace ogm_gui
     map_lock_=false;
   }
 
+  QImage CGuiController::convertOccupancyGridToQImage(QImage running_map, nav_msgs::OccupancyGrid map_msg)
+  {
+    QPainter painter(&running_map);
+    int d(0);
+    QColor c;
+    for( unsigned int i = 0 ; i < map_msg.info.width ; i++ )
+    {
+      for( unsigned int j = 0 ; j < map_msg.info.height ; j++ )
+      {
+        if( map_msg.data[j * map_msg.info.width + i] == -1 )
+        {
+          c = QColor(127,127,127);
+        }
+        else
+        {
+          d = (100.0 - map_msg.data[j * map_msg.info.width + i]) / 100.0 * 255.0;
+          c = QColor(d,d,d);
+        }
+        painter.setPen(c);
+        painter.drawPoint(i, j);
+      }
+    }
+    int originx = map_msg.info.origin.position.x / map_msg.info.resolution;
+    int originy = map_msg.info.origin.position.y / map_msg.info.resolution;
+    painter.setPen(Qt::blue);
+    painter.drawLine(originx, originy - 20, originx, originy + 20);
+    painter.drawLine(originx - 20, originy, originx + 20, originy);
+
+    return running_map;
+  }
+
+
+
   /**
   @brief Performs zoom in when the button is pressed. Connects to the CMapConnector::zoomInPressed signal
   @param p [QPoint] The event point in the OGM
@@ -288,7 +358,7 @@ namespace ogm_gui
     {
       return;
     }
-    map_connector_.updateZoom(p,true);
+    map_connector_.updateZoom(p, true);
   }
 
   /**
@@ -302,7 +372,7 @@ namespace ogm_gui
     {
       return;
     }
-    map_connector_.updateZoom(p,false);
+    map_connector_.updateZoom(p, false);
   }
 
   /**
@@ -321,8 +391,8 @@ namespace ogm_gui
       slam_map_ = initial_slam_map_;
     if(gui_connector_.isGridEnabled())
     {
-      map_connector_.drawGrid(&running_map_, map_msg_.map.info.resolution);
-      map_connector_.drawGrid(&slam_map_, map_msg_.map.info.resolution);
+      map_connector_.drawGrid(&running_map_, map_msg_.info.resolution);
+      map_connector_.drawGrid(&slam_map_, map_msg_.info.resolution);
     }
     map_connector_.updateImage(&running_map_, true);
     map_connector_.updateImage(&slam_map_, false);

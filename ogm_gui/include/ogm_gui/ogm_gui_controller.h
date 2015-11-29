@@ -25,15 +25,17 @@
 #include <cstdlib>
 #include <boost/thread.hpp>
 
-#include "ogm_msgs/MapMsg.h"
+#include "nav_msgs/OccupancyGrid.h"
 
 #include <QtCore/QThread>
 #include <QtCore/QTime>
 #include <QtCore/QTimer>
 
+#include <ogm_msgs/MapsMsg.h>
+#include <ogm_msgs/LoadExternalMap.h>
+#include <ogm_msgs/LoadMaps.h>
 #include "ogm_gui/ogm_gui_connector.h"
 #include "ogm_gui/ogm_validation_connector.h"
-#include "ogm_gui/ogm_alignment_connector.h"
 #include "ogm_gui/ogm_map_connector.h"
 
 /**
@@ -75,7 +77,10 @@ namespace ogm_gui
       //tf::TransformListener listener_;
 
       //!< The MapMsg 
-      ogm_msgs::MapMsg map_msg_;
+      nav_msgs::OccupancyGrid map_msg_;
+
+     //!< The MapMsg 
+      ogm_msgs::MapsMsg maps_msg_;
 
       //!< Timer for the drawing event
       QTimer* timer_;
@@ -142,15 +147,23 @@ namespace ogm_gui
       @param msg [const ogm_msgs::MapMsg&] The OGM message
       @return void
       **/
-      void receiveMap(const ogm_msgs::MapMsg& msg);
+      void receiveMaps(const ogm_msgs::MapsMsg& msg);
 
       /**
       @brief Initializes the ROS spin and Qt threads
       @return bool
       **/
       bool init();
+
+      Q_INVOKABLE QImage convertOccupancyGridToQImage(QImage running_map, nav_msgs::OccupancyGrid map_msg);
+  
+
     //------------------------------------------------------------------------//
     public Q_SLOTS:
+      
+      void receiveMapfromService(QString file_name, bool groundTruth);
+
+      void receiveMapsFromServer();
 
       /**
       @brief Performs zoom in when the button is pressed. Connects to the CMapConnector::zoomInPressed signal

@@ -10,13 +10,14 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
     FILES
-    MapMsg.msg
+    MapsMsg.msg
 )
 
 add_service_files(
     FILES
     LoadMap.srv
     LoadExternalMap.srv
+    LoadMaps.srv
 )
 
 

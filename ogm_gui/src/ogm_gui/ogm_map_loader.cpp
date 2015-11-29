@@ -96,19 +96,13 @@ namespace ogm_gui
   void CMapLoader::updateImage(QImage *img, bool groundTruth)
   {
     internal_img_ = img;
-    //ROS_INFO_STREAM("DIMENSIONS=" << img->width() << " "<<  img->height());
     if(groundTruth)
     {
      std::pair<int,int> newDims = checkDimensions(img->width(), img->height(), 
                                                  this->width(), this->height());
       ground_truth_map->setPixmap(
         QPixmap().fromImage((
-            *img).
-            copy(map_min_.x(),
-                map_min_.y(),
-                map_max_.x() - map_min_.x(),
-                map_max_.y() - map_min_.y()).
-            scaled(newDims.first,newDims.second,
+            *img).scaled(newDims.first,newDims.second,
                 Qt::IgnoreAspectRatio,
                 Qt::SmoothTransformation)));
       mapGraphicsView->resize(newDims.first, newDims.second);
@@ -121,12 +115,7 @@ namespace ogm_gui
                                                  ground_truth_map->boundingRect().width(),
                                                  ground_truth_map->boundingRect().height());
         QPixmap pixmap = QPixmap::fromImage(
-              (*img).
-              copy(map_min_.x(),
-                map_min_.y(),
-                map_max_.x() - map_min_.x(),
-                map_max_.y() - map_min_.y()).
-              scaled(newDims.first, newDims.second,
+              (*img).scaled(newDims.first, newDims.second,
                   Qt::IgnoreAspectRatio,
                   Qt::SmoothTransformation));
         makeTransparent(&pixmap, 0.5);
@@ -134,7 +123,7 @@ namespace ogm_gui
 
       /*mapGraphicsView->resize(newDims.first, newDims.second);*/
       //scene->setSceneRect(0, 0, newDims.first, newDims.second);
-      //mapGraphicsView->fitInView(scene->sceneRect());
+      /*mapGraphicsView->fitInView(scene->sceneRect());*/
     }
   }
 

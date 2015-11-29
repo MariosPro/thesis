@@ -52,6 +52,10 @@ namespace ogm_gui
     QObject::connect(
       loader_.actionLoadSlamMap,SIGNAL(triggered(bool)),
       this,SLOT(actionLoadSlamMapTriggered()));
+  
+    QObject::connect(
+      loader_.actionLoadMapsFromServer,SIGNAL(triggered(bool)),
+      this,SLOT(actionLoadMapsFromServerTriggered()));
 
     //QObject::connect(
       //loader_.actionZoomIn,SIGNAL(triggered(bool)),
@@ -101,38 +105,8 @@ namespace ogm_gui
        return;
      }
 
-     ros::NodeHandle nh;
+     Q_EMIT requestMap(file_name, true);
 
-     ogm_msgs::MapMsg map;
-
-     map.ground_truth = true;
-     map.map = ogm_server::map_loader::loadMap(file_name.toStdString().c_str());
-
-     ros::ServiceClient client;
-
-     while (!ros::service::waitForService
-       ("/ogm_server/load_static_map_external", ros::Duration(.1)) &&
-         ros::ok())
-     {
-       ROS_WARN
-         ("Trying to register to /ogm_server/load_static_map_external...");
-     }
-
-     client = nh.serviceClient<ogm_msgs::LoadExternalMap>
-       ("/ogm_server/load_static_map_external", true);
-
-     ogm_msgs::LoadExternalMap srv;
-
-     srv.request.map = map;
-
-     if (client.call(srv)) 
-     {
-       ROS_INFO("Ground Truth Map successfully loaded from GUI");
-     }
-     else
-     {
-       ROS_ERROR("Could not load Ground Truth Map, maybe already loaded...");
-     }
   }
 
   /**
@@ -153,38 +127,16 @@ namespace ogm_gui
        return;
      }
 
-     ros::NodeHandle nh;
+     Q_EMIT requestMap(file_name, false);
+  }
 
-     ogm_msgs::MapMsg map;
-
-     map.ground_truth = false;
-     map.map = ogm_server::map_loader::loadMap(file_name.toStdString().c_str());
-
-     ros::ServiceClient client;
-
-     while (!ros::service::waitForService
-       ("/ogm_server/load_static_map_external", ros::Duration(.1)) &&
-         ros::ok())
-     {
-       ROS_WARN
-         ("Trying to register to /ogm_server/load_static_map_external...");
-     }
-
-     client = nh.serviceClient<ogm_msgs::LoadExternalMap>
-       ("/ogm_server/load_static_map_external", true);
-
-     ogm_msgs::LoadExternalMap srv;
-
-     srv.request.map = map;
-
-     if (client.call(srv)) 
-     {
-       ROS_INFO("SLAM-produced Map successfully loaded from GUI");
-     }
-     else
-     {
-       ROS_ERROR("Could not load SLAM-produced map, maybe already loaded...");
-     }
+  /**
+  @brief Qt slot that is called when the LoadMapsfromServer tool button is pressed
+  @return void
+  **/
+  void CGuiConnector::actionLoadMapsFromServerTriggered(void)
+  {
+    Q_EMIT loadDefaultMaps();
   }
 
   /**

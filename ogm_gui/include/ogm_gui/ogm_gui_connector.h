@@ -172,6 +172,13 @@ namespace ogm_gui
       void actionLoadSlamMapTriggered(void);
 
       /**
+      @brief Qt slot that is called when the LoadMapsfromServer tool button is pressed
+      @return void
+      **/
+      void actionLoadMapsFromServerTriggered(void);
+
+
+      /**
       @brief Qt slot that is called when the zoom in tool button is pressed
       @return void
       **/
@@ -199,6 +206,14 @@ namespace ogm_gui
     Q_SIGNALS:
 
       /**
+      @brief Emmited in GuiConnector::actionLoadMapTriggered and connects to GuiController::receiveMap
+      @param img [QString] The map filename to be loaded
+      @param groundTruth [bool] if map to be loaded is groundTruth
+      @return void
+      **/
+      void requestMap (QString mapFile, bool groundTruth);
+
+      /**
       @brief Qt signal that is emmited in GuiConnector::actionZoomInTriggered and connects to MapLoader::setCursorZoomIn
       @param state [bool] Toggle flag
       @return void
@@ -218,6 +233,12 @@ namespace ogm_gui
       @return void
       **/
       void setAdjustedCursor(bool state);
+
+      /**
+      @brief Emmited in GuiConnector::actionLoadMapsfromServerTriggered and connects to GuiController::receiveMapsFromServer
+      @return void
+      **/
+      void loadDefaultMaps(void);
 
       /**
       @brief Signal emmited on exit pressed

@@ -63,6 +63,9 @@ namespace ogm_gui
       //!< The action of loading a SLAM-produced map button
       QAction *actionLoadSlamMap;
 
+      //!< The action of loading the default maps from server button
+      QAction *actionLoadMapsFromServer;
+
       //!< The action of zooming in button
       QAction *actionZoomIn;
 

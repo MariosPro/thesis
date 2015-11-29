@@ -1,2 +1,4 @@
-ogm_msgs/MapMsg  map
+string  mapFile
+bool groundTruth
 ---
+nav_msgs/OccupancyGrid  map

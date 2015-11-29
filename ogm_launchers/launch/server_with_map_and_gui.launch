@@ -1,8 +1,4 @@
 <launch>
-  <node type="ogm_server_node" pkg="ogm_server" name="ogm_server" output="screen" args="$(find ogm_resources)/maps/slam_env_1.yaml true $(find ogm_resources)/maps/slam_final_1.yaml false"/>
-
-	<node pkg="tf" type="static_transform_publisher" name="world2map" args="0 0 0 0 0 0  world map 100" />
-	
-	<include file="$(find ogm_gui)/launch/ogm_gui.launch"/>
-	
+  <node type="ogm_server_node" pkg="ogm_server" name="ogm_server" output="screen" args="$(find ogm_resources)/maps/slam_env_1.yaml $(find ogm_resources)/maps/slam_final_1.yaml"/>
+  <include file="$(find ogm_gui)/launch/ogm_gui.launch"/>
 </launch>
