@@ -21,6 +21,7 @@
 #ifndef OGM_MAP_LOADER
 #define OGM_MAP_LOADER
 
+#include <QDebug>
 #include "ui_map.h"
 #include "ogm_gui/ogm_map_item.h"
 #include "ogm_gui/ogm_tools.h"
@@ -164,6 +165,30 @@ namespace ogm_gui
       @return QPoint : The new point
       **/
       QPoint getGlobalPoint(QPoint p);
+
+      /**
+      @brief Returns the pos of the object to the scene
+      @return QPointF : The pos to the scene
+      **/
+      QPointF getPosition();
+
+      /**
+      @brief Returns the rotation (z-axis) of the object to the scene
+      @return qreal : The rotation to the scene
+      **/
+      qreal getRotation();
+
+      /**
+      @brief Returns the scaling of the object
+      @return qreal : The scaling
+      **/
+      qreal getScale();
+
+      /**
+      @brief Returns the item's scene transformation matrix
+      @return QTransform : The transformation matrix
+      **/
+      QTransform getTransform();
 
       /**
       @brief Makes the image transparent

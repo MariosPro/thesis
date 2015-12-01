@@ -88,7 +88,6 @@ namespace ogm_gui
       &gui_connector_,SIGNAL(loadDefaultMaps()),
       this, SLOT(receiveMapsFromServer()));
 
-
  /*   QObject::connect(*/
       //&map_connector_,SIGNAL(zoomInPressed(QPoint)),
       //this, SLOT(zoomInPressed(QPoint)));
@@ -124,33 +123,39 @@ namespace ogm_gui
   **/
   void CGuiController::setupWidgets(void)
   {
-    {
       gui_connector_.addToGrid(validation_connector_.getLoader(), 0, 0, 0, 0);
-    }
-    {
+      
       initial_map_ = running_map_ = QImage((
         ogm_gui_tools::getRosPackagePath("ogm_resources") +
         std::string("/maps/slam_env_2.png")).c_str());
-    
+
       initial_slam_map_ = slam_map_ = QImage((
         ogm_gui_tools::getRosPackagePath("ogm_resources") +
         std::string("/maps/slam_final_2.png")).c_str());
 
+      nav_msgs::OccupancyGrid map;
+      map.info.width = initial_map_.width();
+      map.info.height = initial_map_.height();
+      map.info.resolution = 0.02;
+      maps_.groundTruthMap = map;
 
-      //map_msg__.map.info.width = initial_map_.width();
-      /*map_msg__.map.info.height = initial_map_.height();*/
-      map_msg_.info.resolution = 0.02;
+      map.info.width = initial_slam_map_.width();
+      map.info.height = initial_slam_map_.height();
+      map.info.resolution = 0.02;
+      maps_.slamMap = map;
+
+      validation_connector_.updateMapInfo(maps_);
 
       map_connector_.updateImage(&running_map_, true);
       map_connector_.updateImage(&slam_map_, false);
 
-      gui_connector_.addToGrid(map_connector_.getLoader(), 0, 1, -1, -1);
+      gui_connector_.addToGrid(map_connector_.getLoader(), 0, 1, 0, 0);
 
-      gui_connector_.setGridColumnStretch(1, 100);
-      gui_connector_.setGridColumnStretch(0, 0);
+      gui_connector_.setGridColumnStretch(1, 5);
+      gui_connector_.setGridColumnStretch(0, 2);
 
       //gui_connector_.addToGrid(alignment_connector_.getLoader(), 1, 0, 0, 0);
-    }
+
   }
 
   /**
@@ -202,27 +207,25 @@ namespace ogm_gui
     if (client.call(srv)) 
     {
       ROS_INFO("Maps successfully loaded from server");
-       maps_msg_.groundTruthMap = srv.response.groundTruthMap;
-       maps_msg_.slamMap = srv.response.slamMap;
+       maps_.groundTruthMap = srv.response.groundTruthMap;
+       maps_.slamMap = srv.response.slamMap;
     }
     else
     {
        ROS_ERROR("Could not load Maps, maybe already loaded...");
     }
 
-    initial_map_ = running_map_ = QImage(maps_msg_.groundTruthMap.info.width, maps_msg_.groundTruthMap.info.height, QImage::Format_RGB32);
+    initial_map_ = running_map_ = QImage(maps_.groundTruthMap.info.width, maps_.groundTruthMap.info.height, QImage::Format_RGB32);
 
-    initial_slam_map_ = slam_map_ = QImage(maps_msg_.slamMap.info.width, maps_msg_.slamMap.info.height, QImage::Format_RGB32);
+    initial_slam_map_ = slam_map_ = QImage(maps_.slamMap.info.width, maps_.slamMap.info.height, QImage::Format_RGB32);
 
-    running_map_ = convertOccupancyGridToQImage(running_map_, maps_msg_.groundTruthMap);
-    slam_map_ = convertOccupancyGridToQImage(slam_map_, maps_msg_.slamMap);
+    running_map_ = convertOccupancyGridToQImage(running_map_, maps_.groundTruthMap);
+    slam_map_ = convertOccupancyGridToQImage(slam_map_, maps_.slamMap);
 
     initial_map_ = running_map_;
     initial_slam_map_ = slam_map_;
 
-    ////[>info_connector_.updateMapInfo( msg.info.width * msg.info.resolution,<]
-                  //////msg.info.height * msg.info.resolution,
-                  ////[>msg.info.resolution);<]
+    validation_connector_.updateMapInfo(maps_);
 
     map_connector_.setInitialImageSize(
       QSize(running_map_.width(),running_map_.height()));
@@ -254,6 +257,7 @@ namespace ogm_gui
 
     ros::ServiceClient client;
     ogm_msgs::LoadExternalMap srv;
+    //maps_.clear();
 
     while (!ros::service::waitForService
        ("/ogm_server/load_static_map_external", ros::Duration(.1)) &&
@@ -271,34 +275,37 @@ namespace ogm_gui
 
     if (client.call(srv)) 
     {
-      ROS_INFO("Ground Truth Map successfully loaded from GUI");
-       map_msg_ = srv.response.map;
+      if(groundTruth)
+      {
+        ROS_INFO("Ground Truth Map successfully loaded from GUI");
+        maps_.groundTruthMap = srv.response.map;
+      }
+      else
+      {
+        ROS_INFO("Slam - produced Map successfully loaded from GUI");
+        maps_.slamMap = srv.response.map;
+      }
     }
     else
     {
-       ROS_ERROR("Could not load Ground Truth Map, maybe already loaded...");
+       ROS_ERROR("Could not load Map, maybe already loaded...");
     }
   
     if(groundTruth)
     {
-       initial_map_ = running_map_ = QImage(map_msg_.info.width, map_msg_.info.height, QImage::Format_RGB32);
-    }
+       initial_map_ = running_map_ = QImage(maps_.groundTruthMap.info.width, maps_.groundTruthMap.info.height, QImage::Format_RGB32);
+       running_map_ = convertOccupancyGridToQImage(running_map_, maps_.groundTruthMap);
+       initial_map_ = running_map_;
+      }
 
     else
     {
-       initial_slam_map_ = running_map_ = QImage(map_msg_.info.width, map_msg_.info.height, QImage::Format_RGB32);
+       initial_slam_map_ = running_map_ = QImage(maps_.slamMap.info.width, maps_.slamMap.info.height, QImage::Format_RGB32);
+       running_map_ = convertOccupancyGridToQImage(running_map_, maps_.slamMap);
+      initial_slam_map_ = running_map_;
     }
 
-    running_map_ = convertOccupancyGridToQImage(running_map_, map_msg_);
-
-    if(groundTruth)
-      initial_map_ = running_map_;
-    else
-      initial_slam_map_ = running_map_;
-
-    /*info_connector_.updateMapInfo( msg.info.width * msg.info.resolution,*/
-                  //msg.info.height * msg.info.resolution,
-                  /*msg.info.resolution);*/
+    validation_connector_.updateMapInfo(maps_);
 
     map_connector_.setInitialImageSize(
       QSize(running_map_.width(),running_map_.height()));
@@ -381,7 +388,6 @@ namespace ogm_gui
   **/
   void CGuiController::updateMapInternal(void)
   {
-    //ROS_INFO("UPDATE MAP INTERNAL");
     while(map_lock_)
     {
       usleep(100);
@@ -391,13 +397,12 @@ namespace ogm_gui
       slam_map_ = initial_slam_map_;
     if(gui_connector_.isGridEnabled())
     {
-      map_connector_.drawGrid(&running_map_, map_msg_.info.resolution);
-      map_connector_.drawGrid(&slam_map_, map_msg_.info.resolution);
+      map_connector_.drawGrid(&running_map_, maps_.groundTruthMap.info.resolution);
+      map_connector_.drawGrid(&slam_map_, maps_.slamMap.info.resolution);
     }
     map_connector_.updateImage(&running_map_, true);
     map_connector_.updateImage(&slam_map_, false);
 
-    //ROS_INFO("IMAGES UPDATED");
       gui_connector_.setStatusBarMessage(
       QString("Time elapsed : ") +
       ogm_gui_tools::getLiteralTime(elapsed_time_.elapsed()));

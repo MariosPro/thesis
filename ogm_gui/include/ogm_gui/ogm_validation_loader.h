@@ -46,6 +46,19 @@ namespace ogm_gui
 
     public:
 
+      //!< Tree item : map Root
+      QTreeWidgetItem mapInfo;
+      //!< Tree item : mapEvaluation Root
+      QTreeWidgetItem mapEvaluation;
+      //!< Tree item : pathEvaluation Root
+      QTreeWidgetItem pathEvaluation;
+      //!< Tree item: image general metrics
+      QTreeWidgetItem metrics;
+      //!< Tree item: Structural Evaluation
+      QTreeWidgetItem structEvaluation;
+      //!< Tree item: Feature Evaluation
+      QTreeWidgetItem featEvaluation;
+
       /**
       @brief Default contructor
       @param argc [int] Number of input arguments
@@ -59,6 +72,35 @@ namespace ogm_gui
       @return void
       **/
       ~CValidationLoader(void);
+
+      /**
+      @brief Deletes the information tree
+      @return void
+      **/
+      void deleteTree(void);
+
+      /**
+      @brief Deletes a specific tree node. Recursive function.
+      @param item [QTreeWidgetItem*] The item to be deleted
+      @return void
+      **/
+      void deleteTreeNode(QTreeWidgetItem *item);
+
+      /**
+      @brief Updates the information tree according to the specific map
+      @param width [float] The map width
+      @param height [float] The map height
+      @param ocgd [float] The map resolution (m/pixel)
+      @return void
+      **/
+      void updateMapInfo(float width, float height, float ocgd, bool groundTruth);
+
+      /**
+      @brief Autoresizes the columns according to the visible contents
+      @return void
+      **/
+      void autoResizeColumns(void);
+
   };
 }
 

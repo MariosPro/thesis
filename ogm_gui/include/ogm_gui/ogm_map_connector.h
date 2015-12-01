@@ -86,7 +86,30 @@ namespace ogm_gui
       @brief Default destructor
       @return void
       **/
-      ~CMapConnector(void);
+          ~CMapConnector(void);
+      /**
+      @brief Returns the pos of the object to the scene
+      @return QPointF : The pos to the scene
+      **/
+      QPointF getPosition();
+
+      /**
+      @brief Returns the rotation (z-axis) of the object to the scene
+      @return qreal : The rotation to the scene
+      **/
+      qreal getRotation();
+
+      /**
+      @brief Returns the scaling of the object
+      @return qreal : The scaling
+      **/
+      qreal getScale();
+
+      /**
+      @brief Returns the item's scene transformation matrix
+      @return QTransform : The transformation matrix
+      **/
+      QTransform getTransform();
 
       /**
       @brief Emits the signalUpdateImage signal

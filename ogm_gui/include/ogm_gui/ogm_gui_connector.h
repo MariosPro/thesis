@@ -23,7 +23,6 @@
 
 #include "ogm_server/map_loader.h"
 #include <ogm_msgs/LoadExternalMap.h>
-#include <ogm_msgs/MapMsg.h>
 #include "ogm_gui/ogm_gui_loader.h"
 
 /**

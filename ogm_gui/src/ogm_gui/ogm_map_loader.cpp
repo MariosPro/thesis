@@ -164,7 +164,45 @@ namespace ogm_gui
       painter.drawLine(i * pix, 0, i * pix, img->height() - 1);
     }
   }
+
+  /**
+  @brief Returns the pos of the object to the scene
+  @return QPointF : The pos to the scene
+  **/
+  QPointF CMapLoader::getPosition()
+  {
+    return slam_map->scenePos();
+  }
   
+  /**
+  @brief Returns the rotation (z-axis) of the object to the scene
+  @return qreal : The rotation to the scene
+  **/
+  qreal CMapLoader::getRotation()
+  {
+    return slam_map->rotation();
+  }
+  
+  /**
+  @brief Returns the scaling of the object
+  @return qreal : The scaling
+  **/
+  qreal CMapLoader::getScale()
+  {
+    return slam_map->scale();
+  }
+
+  /**
+  @brief Returns the item's scene transformation matrix
+  @return QTransform : The transformation matrix
+  **/
+  QTransform CMapLoader::getTransform()
+  {
+    return slam_map->sceneTransform();
+  }
+
+
+
   /**
   @brief Updates the zoom of the image
   @param p [QPoint] The point of the zoom event

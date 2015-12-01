@@ -76,11 +76,8 @@ namespace ogm_gui
       //!< ROS tf transform listener
       //tf::TransformListener listener_;
 
-      //!< The MapMsg 
-      nav_msgs::OccupancyGrid map_msg_;
-
-     //!< The MapMsg 
-      ogm_msgs::MapsMsg maps_msg_;
+     //!< The MapsMsg hold the two Maps
+     ogm_msgs::MapsMsg maps_;
 
       //!< Timer for the drawing event
       QTimer* timer_;

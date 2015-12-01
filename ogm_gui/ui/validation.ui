@@ -33,7 +33,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="validationTabWidget">
      <property name="whatsThis">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ddd&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
@@ -43,6 +43,37 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <widget class="QWidget" name="informationTab">
+      <attribute name="title">
+       <string>Maps Information</string>
+      </attribute>
+      <widget class="QWidget" name="gridLayoutWidget_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>321</width>
+         <height>391</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="informationGridLayout">
+        <item row="0" column="0">
+         <widget class="QTreeWidget" name="ogmInformationTree">
+          <column>
+           <property name="text">
+            <string>1</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>2</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
      <widget class="QWidget" name="alignmentTab">
       <property name="enabled">
        <bool>true</bool>
@@ -51,18 +82,51 @@
        <bool>false</bool>
       </property>
       <attribute name="title">
-       <string>Map Alignment</string>
+       <string>Maps Alignment</string>
       </attribute>
-     </widget>
-     <widget class="QWidget" name="pathTab">
-      <attribute name="title">
-       <string>Path Validation</string>
-      </attribute>
+      <widget class="QWidget" name="gridLayoutWidget_4">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>321</width>
+         <height>391</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="alignmentGridLayout"/>
+      </widget>
      </widget>
      <widget class="QWidget" name="metricsTab">
       <attribute name="title">
        <string>Validation Metrics</string>
       </attribute>
+      <widget class="QWidget" name="gridLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>321</width>
+         <height>391</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="metricsLayout"/>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="pathTab">
+      <attribute name="title">
+       <string>Path Validation</string>
+      </attribute>
+      <widget class="QWidget" name="gridLayoutWidget_3">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>321</width>
+         <height>391</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="pathGridLayout"/>
+      </widget>
      </widget>
     </widget>
    </item>

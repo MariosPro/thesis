@@ -22,6 +22,7 @@
 #define OGM_VALIDATION_CONNECTOR
 
 #include "ogm_gui/ogm_validation_loader.h"
+#include "ogm_msgs/MapsMsg.h"
 
 /**
 @namespace ogm_gui
@@ -59,6 +60,15 @@ namespace ogm_gui
       CValidationConnector(int argc, char **argv);
 
       /**
+      @brief Updates the information tree according to the specific map
+      @param width [float] The map width
+      @param height [float] The map height
+      @param ocgd [float] The map resolution (m/pixel)
+      @return void
+      **/
+      void updateMapInfo(const ogm_msgs::MapsMsg& msg);
+
+      /**
       @brief Returns the CValidationLoader object
       @return QWidget*
       **/
@@ -68,8 +78,44 @@ namespace ogm_gui
     //------------------------------------------------------------------------//
     public Q_SLOTS:
 
+      /**
+      @brief Called when a click occurs in the tree
+      @param item [QTreeWidgetItem*] Item clicked
+      @param column [int] Column clicked
+      @return void
+      **/
+      void treeItemClicked(QTreeWidgetItem * item, int column ); 
+
+      /**
+      @brief Adapts the columns width according to what is visible when an item is clicked
+      @param item [QTreeWidgetItem*] Item clicked
+      @param column [int] Column clicked
+      @return void
+      **/
+      void adaptColumns(QTreeWidgetItem *item, int column);
+
+      /**
+      @brief Adapts the columns width according to what is visible when an item expands or collapses
+      @param item [QTreeWidgetItem*] Item expanded / collapsed
+      @return void
+      **/
+      void adaptColumns(QTreeWidgetItem *item);
+
+      /**
+      @brief Adapts the columns width according to what is visible. Called when adaptSignal is emmited
+      @return void
+      **/
+      void adaptSlot(void);
+
     //------------------------------------------------------------------------//
     Q_SIGNALS:
+
+      /**
+      @brief Emmited when resize of columns according to whats visible is needed
+      @return void
+      **/
+      void adaptSignal(void);
+
   };
 }
 #endif

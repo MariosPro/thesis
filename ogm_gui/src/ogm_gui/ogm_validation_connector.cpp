@@ -34,6 +34,98 @@ namespace ogm_gui
     argc_(argc),
     argv_(argv)
   {
+    QObject::connect(
+      loader.ogmInformationTree,
+        SIGNAL(itemClicked(QTreeWidgetItem*, int)),
+      this,
+        SLOT(treeItemClicked(QTreeWidgetItem*, int)));
+        
+    QObject::connect(
+      this,
+        SIGNAL(adaptSignal()),
+      this,
+        SLOT(adaptSlot()));
+        
+    QObject::connect(
+      loader.ogmInformationTree, 
+        SIGNAL(itemCollapsed(QTreeWidgetItem *)),
+      this, 
+        SLOT(adaptColumns(QTreeWidgetItem *)));
+        
+    QObject::connect(
+      loader.ogmInformationTree, 
+        SIGNAL(itemExpanded(QTreeWidgetItem *)),
+      this, 
+        SLOT(adaptColumns(QTreeWidgetItem *)));
+
+  }
+
+  /**
+  @brief Adapts the columns width according to what is visible when an item is clicked
+  @param item [QTreeWidgetItem*] Item clicked
+  @param column [int] Column clicked
+  @return void
+  **/
+  void CValidationConnector::adaptColumns(QTreeWidgetItem *item, int column)
+  {
+    loader.ogmInformationTree->resizeColumnToContents(0);
+    loader.ogmInformationTree->resizeColumnToContents(1);
+    loader.ogmInformationTree->resizeColumnToContents(2);
+    loader.ogmInformationTree->resizeColumnToContents(3);
+  }
+  
+  /**
+  @brief Adapts the columns width according to what is visible when an item expands or collapses
+  @param item [QTreeWidgetItem*] Item expanded / collapsed
+  @return void
+  **/
+  void CValidationConnector::adaptColumns(QTreeWidgetItem *item)
+  {
+    loader.ogmInformationTree->resizeColumnToContents(0);
+    loader.ogmInformationTree->resizeColumnToContents(1);
+    loader.ogmInformationTree->resizeColumnToContents(2);
+    loader.ogmInformationTree->resizeColumnToContents(3);
+  }
+  
+  /**
+  @brief Adapts the columns width according to what is visible. Called when adaptSignal is emmited
+  @return void
+  **/
+  void CValidationConnector::adaptSlot(void)
+  {
+    loader.ogmInformationTree->resizeColumnToContents(0);
+    loader.ogmInformationTree->resizeColumnToContents(1);
+    loader.ogmInformationTree->resizeColumnToContents(2);
+    loader.ogmInformationTree->resizeColumnToContents(3);
+  }
+
+  /**
+  @brief Updates the information tree according to the specific map
+  @param width [float] The map width
+  @param height [float] The map height
+  @param ocgd [float] The map resolution (m/pixel)
+  @return void
+  **/
+  void CValidationConnector::updateMapInfo(const ogm_msgs::MapsMsg& msg)
+  {
+    loader.deleteTree();
+    loader.updateMapInfo(msg.groundTruthMap.info.width * msg.groundTruthMap.info.resolution,
+                         msg.groundTruthMap.info.height * msg.groundTruthMap.info.resolution,
+                         msg.groundTruthMap.info.resolution, true);
+    loader.updateMapInfo(msg.slamMap.info.width * msg.slamMap.info.resolution,
+                         msg.slamMap.info.height * msg.slamMap.info.resolution,
+                         msg.slamMap.info.resolution, false);
+    Q_EMIT adaptSignal();
+  }
+
+  /**
+  @brief Called when a click occurs in the tree
+  @param item [QTreeWidgetItem*] Item clicked
+  @param column [int] Column clicked
+  @return void
+  **/
+  void CValidationConnector::treeItemClicked(QTreeWidgetItem * item, int column)
+  {
 
   }
 

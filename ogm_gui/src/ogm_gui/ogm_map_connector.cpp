@@ -77,6 +77,42 @@ namespace ogm_gui{
   }
 
   /**
+  @brief Returns the pos of the object to the scene
+  @return QPointF : The pos to the scene
+  **/
+  QPointF CMapConnector::getPosition()
+  {
+    return loader_.getPosition();
+  }
+  /**
+  @brief Returns the rotation (z-axis) of the object to the scene
+  @return qreal : The rotation to the scene
+  **/
+  qreal CMapConnector::getRotation()
+  {
+    return loader_.getRotation();
+  }
+
+  /**
+  @brief Returns the scaling of the object
+  @return qreal : The scaling
+  **/
+  qreal CMapConnector::getScale()
+  {
+    return loader_.getScale();
+  }
+
+  /**
+  @brief Returns the item's scene transformation matrix
+  @return QTransform : The transformation matrix
+  **/
+  QTransform CMapConnector::getTransform()
+  {
+    return loader_.getTransform();
+  }
+
+
+  /**
   @brief Updates the map zoom. Wrapper for a loader function
   @param p [QPoint] The point of the zoom event
   @param z [bool] True if zoom in, false if zoom out
