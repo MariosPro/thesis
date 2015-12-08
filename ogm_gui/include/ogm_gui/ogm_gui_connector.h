@@ -141,7 +141,7 @@ namespace ogm_gui
       @brief Unchecks the zoom in & out buttons when right click in map is pushed
       @return void
       **/
-      void uncheckZoomButtons(void);
+      //void uncheckZoomButtons(void);
 
     //------------------------------------------------------------------------//
     public Q_SLOTS:
@@ -176,25 +176,6 @@ namespace ogm_gui
       **/
       void actionLoadMapsFromServerTriggered(void);
 
-
-      /**
-      @brief Qt slot that is called when the zoom in tool button is pressed
-      @return void
-      **/
-      void actionZoomInTriggered(void);
-
-      /**
-      @brief Qt slot that is called when the zoom out tool button is pressed
-      @return void
-      **/
-      void actionZoomOutTriggered(void);
-
-      /**
-      @brief Qt slot that is called when the adjusted map visualization tool button is pressed
-      @return void
-      **/
-      void actionAdjustedTriggered(void);
-
       /**
       @brief Qt slot that is called when the grid status has changed
       @return void
@@ -211,27 +192,6 @@ namespace ogm_gui
       @return void
       **/
       void requestMap (QString mapFile, bool groundTruth);
-
-      /**
-      @brief Qt signal that is emmited in GuiConnector::actionZoomInTriggered and connects to MapLoader::setCursorZoomIn
-      @param state [bool] Toggle flag
-      @return void
-      **/
-      void setZoomInCursor(bool state);
-
-      /**
-      @brief Qt signal that is emmited in GuiConnector::actionZoomOutTriggered and connects to MapLoader::setCursorZoomOut
-      @param state [bool] Toggle flag
-      @return void
-      **/
-      void setZoomOutCursor(bool state);
-
-      /**
-      @brief Qt signal that is emmited when the Adjust map button is pressed
-      @param state [bool] Toggle flag
-      @return void
-      **/
-      void setAdjustedCursor(bool state);
 
       /**
       @brief Emmited in GuiConnector::actionLoadMapsfromServerTriggered and connects to GuiController::receiveMapsFromServer

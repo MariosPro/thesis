@@ -77,7 +77,7 @@ namespace ogm_gui
       @param p [QPoint] Point of an event in the adjusted map
       @return QPoint : The same point in the original map
       **/
-      QPoint pointUnscaled(QPoint p);
+      //QPoint pointUnscaled(QPoint p);
       
       /**
       @brief Return the dimensions according to the container size
@@ -137,34 +137,34 @@ namespace ogm_gui
       @param zoomIn [bool] True if zoom in, false if zoom out
       @return void
       **/
-      void updateZoom(QPoint p,bool zoomIn);
+      //void updateZoom(QPoint p,bool zoomIn);
       
       /**
       @brief Updates the image center
       @param p [QPoint] The new center
       @return void
       **/
-      void updateCenter(QPoint p);
+      //void updateCenter(QPoint p);
       
       /**
       @brief Updates the image center by moving directionally
       @param key [int] The key pressed
       @return void
       **/
-      void moveDirectionally(int key);
+      //void moveDirectionally(int key);
       
       /**
       @brief Resets the zoom of the image
       @return void
       **/
-      void resetZoom(void);
+      //void resetZoom(void);
       
       /**
       @brief Calculates the "real" point in the image
       @param p [QPoint] The point to be translated
       @return QPoint : The new point
       **/
-      QPoint getGlobalPoint(QPoint p);
+      //QPoint getGlobalPoint(QPoint p);
 
       /**
       @brief Returns the pos of the object to the scene
@@ -197,9 +197,7 @@ namespace ogm_gui
       @return void
       **/
       void makeTransparent(QPixmap *img, double opacity);
-
-
-  };  
+  };
 }
 
 #endif

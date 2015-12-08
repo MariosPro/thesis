@@ -144,7 +144,7 @@ namespace ogm_gui
       @param msg [const ogm_msgs::MapMsg&] The OGM message
       @return void
       **/
-      void receiveMaps(const ogm_msgs::MapsMsg& msg);
+      //void receiveMaps(const ogm_msgs::MapsMsg& msg);
 
       /**
       @brief Initializes the ROS spin and Qt threads
@@ -152,29 +152,30 @@ namespace ogm_gui
       **/
       bool init();
 
+      /**
+      @brief Converts nav_msgs/OccupancyGrid to QImage
+      @param running_map [QImage] The QImage to be drawn the map
+      @param map_msg [nav_msgs::OccupancyGrid] the OccupancyGrid
+      @return QImage
+      **/
       Q_INVOKABLE QImage convertOccupancyGridToQImage(QImage running_map, nav_msgs::OccupancyGrid map_msg);
-  
 
     //------------------------------------------------------------------------//
     public Q_SLOTS:
-      
+
+      /**
+      @brief Receives the occupancy grid map from ogm_server.
+      @param file_name [QString] The name of the mapFile to be loaded
+      @param groundTruth [bool] var that shows if the map is groundTruth
+      @return void
+      **/
       void receiveMapfromService(QString file_name, bool groundTruth);
 
+      /**
+      @brief Receives the defaut maps as loaded from ogm_server.
+      @return void
+      **/
       void receiveMapsFromServer();
-
-      /**
-      @brief Performs zoom in when the button is pressed. Connects to the CMapConnector::zoomInPressed signal
-      @param p [QPoint] The event point in the OGM
-      @return void
-      **/
-      void zoomInPressed(QPoint p);
-
-      /**
-      @brief Performs zoom out when the button is pressed. Connects to the CMapConnector::zoomOutPressed signal
-      @param p [QPoint] The event point in the OGM
-      @return void
-      **/
-      void zoomOutPressed(QPoint p);
 
       /**
       @brief Updates the map to be shown in GUI. Connects to the timeout signal of timer_
@@ -182,100 +183,8 @@ namespace ogm_gui
       **/
       void updateMapInternal(void);
 
-      /**
-      @brief Informs CGuiController that click has performed in the map. Connects to the CMapConnector::itemClicked signal
-      @param p [QPoint] The event point in map
-      @param b [Qt::MouseButton] The mouse button used to trigger the event
-      @return void
-      **/
-      void itemClicked(QPoint p,Qt::MouseButton b);
-
-     /**
-     @brief Qt slot that is called when the moveUpMapPressed signal is received
-     @return void
-     **/
-     //void moveUpMap();
-
-     /**
-     @brief Qt slot that is called when the moveDownMapPressed signal is received
-     @return void
-     **/
-     //void moveDownMap();
-
-     /**
-     @brief Qt slot that is called when the moveLeftMapPressed signal is received
-     @return void
-     **/
-     //void moveLeftMap();
-
-     /**
-     @brief Qt slot that is called when the moveRightMapPressed signal is received
-     @return void
-     **/
-     //void moveRightMap();
-
-     /**
-     @brief Qt slot that is called when the rotateLeftMapPressed signal is received
-     @return void
-     **/
-     //void rotateLeftMap();
-
-     /**
-     @brief Qt slot that is called when the rotateRightMapPressed signal is received
-     @return void
-     **/
-     //void rotateRightMap();
-
-     /**
-     @brief Qt slot that is called when the scaleMapPressed signal is received
-     @return void
-     **/
-     //void scaleMap();
-
       //------------------------------------------------------------------------//
     Q_SIGNALS:
-
-     /**
-     @brief Is emmited when the map is going to be moveUp. Connects to the CMapConnector::moveUp slot
-     @return void
-     **/
-     void moveUpMap(void);
-
-     /**
-     @brief Is emmited when the map is going to be moveDown. Connects to the CMapConnector::moveDown slot
-     @return void
-     **/
-     void moveDownMap(void);
-
-     /**
-     @brief Is emmited when the map is going to be moveLeft. Connects to the CMapConnector::moveLeft slot
-     @return void
-     **/
-     void moveLeftMap(void);
-
-     /**
-     @brief Is emmited when the map is going to be moveRight. Connects to the CMapConnector::moveRight slot
-     @return void
-     **/
-     void moveRightMap(void);
-
-     /**
-     @brief Is emmited when the map is going to be rotateLeft. Connects to the CMapConnector::rotateLeft slot
-     @return void
-     **/
-     void rotateLeftMap(void);
-
-     /**
-     @brief Is emmited when the map is going to be rotateRight. Connects to the CMapConnector::rotateRight slot
-     @return void
-     **/
-     void rotateRightMap(void);
-
-     /**
-     @brief Is emmited when the map is going to be scaled. Connects to the CMapConnector::scale slot
-     @return void
-     **/
-     void scaleMap(void);
 
   };
 }

@@ -69,38 +69,14 @@ namespace ogm_gui
   {
 
     QObject::connect(
-      &gui_connector_,SIGNAL(setZoomInCursor(bool)),
-      &map_connector_, SLOT(setCursorZoomIn(bool)));
-
-    QObject::connect(
-      &gui_connector_,SIGNAL(setZoomOutCursor(bool)),
-      &map_connector_, SLOT(setCursorZoomOut(bool)));
-
-    QObject::connect(
-      &gui_connector_,SIGNAL(setAdjustedCursor(bool)),
-      &map_connector_, SLOT(setCursorAdjusted(bool)));
-
-    QObject::connect(
-      &gui_connector_,SIGNAL(requestMap(QString, bool)),
+      &gui_connector_, SIGNAL(requestMap(QString, bool)),
       this, SLOT(receiveMapfromService(QString, bool)));
 
     QObject::connect(
       &gui_connector_,SIGNAL(loadDefaultMaps()),
       this, SLOT(receiveMapsFromServer()));
 
- /*   QObject::connect(*/
-      //&map_connector_,SIGNAL(zoomInPressed(QPoint)),
-      //this, SLOT(zoomInPressed(QPoint)));
-
-    //QObject::connect(
-      //&map_connector_,SIGNAL(zoomOutPressed(QPoint)),
-      //this, SLOT(zoomOutPressed(QPoint)));
-
-    //QObject::connect(
-     //&map_connector_,SIGNAL(itemClicked(QPoint,Qt::MouseButton)),
-      /*this, SLOT(itemClicked(QPoint,Qt::MouseButton)));*/
-
-       timer_ = new QTimer(this);
+   timer_ = new QTimer(this);
     connect(
       timer_, SIGNAL(timeout()),
       this, SLOT(updateMapInternal()));
@@ -108,8 +84,8 @@ namespace ogm_gui
     elapsed_time_.start();
 
     map_initialized_ = true;
-    map_connector_.setInitialImageSize(
-      QSize(initial_map_.width(),initial_map_.height()));
+/*    map_connector_.setInitialImageSize(*/
+      /*QSize(initial_map_.width(),initial_map_.height()));*/
     map_connector_.setMapInitialized(true);
     gui_connector_.setMapInitialized(true);
 
@@ -175,9 +151,8 @@ namespace ogm_gui
     return true;
   }
 
-
   /**
-  @brief Receives the defauts map as loaded from ogm_server.
+  @brief Receives the defaut maps as loaded from ogm_server.
   @return void
   **/
   void CGuiController::receiveMapsFromServer()
@@ -227,8 +202,8 @@ namespace ogm_gui
 
     validation_connector_.updateMapInfo(maps_);
 
-    map_connector_.setInitialImageSize(
-      QSize(running_map_.width(),running_map_.height()));
+  /*  map_connector_.setInitialImageSize(*/
+      /*QSize(running_map_.width(),running_map_.height()));*/
 
     elapsed_time_.start();
 
@@ -257,7 +232,6 @@ namespace ogm_gui
 
     ros::ServiceClient client;
     ogm_msgs::LoadExternalMap srv;
-    //maps_.clear();
 
     while (!ros::service::waitForService
        ("/ogm_server/load_static_map_external", ros::Duration(.1)) &&
@@ -307,8 +281,8 @@ namespace ogm_gui
 
     validation_connector_.updateMapInfo(maps_);
 
-    map_connector_.setInitialImageSize(
-      QSize(running_map_.width(),running_map_.height()));
+ /*   map_connector_.setInitialImageSize(*/
+      //QSize(running_map_.width(),running_map_.height()));
 
     elapsed_time_.start();
 
@@ -321,6 +295,12 @@ namespace ogm_gui
     map_lock_=false;
   }
 
+  /**
+  @brief Converts nav_msgs/OccupancyGrid to QImage
+  @param running_map [QImage] The QImage to be drawn the map
+  @param map_msg [nav_msgs::OccupancyGrid] the OccupancyGrid
+  @return QImage
+  **/
   QImage CGuiController::convertOccupancyGridToQImage(QImage running_map, nav_msgs::OccupancyGrid map_msg)
   {
     QPainter painter(&running_map);
@@ -337,7 +317,7 @@ namespace ogm_gui
         else
         {
           d = (100.0 - map_msg.data[j * map_msg.info.width + i]) / 100.0 * 255.0;
-          c = QColor(d,d,d);
+          c = QColor(d, d, d);
         }
         painter.setPen(c);
         painter.drawPoint(i, j);
@@ -352,35 +332,6 @@ namespace ogm_gui
     return running_map;
   }
 
-
-
-  /**
-  @brief Performs zoom in when the button is pressed. Connects to the CMapConnector::zoomInPressed signal
-  @param p [QPoint] The event point in the OGM
-  @return void
-  **/
-  void CGuiController::zoomInPressed(QPoint p)
-  {
-    if ( ! map_initialized_ )
-    {
-      return;
-    }
-    map_connector_.updateZoom(p, true);
-  }
-
-  /**
-  @brief Performs zoom out when the button is pressed. Connects to the CMapConnector::zoomOutPressed signal
-  @param p [QPoint] The event point in the OGM
-  @return void
-  **/
-  void CGuiController::zoomOutPressed(QPoint p)
-  {
-    if ( ! map_initialized_ )
-    {
-      return;
-    }
-    map_connector_.updateZoom(p, false);
-  }
 
   /**
   @brief Updates the map to be shown in GUI. Connects to the timeout signal of timer_
@@ -417,81 +368,6 @@ namespace ogm_gui
       gui_connector_.shutdown();
     }
   }
-
-  /**
-  @brief Informs CGuiController that click has performed in the map. Connects to the CMapConnector::itemClicked signal
-  @param p [QPoint] The event point in map
-  @param b [Qt::MouseButton] The mouse button used to trigger the event
-  @return void
-  **/
-  void CGuiController::itemClicked(QPoint p,Qt::MouseButton b)
-  {
-    gui_connector_.uncheckZoomButtons();
-    QPoint pointClicked = map_connector_.getGlobalPoint(p);
-  }
-
-  /**
-  @brief Qt slot that is called when the moveUpMapPressed signal is received
-  @return void
-  **/
- /* void CGuiController::moveUpMap()*/
-  //{
-   //Q_EMIT moveUpMap();
-  /*}*/
-
- /* [>**/
-  //@brief Qt slot that is called when the moveDownMapPressed signal is received
-  //@return void
-  //**/
-  //void CGuiController::moveDownMap()
-  //{
-   //Q_EMIT moveDownMap();
-  //}
-
-  //[>*
-  //@brief Qt slot that is called when the moveLeftMapPressed signal is received
-  //@return void
-  //**/
-  //void CGuiController::moveLeftMap()
-  //{
-   //Q_EMIT moveLeftMap();
-
-  //[>*
-  //@brief Qt slot that is called when the moveRightMapPressed signal is received
-  //@return void
-  //**/
-  //void CGuiController::moveRightMap()
-  //{
-   //Q_EMIT moveRightMap();
-  //}
-
-  //[>*
-  //@brief Qt slot that is called when the rotateLeftMapPressed signal is received
-  //@return void
-  //**/
-  //void CGuiController::rotateLeftMap()
-  //{
-   //Q_EMIT rotateLeftMap();
-  //}
-
-  //[>*
-  //@brief Qt slot that is called when the rotateRightMapPressed signal is received
-  //@return void
-  //**/
-  //void CGuiController::rotateRightMap()
-  //{
-   //Q_EMIT rotateRightMap();
-  //}
-
-  //[>*
-  //@brief Qt slot that is called when the scaleMapPressed signal is received
-  //@return void
-  //**/
-  //void CGuiController::scaleMap()
-  //{
-   //Q_EMIT scaleMap();
-  /*}*/
-
 }
 
 
