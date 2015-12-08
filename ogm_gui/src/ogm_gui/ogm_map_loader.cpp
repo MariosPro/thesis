@@ -40,6 +40,7 @@ namespace ogm_gui
     scene->addItem(slam_map);
     slam_map->setFlag(QGraphicsItem::ItemIsMovable);
     slam_map->setFlag(QGraphicsItem::ItemIsFocusable);
+    slam_map->setFlag(QGraphicsItem::ItemSendsGeometryChanges);
     slam_map->setFocus();
     mapGraphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     mapGraphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

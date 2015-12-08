@@ -117,6 +117,13 @@ namespace ogm_gui
       
       void transparencyChanged(double t);
 
+      void setMapPosition(qreal x, qreal y);
+
+      void setMapRotation(qreal r);
+
+      void setMapScale(qreal s);
+
+      void setMapTransparency(double t);
     //------------------------------------------------------------------------//
     Q_SIGNALS:
 

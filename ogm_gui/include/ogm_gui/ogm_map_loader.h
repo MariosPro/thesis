@@ -50,12 +50,6 @@ namespace ogm_gui
       //!< The scene that is used to add the maps
       QGraphicsScene* scene;
 
-      //!< the pixmap that is used to display the ground thuth map
-      CMapItem* ground_truth_map;
-
-      //!< the pixmap that is used to display the slam-produced map
-      CMapItem* slam_map;
-      
       //!< Internal image used before a map is loaded
       QImage*  internal_img_;
 
@@ -76,6 +70,12 @@ namespace ogm_gui
     //------------------------------------------------------------------------//  
     public:
       
+      //!< the pixmap that is used to display the ground thuth map
+      CMapItem* ground_truth_map;
+
+      //!< the pixmap that is used to display the slam-produced map
+      CMapItem* slam_map;
+
       /**
       @brief Default contructor
       @param argc [int] Number of input arguments
@@ -146,7 +146,7 @@ namespace ogm_gui
       @return void
       **/
       void makeTransparent(QPixmap *img, double opacity);
-  };
+   };
 }
 
 #endif

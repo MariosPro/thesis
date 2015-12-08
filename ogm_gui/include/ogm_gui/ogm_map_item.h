@@ -22,6 +22,7 @@
 #define OGM_MAP_ITEM
 
 #include <QtGui/QKeyEvent>
+#include <QtCore/QObject>
 #include <QtWidgets/QGraphicsPixmapItem>
 #include "ogm_gui/ogm_tools.h"
 
@@ -36,8 +37,9 @@ namespace ogm_gui
   @class CMapItem
   @brief Implements the QGraphicsPixmapItem for map display.
   **/ 
-  class CMapItem : public QGraphicsPixmapItem 
+  class CMapItem : public QObject, public QGraphicsPixmapItem 
   {
+    Q_OBJECT 
     //------------------------------------------------------------------------//
     private:
            qreal factor;
@@ -57,6 +59,16 @@ namespace ogm_gui
       @return void
       **/
       void keyPressEvent(QKeyEvent *event);
+
+    public Q_SLOTS:
+
+    Q_SIGNALS:
+
+    void posChanged(qreal x, qreal y);
+
+    void rotationChanged(qreal r);
+
+    void scaleChanged(qreal s);
   };
 }
 

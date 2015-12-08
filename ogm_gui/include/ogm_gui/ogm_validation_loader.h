@@ -100,7 +100,14 @@ namespace ogm_gui
       @return void
       **/
       void autoResizeColumns(void);
+ 
+      void setMapPosition(qreal x, qreal y);
 
+      void setMapRotation(qreal r);
+
+      void setMapScale(qreal s);
+
+      void setMapTransparency(double t);
   };
 }
 

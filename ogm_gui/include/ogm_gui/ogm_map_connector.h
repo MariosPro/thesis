@@ -158,9 +158,17 @@ namespace ogm_gui
 
     //------------------------------------------------------------------------//
     public Q_SLOTS:
-
-    //------------------------------------------------------------------------//
+    
+      //------------------------------------------------------------------------//
     Q_SIGNALS:
+      void mapPosChanged(qreal x, qreal y);
+
+      void mapRotationChanged(qreal r);
+
+      void mapScaleChanged(qreal s);
+
+      void mapTransparencyChanged(qreal t);
+
   };
 }
 

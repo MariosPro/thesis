@@ -38,6 +38,19 @@ namespace ogm_gui{
 
     //loader_.mapGraphicsView->setScaledContents(true);
 
+    QObject::connect(
+      loader_.slam_map, SIGNAL(posChanged(qreal, qreal)),
+      this, SIGNAL(mapPosChanged(qreal, qreal)));
+ 
+    QObject::connect(
+      loader_.slam_map, SIGNAL(rotationChanged(qreal)),
+      this, SIGNAL(mapRotationChanged(qreal)));
+ 
+    QObject::connect(
+      loader_.slam_map, SIGNAL(scaleChanged(qreal)),
+      this, SIGNAL(mapScaleChanged(qreal)));
+
+
     QPixmap p((
       ogm_gui_tools::getRosPackagePath("ogm_gui") +
       std::string("/resources/images/zoom_in.png")).c_str());
@@ -92,6 +105,7 @@ namespace ogm_gui{
   void CMapConnector::setMapTransparency(double t)
   {
     loader_.setMapTransparency(t);
+    Q_EMIT mapTransparencyChanged(t);
   }
 
   /**

@@ -96,6 +96,22 @@ namespace ogm_gui
         &validation_connector_, SIGNAL(changeTransparency(double)),
         this, SLOT(changeMapTransparency(double)));
 
+    QObject::connect(
+        &map_connector_, SIGNAL(mapPosChanged(qreal, qreal)),
+        &validation_connector_, SLOT(setMapPosition(qreal, qreal)));
+
+    QObject::connect(
+        &map_connector_, SIGNAL(mapRotationChanged(qreal)),
+        &validation_connector_, SLOT(setMapRotation(qreal)));
+
+    QObject::connect(
+        &map_connector_, SIGNAL(mapScaleChanged(qreal)),
+        &validation_connector_, SLOT(setMapScale(qreal)));
+
+  QObject::connect(
+        &map_connector_, SIGNAL(mapTransparencyChanged(double)),
+        &validation_connector_, SLOT(setMapTransparency(double)));
+
    timer_ = new QTimer(this);
     connect(
       timer_, SIGNAL(timeout()),

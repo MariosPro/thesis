@@ -44,38 +44,47 @@ namespace ogm_gui
     if (event->key() == Qt::Key_Left)
     {
       setPos(x() - 1, y());
+      Q_EMIT posChanged(x(), y());
     }
     else if (event->key() == Qt::Key_Right)
     {
       setPos(x() + 1, y());
+      Q_EMIT posChanged(x(), y());
     }
     else if (event->key() == Qt::Key_Up)
     {
       setPos(x(), y() - 1);
+      Q_EMIT posChanged(x(), y());
     }
     else if (event->key() == Qt::Key_Down)
     {
       setPos(x(), y() + 1);
+      Q_EMIT posChanged(x(), y());
     }
     else if (event->key() == Qt::Key_E)
     {
       setTransformOriginPoint(QPointF(this->boundingRect().center()));
       setRotation(rotation() - 1);
+      Q_EMIT rotationChanged(rotation());
+
     }
     else if (event->key() == Qt::Key_R)
     {
       setTransformOriginPoint(QPointF(this->boundingRect().center()));
       setRotation(rotation() + 1);
+      Q_EMIT rotationChanged(rotation());
     }
     else if (event->key() == Qt::Key_Plus)
     {
       setTransformOriginPoint(QPointF(this->boundingRect().center()));
       setScale(scale() * factor);
+      Q_EMIT scaleChanged(scale());
     }
     else if (event->key() == Qt::Key_Minus)
     {
       setTransformOriginPoint(QPointF(this->boundingRect().center()));
       setScale(scale() / factor);
+      Q_EMIT scaleChanged(scale());
     }
   }
  }

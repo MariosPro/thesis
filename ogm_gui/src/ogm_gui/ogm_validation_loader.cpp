@@ -67,7 +67,7 @@ namespace ogm_gui
     pathEvaluation.setExpanded(true);
 
   
-    rotationSpinBox->setRange(-360, 360);
+    //rotationSpinBox->setRange(-360, 360);
     transSpinBox->setRange(0.00, 1.00);
     transSpinBox->setSingleStep(0.1);
 
@@ -146,5 +146,28 @@ namespace ogm_gui
       mnode->addChild(mapOcgd);
       mapInfo.addChild(mnode);
   }
+
+  void CValidationLoader::setMapPosition(qreal x, qreal y)
+  {
+    posxSpinBox->setValue(x);
+    posySpinBox->setValue(y);
+  }
+ 
+  void CValidationLoader::setMapRotation(qreal r)
+  {
+    rotationSpinBox->setValue(r);
+  }
+
+  void CValidationLoader::setMapScale(qreal s)
+  {
+    scaleSpinBox->setValue(s);
+  }
+
+  void CValidationLoader::setMapTransparency(double t)
+  {
+    transSpinBox->setValue(t);
+  }
+
+
 }
 

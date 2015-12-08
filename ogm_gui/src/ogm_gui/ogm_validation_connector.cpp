@@ -175,6 +175,25 @@ namespace ogm_gui
     Q_EMIT changeTransparency(t);
   }
 
+  void CValidationConnector::setMapPosition(qreal x, qreal y)
+  {
+    loader.setMapPosition(x, y);
+  }
+
+  void CValidationConnector::setMapRotation(qreal r)
+  {
+    loader.setMapRotation(r);
+  }
+
+  void CValidationConnector::setMapScale(qreal s)
+  {
+    loader.setMapScale(s);
+  }
+
+  void CValidationConnector::setMapTransparency(double t)
+  {
+    loader.setMapTransparency(t);
+  }
 
 
   /**
