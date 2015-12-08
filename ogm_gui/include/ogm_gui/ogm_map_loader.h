@@ -58,6 +58,8 @@ namespace ogm_gui
       
       //!< Internal image used before a map is loaded
       QImage*  internal_img_;
+
+      double transparency;
       
       /**
       @brief Return the dimensions according to the container size
@@ -103,6 +105,16 @@ namespace ogm_gui
       **/
       void drawGrid(QImage *img,float resolution);
       
+      void setMapXposition(int x);
+
+      void setMapYposition(int y);
+
+      void setMapRotation(int r);
+
+      void setMapScale(double s);
+
+      void setMapTransparency(double t);
+
       /**
       @brief Returns the pos of the object to the scene
       @return QPointF : The pos to the scene

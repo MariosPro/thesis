@@ -76,6 +76,26 @@ namespace ogm_gui
       &gui_connector_,SIGNAL(loadDefaultMaps()),
       this, SLOT(receiveMapsFromServer()));
 
+    QObject::connect(
+        &validation_connector_, SIGNAL(changeXPos(int)),
+        this, SLOT(moveMapHorizontally(int)));
+
+    QObject::connect(
+        &validation_connector_, SIGNAL(changeYPos(int)),
+        this, SLOT(moveMapVertically(int)));
+ 
+    QObject::connect(
+        &validation_connector_, SIGNAL(changeRotation(int)),
+        this, SLOT(rotateMap(int)));
+
+    QObject::connect(
+        &validation_connector_, SIGNAL(changeScale(double)),
+        this, SLOT(scaleMap(double)));
+
+    QObject::connect(
+        &validation_connector_, SIGNAL(changeTransparency(double)),
+        this, SLOT(changeMapTransparency(double)));
+
    timer_ = new QTimer(this);
     connect(
       timer_, SIGNAL(timeout()),
@@ -364,6 +384,32 @@ namespace ogm_gui
       gui_connector_.shutdown();
     }
   }
+
+  void CGuiController::moveMapHorizontally(int x)
+  {
+    map_connector_.setMapXposition(x);
+  }
+
+  void CGuiController::moveMapVertically(int y)
+  {
+    map_connector_.setMapYposition(y);
+  }
+
+  void CGuiController::rotateMap(int r)
+  {
+    map_connector_.setMapRotation(r);
+  }
+
+  void CGuiController::scaleMap(double s)
+  {
+    map_connector_.setMapScale(s);
+  }
+
+  void CGuiController::changeMapTransparency(double t)
+  {
+    map_connector_.setMapTransparency(t);
+  }
+
 }
 
 

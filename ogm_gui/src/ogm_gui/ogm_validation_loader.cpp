@@ -66,12 +66,17 @@ namespace ogm_gui
     mapEvaluation.setExpanded(true);
     pathEvaluation.setExpanded(true);
 
+  
+    rotationSpinBox->setRange(-360, 360);
+    transSpinBox->setRange(0.00, 1.00);
+    transSpinBox->setSingleStep(0.1);
+
   }
 
   /**
   @brief Default destructor
   @return void
-  **/
+  +**/
   CValidationLoader::~CValidationLoader(void)
   {
 
@@ -85,7 +90,7 @@ namespace ogm_gui
   void CValidationLoader::deleteTreeNode(QTreeWidgetItem *item)
   {
     int count = item->childCount();
-    ROS_INFO_STREAM("CHILDS=" << count);
+
     for(int i = count - 1 ; i >= 0 ; i--)
     {
       deleteTreeNode(item->child(i));

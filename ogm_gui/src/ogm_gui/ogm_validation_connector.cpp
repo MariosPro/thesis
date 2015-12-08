@@ -58,6 +58,27 @@ namespace ogm_gui
       this, 
         SLOT(adaptColumns(QTreeWidgetItem *)));
 
+    QObject::connect(
+      loader.posxSpinBox, SIGNAL(valueChanged(int)),
+      this,SLOT(posxChanged(int)));
+
+    QObject::connect(
+      loader.posySpinBox, SIGNAL(valueChanged(int)),
+      this,SLOT(posyChanged(int)));
+
+    QObject::connect(
+      loader.rotationSpinBox, SIGNAL(valueChanged(int)),
+      this,SLOT(rotationChanged(int)));
+
+   QObject::connect(
+      loader.scaleSpinBox, SIGNAL(valueChanged(double)),
+      this,SLOT(scaleChanged(double)));
+ 
+   QObject::connect(
+      loader.transSpinBox, SIGNAL(valueChanged(double)),
+      this,SLOT(transparencyChanged(double)));
+
+
   }
 
   /**
@@ -128,6 +149,33 @@ namespace ogm_gui
   {
 
   }
+
+  void CValidationConnector::posxChanged(int x)
+  {
+    Q_EMIT changeXPos(x);
+  }
+
+  void CValidationConnector::posyChanged(int y)
+  {
+    Q_EMIT changeYPos(y);
+  }
+
+  void CValidationConnector::rotationChanged(int r)
+  {
+    Q_EMIT changeRotation(r);
+  }
+
+  void CValidationConnector::scaleChanged(double s)
+  {
+    Q_EMIT changeScale(s);
+  }
+
+  void CValidationConnector::transparencyChanged(double t)
+  {
+    Q_EMIT changeTransparency(t);
+  }
+
+
 
   /**
   @brief Returns the CValidationLoader object

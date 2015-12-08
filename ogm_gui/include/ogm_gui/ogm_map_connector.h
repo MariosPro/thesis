@@ -86,7 +86,18 @@ namespace ogm_gui
       @brief Default destructor
       @return void
       **/
-          ~CMapConnector(void);
+      ~CMapConnector(void);
+ 
+      void setMapXposition(int x);
+
+      void setMapYposition(int y);
+
+      void setMapRotation(int r);
+
+      void setMapScale(double s);
+
+      void setMapTransparency(double t);
+
       /**
       @brief Returns the pos of the object to the scene
       @return QPointF : The pos to the scene

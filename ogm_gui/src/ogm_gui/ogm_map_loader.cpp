@@ -45,6 +45,7 @@ namespace ogm_gui
     mapGraphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     mapGraphicsView->setScene(scene);
     mapGraphicsView->setInteractive(true);
+    transparency = 0.5;
     //mapGraphicsView->show();
   }
 
@@ -60,6 +61,36 @@ namespace ogm_gui
       slam_map->setScale(1.0);
   }
 
+  void CMapLoader::setMapXposition(int x)
+  {
+    slam_map->setPos(x, slam_map->y());
+  }
+
+  void CMapLoader::setMapYposition(int y)
+  {
+    slam_map->setPos(slam_map->x(), y);
+  }
+
+  void CMapLoader::setMapRotation(int r)
+  {
+    slam_map->setTransformOriginPoint(QPointF(slam_map->boundingRect().center()));
+    slam_map->setRotation(r);
+  }
+ 
+  void CMapLoader::setMapScale(double s)
+  {
+    slam_map->setTransformOriginPoint(QPointF(slam_map->boundingRect().center()));
+    slam_map->setScale(s);
+  }
+
+  void CMapLoader::setMapTransparency(double t)
+  {
+    transparency = t;
+    /*QPixmap p = slam_map->pixmap();*/
+    //makeTransparent(&p, t);
+    //slam_map->setPixmap(p);
+
+  }
   /**
   @brief Return the dimensions according to the container size
   @param w [int] Image width
@@ -116,7 +147,7 @@ namespace ogm_gui
               (*img).scaled(newDims.first, newDims.second,
                   Qt::IgnoreAspectRatio,
                   Qt::SmoothTransformation));
-        makeTransparent(&pixmap, 0.5);
+        makeTransparent(&pixmap, transparency);
         slam_map->setPixmap(pixmap);
 
       /*mapGraphicsView->resize(newDims.first, newDims.second);*/

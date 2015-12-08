@@ -69,6 +69,31 @@ namespace ogm_gui{
     loader_.resetMap();
   }
 
+  void CMapConnector::setMapXposition(int x)
+  {
+    loader_.setMapXposition(x);
+  }
+
+  void CMapConnector::setMapYposition(int y)
+  {
+    loader_.setMapYposition(y);
+  }
+
+  void CMapConnector::setMapRotation(int r)
+  {
+    loader_.setMapRotation(r);
+  }
+
+  void CMapConnector::setMapScale(double s)
+  {
+    loader_.setMapScale(s);
+  }
+
+  void CMapConnector::setMapTransparency(double t)
+  {
+    loader_.setMapTransparency(t);
+  }
+
   /**
   @brief Returns the pos of the object to the scene
   @return QPointF : The pos to the scene

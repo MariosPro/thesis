@@ -32,7 +32,7 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
+   <item row="0" column="1">
     <widget class="QTabWidget" name="validationTabWidget">
      <property name="whatsThis">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ddd&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -47,16 +47,16 @@
       <attribute name="title">
        <string>Maps Information</string>
       </attribute>
-      <widget class="QWidget" name="gridLayoutWidget_2">
+      <widget class="QWidget" name="">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>321</width>
-         <height>391</height>
+         <x>9</x>
+         <y>9</y>
+         <width>258</width>
+         <height>361</height>
         </rect>
        </property>
-       <layout class="QGridLayout" name="informationGridLayout">
+       <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
          <widget class="QTreeWidget" name="ogmInformationTree">
           <column>
@@ -71,8 +71,69 @@
           </column>
          </widget>
         </item>
+        <item row="1" column="0">
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="posxLabel">
+            <property name="text">
+             <string>Translation  - x</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="posxSpinBox"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="posyLabel">
+            <property name="text">
+             <string>Translation - y</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="posySpinBox"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="rotationLabel">
+            <property name="text">
+             <string>Rotation - z  axis</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="rotationSpinBox"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="scaleLabel">
+            <property name="text">
+             <string>Scaling</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QDoubleSpinBox" name="scaleSpinBox"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="transLabel">
+            <property name="text">
+             <string>Transparency</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QDoubleSpinBox" name="transSpinBox"/>
+          </item>
+         </layout>
+        </item>
        </layout>
       </widget>
+      <zorder>layoutWidget</zorder>
+      <zorder>spinBox</zorder>
+      <zorder>posxSpinBox</zorder>
+      <zorder>posySpinBox</zorder>
+      <zorder>rotationSpinBox</zorder>
+      <zorder>scaleSpinBox</zorder>
+      <zorder>transSpinBox</zorder>
      </widget>
      <widget class="QWidget" name="alignmentTab">
       <property name="enabled">

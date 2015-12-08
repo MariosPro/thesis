@@ -183,6 +183,16 @@ namespace ogm_gui
       **/
       void updateMapInternal(void);
 
+      void moveMapHorizontally(int x);
+
+      void moveMapVertically(int y);
+
+      void rotateMap(int r);
+
+      void scaleMap(double s);
+
+      void changeMapTransparency(double t);
+
       //------------------------------------------------------------------------//
     Q_SIGNALS:
 

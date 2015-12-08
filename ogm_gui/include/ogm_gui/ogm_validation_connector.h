@@ -107,6 +107,16 @@ namespace ogm_gui
       **/
       void adaptSlot(void);
 
+      void posxChanged(int x);
+
+      void posyChanged(int y);
+      
+      void rotationChanged(int r);
+
+      void scaleChanged(double s);
+      
+      void transparencyChanged(double t);
+
     //------------------------------------------------------------------------//
     Q_SIGNALS:
 
@@ -115,6 +125,16 @@ namespace ogm_gui
       @return void
       **/
       void adaptSignal(void);
+
+      void changeXPos(int x);
+ 
+      void changeYPos(int y);
+
+      void changeRotation(int r);
+
+      void changeScale(double s);
+
+      void changeTransparency(double t);
 
   };
 }
