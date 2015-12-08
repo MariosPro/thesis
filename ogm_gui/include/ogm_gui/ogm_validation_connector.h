@@ -68,6 +68,8 @@ namespace ogm_gui
       **/
       void updateMapInfo(const ogm_msgs::MapsMsg& msg);
 
+      void resetMapProperties();
+
       /**
       @brief Returns the CValidationLoader object
       @return QWidget*
@@ -107,9 +109,9 @@ namespace ogm_gui
       **/
       void adaptSlot(void);
 
-      void posxChanged(int x);
+      void posxChanged(double x);
 
-      void posyChanged(int y);
+      void posyChanged(double y);
       
       void rotationChanged(int r);
 
@@ -117,13 +119,13 @@ namespace ogm_gui
       
       void transparencyChanged(double t);
 
-      void setMapPosition(qreal x, qreal y);
+      void showMapPosition(qreal x, qreal y);
 
-      void setMapRotation(qreal r);
+      void showMapRotation(qreal r);
 
-      void setMapScale(qreal s);
+      void showMapScale(qreal s);
 
-      void setMapTransparency(double t);
+      void showMapTransparency(double t);
     //------------------------------------------------------------------------//
     Q_SIGNALS:
 
@@ -133,9 +135,9 @@ namespace ogm_gui
       **/
       void adaptSignal(void);
 
-      void changeXPos(int x);
+      void changeXPos(double x);
  
-      void changeYPos(int y);
+      void changeYPos(double y);
 
       void changeRotation(int r);
 

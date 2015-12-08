@@ -33,6 +33,47 @@ namespace ogm_gui
     factor = 1.05;
   }
 
+ /* void CMapItem::mousePressEvent(QGraphicsSceneMouseEvent *event)*/
+  //{
+    //if(event->button() ==  Qt::LeftButton)
+    //{
+      //xCoord = x();
+      //yCoord = y();
+      //rot = rotation();
+      ////ROS_INFO_STREAM("PosBefore = " << xCoord <<" " << yCoord << " " << rotation );
+    //}
+  /*}*/
+
+/*  void CMapItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)*/
+  //{
+    //if(event->button() == Qt::LeftButton)
+    //{
+      //setPos( x(),  y());
+      //setRotation( rotation());
+      //Q_EMIT posChanged(x(), y());
+      //Q_EMIT rotationChanged(rotation());
+      //qDebug() << x() << " " << y() << " " << rotation();
+      ////ROS_INFO_STREAM("PosBefore = " << x() <<" " << y() << " " << rotation() );
+    //}
+  /*}*/
+
+  void CMapItem::setMapRotation(int r)
+  {
+    setTransformOriginPoint(QPointF(this->boundingRect().center()));
+    setRotation(r);
+    QPointF sp = scenePos();
+    Q_EMIT posChanged(sp.x(), sp.y());
+  }
+
+  void CMapItem::setMapScale(double s)
+  {
+    setTransformOriginPoint(QPointF(this->boundingRect().center()));
+    setScale(s);
+    QPointF  sp = scenePos();
+    Q_EMIT posChanged(sp.x(), sp.y());
+    Q_EMIT rotationChanged(rotation());
+  }
+
   /**
   @brief Captures the keypress event
   @param event [QKeyEvent*] The key event
@@ -41,50 +82,83 @@ namespace ogm_gui
   void CMapItem::keyPressEvent(QKeyEvent *event)
   {
 
+    setTransformOriginPoint(QPointF(this->boundingRect().center()));
+    QPointF sp;
     if (event->key() == Qt::Key_Left)
     {
       setPos(x() - 1, y());
+      sp = scenePos();
       Q_EMIT posChanged(x(), y());
+      qDebug() << "pos=" << x() <<" " <<y();
+      qDebug() << "scenePos=" << scenePos();
     }
     else if (event->key() == Qt::Key_Right)
     {
       setPos(x() + 1, y());
+      sp = scenePos();
       Q_EMIT posChanged(x(), y());
+      qDebug() << "pos=" << x() <<" " <<y();
+      qDebug() << "scenePos=" << scenePos();
     }
     else if (event->key() == Qt::Key_Up)
     {
       setPos(x(), y() - 1);
+      sp = scenePos();
       Q_EMIT posChanged(x(), y());
+      qDebug() << "pos=" << x() <<" " <<y();
+      qDebug() << "scenePos=" << scenePos();
     }
     else if (event->key() == Qt::Key_Down)
     {
       setPos(x(), y() + 1);
+      sp = scenePos();
       Q_EMIT posChanged(x(), y());
+      qDebug() << "pos=" << x() <<" " << y();
+      qDebug() << "scenePos=" << scenePos();
     }
     else if (event->key() == Qt::Key_E)
     {
-      setTransformOriginPoint(QPointF(this->boundingRect().center()));
+      //setTransformOriginPoint(QPointF(this->boundingRect().center()));
       setRotation(rotation() - 1);
+      sp = scenePos();
       Q_EMIT rotationChanged(rotation());
-
+      Q_EMIT posChanged(sp.x(), sp.y());
+      qDebug() << "pos=" << x() <<" " <<y() << rotation();
+      qDebug() << "scenePos=" << scenePos();
     }
     else if (event->key() == Qt::Key_R)
     {
-      setTransformOriginPoint(QPointF(this->boundingRect().center()));
+      //setTransformOriginPoint(QPointF(this->boundingRect().center()));
       setRotation(rotation() + 1);
+      sp = scenePos();
       Q_EMIT rotationChanged(rotation());
+      Q_EMIT posChanged(sp.x(), sp.y());
+      qDebug() << "pos=" << x() <<" " <<y();
+      qDebug() << "scenePos=" << scenePos();
+
     }
     else if (event->key() == Qt::Key_Plus)
     {
-      setTransformOriginPoint(QPointF(this->boundingRect().center()));
+      //setTransformOriginPoint(QPointF(this->boundingRect().center()));
       setScale(scale() * factor);
+      sp = scenePos();
       Q_EMIT scaleChanged(scale());
+      Q_EMIT posChanged(sp.x(), sp.y());
+      Q_EMIT rotationChanged(rotation());
+      qDebug() << "pos=" << x() <<" " <<y();
+      qDebug() << "scenePos=" << scenePos();
     }
+
     else if (event->key() == Qt::Key_Minus)
     {
-      setTransformOriginPoint(QPointF(this->boundingRect().center()));
+      //setTransformOriginPoint(QPointF(this->boundingRect().center()));
       setScale(scale() / factor);
+      sp = scenePos();
       Q_EMIT scaleChanged(scale());
+      Q_EMIT posChanged(sp.x(), sp.y());
+      Q_EMIT rotationChanged(rotation());
+      qDebug() << "pos=" << x() <<" " <<y();
+      qDebug() << "scenePos=" << scenePos();
     }
   }
  }

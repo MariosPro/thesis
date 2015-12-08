@@ -67,9 +67,13 @@ namespace ogm_gui
     pathEvaluation.setExpanded(true);
 
   
-    //rotationSpinBox->setRange(-360, 360);
+    posxSpinBox->setRange(-1000, 1000);
+    posySpinBox->setRange(-1000, 1000);
+    rotationSpinBox->setRange(0, 360);
+    rotationSpinBox->setWrapping(true);
     transSpinBox->setRange(0.00, 1.00);
     transSpinBox->setSingleStep(0.1);
+    scaleSpinBox->setSingleStep(0.05);
 
   }
 
@@ -147,25 +151,43 @@ namespace ogm_gui
       mapInfo.addChild(mnode);
   }
 
-  void CValidationLoader::setMapPosition(qreal x, qreal y)
+  void CValidationLoader::showMapXposition(qreal x)
   {
-    posxSpinBox->setValue(x);
-    posySpinBox->setValue(y);
+       posxLabel->setText("Translation-x : " + QString().setNum(x) );
+  }
+  
+  void CValidationLoader::showMapYposition(qreal y)
+  {
+    posyLabel->setText("Translation-y : " + QString().setNum(y) );
   }
  
-  void CValidationLoader::setMapRotation(qreal r)
+  void CValidationLoader::showMapRotation(qreal r)
   {
-    rotationSpinBox->setValue(r);
+    rotationLabel->setText("Rotation-z axis : "+ QString().setNum(r));
   }
 
-  void CValidationLoader::setMapScale(qreal s)
+  void CValidationLoader::showMapScale(qreal s)
   {
-    scaleSpinBox->setValue(s);
+    scaleLabel->setText("Scaling Factor : "+ QString().setNum(s));
   }
 
-  void CValidationLoader::setMapTransparency(double t)
+  void CValidationLoader::showMapTransparency(double t)
   {
-    transSpinBox->setValue(t);
+    transLabel->setText("Transparency : "+ QString().setNum(t));
+  }
+
+  void CValidationLoader::resetMapProperties()
+  {
+    showMapXposition(0);
+    showMapYposition(0);
+    showMapRotation(0);
+    showMapScale(1.0);
+    showMapTransparency(0.5);
+    posxSpinBox->setValue(0);
+    posySpinBox->setValue(0);
+    rotationSpinBox->setValue(0);
+    scaleSpinBox->setValue(1);
+    transSpinBox->setValue(0.5);
   }
 
 

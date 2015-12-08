@@ -77,12 +77,12 @@ namespace ogm_gui
       this, SLOT(receiveMapsFromServer()));
 
     QObject::connect(
-        &validation_connector_, SIGNAL(changeXPos(int)),
-        this, SLOT(moveMapHorizontally(int)));
+        &validation_connector_, SIGNAL(changeXPos(double)),
+        this, SLOT(moveMapHorizontally(double)));
 
     QObject::connect(
-        &validation_connector_, SIGNAL(changeYPos(int)),
-        this, SLOT(moveMapVertically(int)));
+        &validation_connector_, SIGNAL(changeYPos(double)),
+        this, SLOT(moveMapVertically(double)));
  
     QObject::connect(
         &validation_connector_, SIGNAL(changeRotation(int)),
@@ -98,19 +98,19 @@ namespace ogm_gui
 
     QObject::connect(
         &map_connector_, SIGNAL(mapPosChanged(qreal, qreal)),
-        &validation_connector_, SLOT(setMapPosition(qreal, qreal)));
+        &validation_connector_, SLOT(showMapPosition(qreal, qreal)));
 
     QObject::connect(
         &map_connector_, SIGNAL(mapRotationChanged(qreal)),
-        &validation_connector_, SLOT(setMapRotation(qreal)));
+        &validation_connector_, SLOT(showMapRotation(qreal)));
 
     QObject::connect(
         &map_connector_, SIGNAL(mapScaleChanged(qreal)),
-        &validation_connector_, SLOT(setMapScale(qreal)));
+        &validation_connector_, SLOT(showMapScale(qreal)));
 
   QObject::connect(
         &map_connector_, SIGNAL(mapTransparencyChanged(double)),
-        &validation_connector_, SLOT(setMapTransparency(double)));
+        &validation_connector_, SLOT(showMapTransparency(double)));
 
    timer_ = new QTimer(this);
     connect(
@@ -155,6 +155,7 @@ namespace ogm_gui
       maps_.slamMap = map;
 
       validation_connector_.updateMapInfo(maps_);
+      validation_connector_.resetMapProperties();
 
       map_connector_.updateImage(&running_map_, true);
       map_connector_.updateImage(&slam_map_, false);
@@ -235,6 +236,7 @@ namespace ogm_gui
     initial_slam_map_ = slam_map_;
 
     validation_connector_.updateMapInfo(maps_);
+    validation_connector_.resetMapProperties();
 
     map_connector_.resetMap();
 
@@ -314,6 +316,7 @@ namespace ogm_gui
 
     validation_connector_.updateMapInfo(maps_);
 
+    validation_connector_.resetMapProperties();
     map_connector_.resetMap();
 
     elapsed_time_.start();
@@ -401,12 +404,12 @@ namespace ogm_gui
     }
   }
 
-  void CGuiController::moveMapHorizontally(int x)
+  void CGuiController::moveMapHorizontally(double x)
   {
     map_connector_.setMapXposition(x);
   }
 
-  void CGuiController::moveMapVertically(int y)
+  void CGuiController::moveMapVertically(double y)
   {
     map_connector_.setMapYposition(y);
   }

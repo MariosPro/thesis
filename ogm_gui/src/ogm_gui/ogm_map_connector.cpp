@@ -82,12 +82,12 @@ namespace ogm_gui{
     loader_.resetMap();
   }
 
-  void CMapConnector::setMapXposition(int x)
+  void CMapConnector::setMapXposition(double x)
   {
     loader_.setMapXposition(x);
   }
 
-  void CMapConnector::setMapYposition(int y)
+  void CMapConnector::setMapYposition(double y)
   {
     loader_.setMapYposition(y);
   }

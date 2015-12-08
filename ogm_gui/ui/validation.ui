@@ -32,7 +32,7 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="1">
+   <item row="0" column="0">
     <widget class="QTabWidget" name="validationTabWidget">
      <property name="whatsThis">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ddd&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -47,7 +47,7 @@
       <attribute name="title">
        <string>Maps Information</string>
       </attribute>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>9</x>
@@ -80,18 +80,12 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QSpinBox" name="posxSpinBox"/>
-          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="posyLabel">
             <property name="text">
              <string>Translation - y</string>
             </property>
            </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="posySpinBox"/>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="rotationLabel">
@@ -123,17 +117,16 @@
           <item row="4" column="1">
            <widget class="QDoubleSpinBox" name="transSpinBox"/>
           </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="posxSpinBox"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="posySpinBox"/>
+          </item>
          </layout>
         </item>
        </layout>
       </widget>
-      <zorder>layoutWidget</zorder>
-      <zorder>spinBox</zorder>
-      <zorder>posxSpinBox</zorder>
-      <zorder>posySpinBox</zorder>
-      <zorder>rotationSpinBox</zorder>
-      <zorder>scaleSpinBox</zorder>
-      <zorder>transSpinBox</zorder>
      </widget>
      <widget class="QWidget" name="alignmentTab">
       <property name="enabled">

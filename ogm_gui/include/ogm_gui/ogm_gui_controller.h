@@ -183,9 +183,9 @@ namespace ogm_gui
       **/
       void updateMapInternal(void);
 
-      void moveMapHorizontally(int x);
+      void moveMapHorizontally(double x);
 
-      void moveMapVertically(int y);
+      void moveMapVertically(double y);
 
       void rotateMap(int r);
 

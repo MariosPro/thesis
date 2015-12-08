@@ -56,42 +56,41 @@ namespace ogm_gui
   **/
   void CMapLoader::resetMap()
   {
-      ROS_INFO_STREAM("SET POS");
       slam_map->setPos(0 ,0);
       slam_map->setRotation(0);
       slam_map->setScale(1.0);
   }
 
-  void CMapLoader::setMapXposition(int x)
+  void CMapLoader::setMapXposition(double x)
   {
     slam_map->setPos(x, slam_map->y());
+
   }
 
-  void CMapLoader::setMapYposition(int y)
+  void CMapLoader::setMapYposition(double y)
   {
     slam_map->setPos(slam_map->x(), y);
   }
 
   void CMapLoader::setMapRotation(int r)
   {
-    slam_map->setTransformOriginPoint(QPointF(slam_map->boundingRect().center()));
-    slam_map->setRotation(r);
+    /*slam_map->setTransformOriginPoint(QPointF(slam_map->boundingRect().center()));*/
+    /*slam_map->setRotation(r);*/
+    slam_map->setMapRotation(r);
   }
  
   void CMapLoader::setMapScale(double s)
   {
-    slam_map->setTransformOriginPoint(QPointF(slam_map->boundingRect().center()));
-    slam_map->setScale(s);
+/*    slam_map->setTransformOriginPoint(QPointF(slam_map->boundingRect().center()));*/
+    /*slam_map->setScale(s);*/
+    slam_map->setMapScale(s);
   }
 
   void CMapLoader::setMapTransparency(double t)
   {
     transparency = t;
-    /*QPixmap p = slam_map->pixmap();*/
-    //makeTransparent(&p, t);
-    //slam_map->setPixmap(p);
-
   }
+
   /**
   @brief Return the dimensions according to the container size
   @param w [int] Image width

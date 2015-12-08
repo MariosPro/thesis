@@ -105,9 +105,9 @@ namespace ogm_gui
       **/
       void drawGrid(QImage *img,float resolution);
       
-      void setMapXposition(int x);
+      void setMapXposition(double x);
 
-      void setMapYposition(int y);
+      void setMapYposition(double y);
 
       void setMapRotation(int r);
 

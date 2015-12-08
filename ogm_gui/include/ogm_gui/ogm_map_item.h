@@ -24,6 +24,8 @@
 #include <QtGui/QKeyEvent>
 #include <QtCore/QObject>
 #include <QtWidgets/QGraphicsPixmapItem>
+#include <QGraphicsSceneMouseEvent>
+#include <QDebug>
 #include "ogm_gui/ogm_tools.h"
 
 
@@ -43,6 +45,9 @@ namespace ogm_gui
     //------------------------------------------------------------------------//
     private:
            qreal factor;
+           qreal xCoord;
+           qreal yCoord;
+           qreal rot;
 
     //------------------------------------------------------------------------//
     public:
@@ -53,6 +58,12 @@ namespace ogm_gui
       **/
       CMapItem();
 
+  /*    void mousePressEvent(QGraphicsSceneMouseEvent *event);*/
+
+      /*void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);*/
+
+      void setMapRotation(int r);
+      void setMapScale(double s);
       /**
       @brief Captures the keypress event
       @param event [QKeyEvent*] The key event

@@ -59,12 +59,12 @@ namespace ogm_gui
         SLOT(adaptColumns(QTreeWidgetItem *)));
 
     QObject::connect(
-      loader.posxSpinBox, SIGNAL(valueChanged(int)),
-      this,SLOT(posxChanged(int)));
+      loader.posxSpinBox, SIGNAL(valueChanged(double)),
+      this,SLOT(posxChanged(double)));
 
     QObject::connect(
-      loader.posySpinBox, SIGNAL(valueChanged(int)),
-      this,SLOT(posyChanged(int)));
+      loader.posySpinBox, SIGNAL(valueChanged(double)),
+      this,SLOT(posyChanged(double)));
 
     QObject::connect(
       loader.rotationSpinBox, SIGNAL(valueChanged(int)),
@@ -150,51 +150,61 @@ namespace ogm_gui
 
   }
 
-  void CValidationConnector::posxChanged(int x)
+  void CValidationConnector::posxChanged(double x)
   {
     Q_EMIT changeXPos(x);
+    loader.showMapXposition(x);
   }
 
-  void CValidationConnector::posyChanged(int y)
+  void CValidationConnector::posyChanged(double y)
   {
     Q_EMIT changeYPos(y);
+    loader.showMapYposition(y);
   }
 
   void CValidationConnector::rotationChanged(int r)
   {
     Q_EMIT changeRotation(r);
+    loader.showMapRotation(r);
   }
 
   void CValidationConnector::scaleChanged(double s)
   {
     Q_EMIT changeScale(s);
+    loader.showMapScale(s);
   }
 
   void CValidationConnector::transparencyChanged(double t)
   {
     Q_EMIT changeTransparency(t);
+    loader.showMapTransparency(t);
   }
 
-  void CValidationConnector::setMapPosition(qreal x, qreal y)
+  void CValidationConnector::showMapPosition(qreal x, qreal y)
   {
-    loader.setMapPosition(x, y);
+    loader.showMapXposition(x);
+    loader.showMapYposition(y);
   }
 
-  void CValidationConnector::setMapRotation(qreal r)
+  void CValidationConnector::showMapRotation(qreal r)
   {
-    loader.setMapRotation(r);
+    loader.showMapRotation(r);
   }
 
-  void CValidationConnector::setMapScale(qreal s)
+  void CValidationConnector::showMapScale(qreal s)
   {
-    loader.setMapScale(s);
+    loader.showMapScale(s);
   }
 
-  void CValidationConnector::setMapTransparency(double t)
+  void CValidationConnector::showMapTransparency(double t)
   {
-    loader.setMapTransparency(t);
+    loader.showMapTransparency(t);
   }
 
+  void CValidationConnector::resetMapProperties()
+  {
+    loader.resetMapProperties();
+  }
 
   /**
   @brief Returns the CValidationLoader object

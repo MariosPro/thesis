@@ -88,9 +88,9 @@ namespace ogm_gui
       **/
       ~CMapConnector(void);
  
-      void setMapXposition(int x);
+      void setMapXposition(double x);
 
-      void setMapYposition(int y);
+      void setMapYposition(double y);
 
       void setMapRotation(int r);
 
