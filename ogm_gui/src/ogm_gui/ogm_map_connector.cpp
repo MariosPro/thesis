@@ -61,13 +61,12 @@ namespace ogm_gui{
   }
 
   /**
-  @brief Sets map initial size to the loader
-  @param s [QSize] Map size
+  @brief Resets map position to the loader
   @return void
   **/
-  void CMapConnector::setInitialImageSize(QSize s)
+  void CMapConnector::resetMap()
   {
-    loader_.setInitialImageSize(s);
+    loader_.resetMap();
   }
 
   /**

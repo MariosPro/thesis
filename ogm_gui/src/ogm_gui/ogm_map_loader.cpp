@@ -46,22 +46,20 @@ namespace ogm_gui
     mapGraphicsView->setScene(scene);
     mapGraphicsView->setInteractive(true);
     //mapGraphicsView->show();
-    internal_img_ = new QImage(100, 100, QImage::Format_RGB32);
-    map_min_ = QPoint(0, 0);
-    map_max_ = QPoint(0, 0);
-    zoom_ = 0;
   }
 
   /**
-  @brief Captures the resize event
-  @param e [QResizeEvent*] The resize event
+  @brief Resets the map's position
   @return void
   **/
-  void CMapLoader::resizeEvent(QResizeEvent *e)
+  void CMapLoader::resetMap()
   {
-    updateImage(internal_img_, true);
+      ROS_INFO_STREAM("SET POS");
+      slam_map->setPos(0 ,0);
+      slam_map->setRotation(0);
+      slam_map->setScale(1.0);
   }
-  
+
   /**
   @brief Return the dimensions according to the container size
   @param w [int] Image width
@@ -95,7 +93,7 @@ namespace ogm_gui
   **/
   void CMapLoader::updateImage(QImage *img, bool groundTruth)
   {
-    internal_img_ = img;
+    //internal_img_ = img;
     if(groundTruth)
     {
      std::pair<int,int> newDims = checkDimensions(img->width(), img->height(), 
@@ -155,11 +153,11 @@ namespace ogm_gui
     QPainter painter(img);
     painter.setPen(QColor(100, 100, 100, 150));
     int pix = 1.0 / resolution;
-    for(unsigned int i = 1 ; i <= img->width(); i++) // / pix + 1 ; i++)
+    for(unsigned int i = 1 ; i <= img->width(); i++)
     {
       painter.drawLine(0, i * pix, img->width() - 1, i * pix);
     }
-    for(unsigned int i = 1 ; i <= img->height(); i++)// / pix + 1 ; i++)
+    for(unsigned int i = 1 ; i <= img->height(); i++)
     {
       painter.drawLine(i * pix, 0, i * pix, img->height() - 1);
     }
@@ -201,15 +199,4 @@ namespace ogm_gui
     return slam_map->sceneTransform();
   }
 
-  /**
-  @brief Sets the initial image size
-  @param s [QSize] The initial image size
-  @return void
-  **/
-  void CMapLoader::setInitialImageSize(QSize s)
-  {
-    initial_image_size_ = s;
-    map_min_ = QPoint(0, 0);
-    map_max_ = QPoint(s.width(), s.height());
-  }
 }

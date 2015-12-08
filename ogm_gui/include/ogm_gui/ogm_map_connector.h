@@ -119,11 +119,11 @@ namespace ogm_gui
       void updateImage(QImage *img, bool groundTruth);
 
       /**
-      @brief Sets map initial size to the loader
-      @param s [QSize] Map size
+      @brief Sets the map initialization status
+      @param mi [bool] The initialization status
       @return void
       **/
-      void setInitialImageSize(QSize s);
+      void setMapInitialized(bool mi);
 
       /**
       @brief Wrapper for the draw grid function of loader
@@ -140,11 +140,10 @@ namespace ogm_gui
       QWidget* getLoader(void);
 
       /**
-      @brief Sets the map initialization status
-      @param mi [bool] The initialization status
+      @brief Resets map position to the loader
       @return void
       **/
-      void setMapInitialized(bool mi);
+      void resetMap();
 
     //------------------------------------------------------------------------//
     public Q_SLOTS:

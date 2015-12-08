@@ -26,8 +26,6 @@
 #include "ogm_gui/ogm_map_item.h"
 #include "ogm_gui/ogm_tools.h"
 
-#define ZOOM_RATIO 1.1
-
 /**
 @namespace ogm_gui
 @brief The main namespace for OGM GUI
@@ -48,8 +46,6 @@ namespace ogm_gui
       int   argc_;
       //!< Input arguments
       char**  argv_;
-      //!< Current zoom. Calculated as pow(2,zoom_) * initial image size
-      int   zoom_;
 
       //!< The scene that is used to add the maps
       QGraphicsScene* scene;
@@ -62,22 +58,6 @@ namespace ogm_gui
       
       //!< Internal image used before a map is loaded
       QImage*  internal_img_;
-      
-      //!< The upper left point of map visualization
-      QPoint map_min_;
-      
-      //!< The lower right point of map visualization
-      QPoint map_max_;
-      
-      //!< The original image size
-      QSize initial_image_size_;
-      
-      /**
-      @brief Unscales the input point
-      @param p [QPoint] Point of an event in the adjusted map
-      @return QPoint : The same point in the original map
-      **/
-      //QPoint pointUnscaled(QPoint p);
       
       /**
       @brief Return the dimensions according to the container size
@@ -103,19 +83,11 @@ namespace ogm_gui
       CMapLoader(int argc, char **argv);
       
       /**
-      @brief Sets the initial image size
-      @param s [QSize] The initial image size
+      @brief Resets the map's position
       @return void
       **/
-      void setInitialImageSize(QSize s);
-      
-      /**
-      @brief Captures the resize event
-      @param e [QResizeEvent*] The resize event
-      @return void
-      **/
-      void resizeEvent(QResizeEvent *e);
-      
+      void resetMap();
+       
       /**
       @brief Updates the image
       @param img [QImage*] The image to be updated
@@ -131,41 +103,6 @@ namespace ogm_gui
       **/
       void drawGrid(QImage *img,float resolution);
       
-      /**
-      @brief Updates the zoom of the image
-      @param p [QPoint] The point of the zoom event
-      @param zoomIn [bool] True if zoom in, false if zoom out
-      @return void
-      **/
-      //void updateZoom(QPoint p,bool zoomIn);
-      
-      /**
-      @brief Updates the image center
-      @param p [QPoint] The new center
-      @return void
-      **/
-      //void updateCenter(QPoint p);
-      
-      /**
-      @brief Updates the image center by moving directionally
-      @param key [int] The key pressed
-      @return void
-      **/
-      //void moveDirectionally(int key);
-      
-      /**
-      @brief Resets the zoom of the image
-      @return void
-      **/
-      //void resetZoom(void);
-      
-      /**
-      @brief Calculates the "real" point in the image
-      @param p [QPoint] The point to be translated
-      @return QPoint : The new point
-      **/
-      //QPoint getGlobalPoint(QPoint p);
-
       /**
       @brief Returns the pos of the object to the scene
       @return QPointF : The pos to the scene

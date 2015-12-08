@@ -84,8 +84,6 @@ namespace ogm_gui
     elapsed_time_.start();
 
     map_initialized_ = true;
-/*    map_connector_.setInitialImageSize(*/
-      /*QSize(initial_map_.width(),initial_map_.height()));*/
     map_connector_.setMapInitialized(true);
     gui_connector_.setMapInitialized(true);
 
@@ -202,8 +200,7 @@ namespace ogm_gui
 
     validation_connector_.updateMapInfo(maps_);
 
-  /*  map_connector_.setInitialImageSize(*/
-      /*QSize(running_map_.width(),running_map_.height()));*/
+    map_connector_.resetMap();
 
     elapsed_time_.start();
 
@@ -281,8 +278,7 @@ namespace ogm_gui
 
     validation_connector_.updateMapInfo(maps_);
 
- /*   map_connector_.setInitialImageSize(*/
-      //QSize(running_map_.width(),running_map_.height()));
+    map_connector_.resetMap();
 
     elapsed_time_.start();
 
