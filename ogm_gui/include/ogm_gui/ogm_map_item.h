@@ -58,9 +58,7 @@ namespace ogm_gui
       **/
       CMapItem();
 
-  /*    void mousePressEvent(QGraphicsSceneMouseEvent *event);*/
-
-      /*void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);*/
+      QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
       void setMapRotation(int r);
       void setMapScale(double s);

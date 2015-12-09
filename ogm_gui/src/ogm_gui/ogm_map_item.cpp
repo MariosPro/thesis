@@ -33,29 +33,16 @@ namespace ogm_gui
     factor = 1.05;
   }
 
- /* void CMapItem::mousePressEvent(QGraphicsSceneMouseEvent *event)*/
-  //{
-    //if(event->button() ==  Qt::LeftButton)
-    //{
-      //xCoord = x();
-      //yCoord = y();
-      //rot = rotation();
-      ////ROS_INFO_STREAM("PosBefore = " << xCoord <<" " << yCoord << " " << rotation );
-    //}
-  /*}*/
+  QVariant CMapItem::itemChange(GraphicsItemChange change, const QVariant & value)
+  {
+    if (change == ItemPositionChange && scene()) 
+    {
+      setPos( x(),  y());
+      Q_EMIT posChanged(x(), y());
+    }
 
-/*  void CMapItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)*/
-  //{
-    //if(event->button() == Qt::LeftButton)
-    //{
-      //setPos( x(),  y());
-      //setRotation( rotation());
-      //Q_EMIT posChanged(x(), y());
-      //Q_EMIT rotationChanged(rotation());
-      //qDebug() << x() << " " << y() << " " << rotation();
-      ////ROS_INFO_STREAM("PosBefore = " << x() <<" " << y() << " " << rotation() );
-    //}
-  /*}*/
+    return QGraphicsItem::itemChange(change, value);
+  }
 
   void CMapItem::setMapRotation(int r)
   {
@@ -118,7 +105,6 @@ namespace ogm_gui
     }
     else if (event->key() == Qt::Key_E)
     {
-      //setTransformOriginPoint(QPointF(this->boundingRect().center()));
       setRotation(rotation() - 1);
       sp = scenePos();
       Q_EMIT rotationChanged(rotation());
@@ -128,7 +114,6 @@ namespace ogm_gui
     }
     else if (event->key() == Qt::Key_R)
     {
-      //setTransformOriginPoint(QPointF(this->boundingRect().center()));
       setRotation(rotation() + 1);
       sp = scenePos();
       Q_EMIT rotationChanged(rotation());
@@ -139,7 +124,6 @@ namespace ogm_gui
     }
     else if (event->key() == Qt::Key_Plus)
     {
-      //setTransformOriginPoint(QPointF(this->boundingRect().center()));
       setScale(scale() * factor);
       sp = scenePos();
       Q_EMIT scaleChanged(scale());
@@ -151,7 +135,6 @@ namespace ogm_gui
 
     else if (event->key() == Qt::Key_Minus)
     {
-      //setTransformOriginPoint(QPointF(this->boundingRect().center()));
       setScale(scale() / factor);
       sp = scenePos();
       Q_EMIT scaleChanged(scale());
