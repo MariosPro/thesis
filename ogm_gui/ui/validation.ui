@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>350</width>
-    <height>450</height>
+    <width>400</width>
+    <height>498</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -31,160 +31,327 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <widget class="QTabWidget" name="validationTabWidget">
-     <property name="whatsThis">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ddd&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+  <widget class="QTabWidget" name="validationTabWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>351</width>
+     <height>461</height>
+    </rect>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>600</width>
+     <height>16777215</height>
+    </size>
+   </property>
+   <property name="whatsThis">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ddd&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="informationTab">
+    <attribute name="title">
+     <string>Maps Information</string>
+    </attribute>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>11</y>
+       <width>311</width>
+       <height>371</height>
+      </rect>
      </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="informationTab">
-      <attribute name="title">
-       <string>Maps Information</string>
-      </attribute>
-      <widget class="QWidget" name="layoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>9</x>
-         <y>9</y>
-         <width>258</width>
-         <height>361</height>
-        </rect>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0">
-         <widget class="QTreeWidget" name="ogmInformationTree">
-          <column>
-           <property name="text">
-            <string>1</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>2</string>
-           </property>
-          </column>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QLabel" name="groundMapWidthLabel">
+          <property name="text">
+           <string>Ground Truth Map Width:</string>
+          </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="posxLabel">
-            <property name="text">
-             <string>Translation  - x</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="posyLabel">
-            <property name="text">
-             <string>Translation - y</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="rotationLabel">
-            <property name="text">
-             <string>Rotation - z  axis</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QSpinBox" name="rotationSpinBox"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="scaleLabel">
-            <property name="text">
-             <string>Scaling</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="scaleSpinBox"/>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="transLabel">
-            <property name="text">
-             <string>Transparency</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QDoubleSpinBox" name="transSpinBox"/>
-          </item>
-          <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="posxSpinBox"/>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="posySpinBox"/>
-          </item>
-         </layout>
+        <item>
+         <widget class="QLabel" name="groundMapHeightLabel">
+          <property name="text">
+           <string>Ground Truth Map Height:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="groundMapResLabel">
+          <property name="text">
+           <string>Ground Truth Map Resolution:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="producedMapWidthLabel">
+          <property name="text">
+           <string>SLAM Produced Map Width:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="producedMapHeightLabel">
+          <property name="text">
+           <string>SLAM Produced Map Height:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="producedMapResLabel">
+          <property name="text">
+           <string>SLAM Produced Map Resolution:</string>
+          </property>
+         </widget>
         </item>
        </layout>
-      </widget>
-     </widget>
-     <widget class="QWidget" name="alignmentTab">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-      <attribute name="title">
-       <string>Maps Alignment</string>
-      </attribute>
-      <widget class="QWidget" name="gridLayoutWidget_4">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>321</width>
-         <height>391</height>
-        </rect>
-       </property>
-       <layout class="QGridLayout" name="alignmentGridLayout"/>
-      </widget>
-     </widget>
-     <widget class="QWidget" name="metricsTab">
-      <attribute name="title">
-       <string>Validation Metrics</string>
-      </attribute>
-      <widget class="QWidget" name="gridLayoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>321</width>
-         <height>391</height>
-        </rect>
-       </property>
-       <layout class="QGridLayout" name="metricsLayout"/>
-      </widget>
-     </widget>
-     <widget class="QWidget" name="pathTab">
-      <attribute name="title">
-       <string>Path Validation</string>
-      </attribute>
-      <widget class="QWidget" name="gridLayoutWidget_3">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>321</width>
-         <height>391</height>
-        </rect>
-       </property>
-       <layout class="QGridLayout" name="pathGridLayout"/>
-      </widget>
-     </widget>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="posxLabel">
+          <property name="text">
+           <string>Translation  - x</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDoubleSpinBox" name="posxSpinBox"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="posyLabel">
+          <property name="text">
+           <string>Translation - y</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QDoubleSpinBox" name="posySpinBox"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="rotationLabel">
+          <property name="text">
+           <string>Rotation - z  axis</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="rotationSpinBox"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="scaleLabel">
+          <property name="text">
+           <string>Scaling</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QDoubleSpinBox" name="scaleSpinBox"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="transLabel">
+          <property name="text">
+           <string>Transparency</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QDoubleSpinBox" name="transSpinBox"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
-   </item>
-  </layout>
+   </widget>
+   <widget class="QWidget" name="alignmentTab">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <attribute name="title">
+     <string>Maps Alignment</string>
+    </attribute>
+    <widget class="QWidget" name="gridLayoutWidget_4">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>321</width>
+       <height>391</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="alignmentGridLayout"/>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="metricsTab">
+    <attribute name="title">
+     <string>Validation Metrics</string>
+    </attribute>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>11</x>
+       <y>21</y>
+       <width>285</width>
+       <height>64</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>OMSE</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>CMSE</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="1">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QLabel" name="obstacleLabel">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>0.0</string>
+          </property>
+          <property name="textFormat">
+           <enum>Qt::AutoText</enum>
+          </property>
+          <property name="scaledContents">
+           <bool>false</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="cornerLabel">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>0.0</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="2">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QPushButton" name="obstaclePushButton">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="cornerPushButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777159</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="3">
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <widget class="QPushButton" name="obstacleSettingsPushButton">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="cornerSettingsPushButton">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="pathTab">
+    <attribute name="title">
+     <string>Path Validation</string>
+    </attribute>
+    <widget class="QWidget" name="gridLayoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>321</width>
+       <height>391</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="pathGridLayout"/>
+    </widget>
+   </widget>
+  </widget>
  </widget>
  <resources/>
  <connections/>

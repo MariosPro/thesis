@@ -76,32 +76,32 @@ namespace ogm_gui
       setPos(x() - 1, y());
       sp = scenePos();
       Q_EMIT posChanged(x(), y());
-      qDebug() << "pos=" << x() <<" " <<y();
-      qDebug() << "scenePos=" << scenePos();
+      /*qDebug() << "pos=" << x() <<" " <<y();*/
+      /*qDebug() << "scenePos=" << scenePos();*/
     }
     else if (event->key() == Qt::Key_Right)
     {
       setPos(x() + 1, y());
       sp = scenePos();
       Q_EMIT posChanged(x(), y());
-      qDebug() << "pos=" << x() <<" " <<y();
-      qDebug() << "scenePos=" << scenePos();
+      /*qDebug() << "pos=" << x() <<" " <<y();*/
+      /*qDebug() << "scenePos=" << scenePos();*/
     }
     else if (event->key() == Qt::Key_Up)
     {
       setPos(x(), y() - 1);
       sp = scenePos();
       Q_EMIT posChanged(x(), y());
-      qDebug() << "pos=" << x() <<" " <<y();
-      qDebug() << "scenePos=" << scenePos();
+     /* qDebug() << "pos=" << x() <<" " <<y();*/
+      /*qDebug() << "scenePos=" << scenePos();*/
     }
     else if (event->key() == Qt::Key_Down)
     {
       setPos(x(), y() + 1);
       sp = scenePos();
       Q_EMIT posChanged(x(), y());
-      qDebug() << "pos=" << x() <<" " << y();
-      qDebug() << "scenePos=" << scenePos();
+  /*    qDebug() << "pos=" << x() <<" " << y();*/
+      /*qDebug() << "scenePos=" << scenePos();*/
     }
     else if (event->key() == Qt::Key_E)
     {
@@ -109,8 +109,8 @@ namespace ogm_gui
       sp = scenePos();
       Q_EMIT rotationChanged(rotation());
       Q_EMIT posChanged(sp.x(), sp.y());
-      qDebug() << "pos=" << x() <<" " <<y() << rotation();
-      qDebug() << "scenePos=" << scenePos();
+/*      qDebug() << "pos=" << x() <<" " <<y() << rotation();*/
+      /*qDebug() << "scenePos=" << scenePos();*/
     }
     else if (event->key() == Qt::Key_R)
     {
@@ -118,9 +118,8 @@ namespace ogm_gui
       sp = scenePos();
       Q_EMIT rotationChanged(rotation());
       Q_EMIT posChanged(sp.x(), sp.y());
-      qDebug() << "pos=" << x() <<" " <<y();
-      qDebug() << "scenePos=" << scenePos();
-
+  /*    qDebug() << "pos=" << x() <<" " <<y();*/
+      //qDebug() << "scenePos=" << scenePos();
     }
     else if (event->key() == Qt::Key_Plus)
     {
@@ -129,8 +128,8 @@ namespace ogm_gui
       Q_EMIT scaleChanged(scale());
       Q_EMIT posChanged(sp.x(), sp.y());
       Q_EMIT rotationChanged(rotation());
-      qDebug() << "pos=" << x() <<" " <<y();
-      qDebug() << "scenePos=" << scenePos();
+      //qDebug() << "pos=" << x() <<" " <<y();
+      //qDebug() << "scenePos=" << scenePos() << sceneTransform();
     }
 
     else if (event->key() == Qt::Key_Minus)
@@ -140,8 +139,8 @@ namespace ogm_gui
       Q_EMIT scaleChanged(scale());
       Q_EMIT posChanged(sp.x(), sp.y());
       Q_EMIT rotationChanged(rotation());
-      qDebug() << "pos=" << x() <<" " <<y();
-      qDebug() << "scenePos=" << scenePos();
+    /*  qDebug() << "pos=" << x() <<" " <<y();*/
+      /*qDebug() << "scenePos=" << scenePos() << sceneTransform();*/
     }
   }
  }

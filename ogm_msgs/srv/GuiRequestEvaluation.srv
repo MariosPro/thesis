@@ -1,0 +1,4 @@
+string method
+ogm_msgs/MapPose transform
+---
+float64 result

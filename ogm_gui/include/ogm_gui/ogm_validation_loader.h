@@ -46,18 +46,16 @@ namespace ogm_gui
 
     public:
 
-      //!< Tree item : map Root
-      QTreeWidgetItem mapInfo;
-      //!< Tree item : mapEvaluation Root
-      QTreeWidgetItem mapEvaluation;
-      //!< Tree item : pathEvaluation Root
-      QTreeWidgetItem pathEvaluation;
-      //!< Tree item: image general metrics
-      QTreeWidgetItem metrics;
-      //!< Tree item: Structural Evaluation
-      QTreeWidgetItem structEvaluation;
-      //!< Tree item: Feature Evaluation
-      QTreeWidgetItem featEvaluation;
+      /*//!< Tree item : mapEvaluation Root*/
+      //QTreeWidgetItem mapEvaluation;
+      ////!< Tree item : pathEvaluation Root
+      //QTreeWidgetItem pathEvaluation;
+      ////!< Tree item: image general metrics
+      //QTreeWidgetItem metrics;
+      ////!< Tree item: Structural Evaluation
+      //QTreeWidgetItem structEvaluation;
+      ////!< Tree item: Feature Evaluation
+      /*QTreeWidgetItem featEvaluation;*/
 
       /**
       @brief Default contructor

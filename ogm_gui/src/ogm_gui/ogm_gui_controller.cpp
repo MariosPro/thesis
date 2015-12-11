@@ -97,6 +97,14 @@ namespace ogm_gui
         this, SLOT(changeMapTransparency(double)));
 
     QObject::connect(
+        &validation_connector_, SIGNAL(omseMetricNeeded()),
+        this, SLOT(requestOmseMetric()));
+
+    QObject::connect(
+        &validation_connector_, SIGNAL(cmseMetricNeeded()),
+        this, SLOT(requestCmseMetric()));
+
+    QObject::connect(
         &map_connector_, SIGNAL(mapPosChanged(qreal, qreal)),
         &validation_connector_, SLOT(showMapPosition(qreal, qreal)));
 
@@ -427,6 +435,80 @@ namespace ogm_gui
   void CGuiController::changeMapTransparency(double t)
   {
     map_connector_.setMapTransparency(t);
+  }
+
+  void CGuiController::requestOmseMetric()
+  {
+    ros::ServiceClient client;
+    ogm_msgs::GuiRequestEvaluation srv;
+
+    while (!ros::service::waitForService
+       ("/ogm_server/gui_map_evaluation", ros::Duration(.1)) &&
+         ros::ok())
+    {
+       ROS_WARN
+         ("Trying to register to /ogm_server/gui_map_evaluation...");
+    }
+
+    client = n_.serviceClient<ogm_msgs::GuiRequestEvaluation>
+       ("/ogm_server/gui_map_evaluation", true);
+
+    QPointF pos =  map_connector_.getPosition();
+    qreal rot =  map_connector_.getRotation(); 
+    qreal scale =  map_connector_.getScale();
+    srv.request.method = "OMSE";
+    srv.request.transform.pose.x = pos.x();
+    srv.request.transform.pose.y = pos.y();
+    srv.request.transform.pose.theta =rot;
+    srv.request.transform.scale = scale;
+
+    if (client.call(srv)) 
+    {
+      omse_ = srv.response.result;
+      ROS_INFO_STREAM("OMSE metric successfully calculated OMSE=" << omse_);
+      validation_connector_.displayOmseResult(omse_);
+    }
+    else
+    {
+       ROS_ERROR("Could not calculate OMSE..");
+    }
+  }
+
+  void CGuiController::requestCmseMetric()
+  {
+    ros::ServiceClient client;
+    ogm_msgs::GuiRequestEvaluation srv;
+
+    while (!ros::service::waitForService
+       ("/ogm_server/gui_map_evaluation", ros::Duration(.1)) &&
+         ros::ok())
+    {
+       ROS_WARN
+         ("Trying to register to /ogm_server/gui_map_evaluation...");
+    }
+
+    client = n_.serviceClient<ogm_msgs::GuiRequestEvaluation>
+       ("/ogm_server/gui_map_evaluation", true);
+
+    QPointF pos =  map_connector_.getPosition();
+    qreal rot =  map_connector_.getRotation(); 
+    qreal scale =  map_connector_.getScale();
+    srv.request.method = "CMSE";
+    srv.request.transform.pose.x = pos.x();
+    srv.request.transform.pose.y = pos.y();
+    srv.request.transform.pose.theta =rot;
+    srv.request.transform.scale = scale;
+
+    if (client.call(srv)) 
+    {
+      cmse_ = srv.response.result;
+      ROS_INFO_STREAM("Corner metric successfully calculated CMSE=" << omse_);
+      validation_connector_.displayCmseResult(cmse_);
+    }
+    else
+    {
+       ROS_ERROR("Could not calculate CMSE..");
+    }
   }
 
 }

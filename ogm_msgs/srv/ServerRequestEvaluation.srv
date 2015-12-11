@@ -1,0 +1,6 @@
+string method
+ogm_msgs/MapPose pose
+nav_msgs/OccupancyGrid groundTruthMap
+nav_msgs/OccupancyGrid slamMap
+---
+float64 result

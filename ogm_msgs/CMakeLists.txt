@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
     FILES
     MapsMsg.msg
+    MapPose.msg
 )
 
 add_service_files(
@@ -18,6 +19,7 @@ add_service_files(
     LoadMap.srv
     LoadExternalMap.srv
     LoadMaps.srv
+    GuiRequestEvaluation.srv
 )
 
 

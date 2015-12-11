@@ -34,6 +34,7 @@
 #include <ogm_msgs/MapsMsg.h>
 #include <ogm_msgs/LoadExternalMap.h>
 #include <ogm_msgs/LoadMaps.h>
+#include <ogm_msgs/GuiRequestEvaluation.h>
 #include "ogm_gui/ogm_gui_connector.h"
 #include "ogm_gui/ogm_validation_connector.h"
 #include "ogm_gui/ogm_map_connector.h"
@@ -109,6 +110,12 @@ namespace ogm_gui
 
       //!< Object of CMapConnector
       CMapConnector map_connector_;
+
+      //!< OMSE metric result
+      double omse_;
+
+      //!< CMSE metric result
+      double cmse_;
 
        //------------------------------------------------------------------------//
     public:
@@ -192,6 +199,10 @@ namespace ogm_gui
       void scaleMap(double s);
 
       void changeMapTransparency(double t);
+
+      void requestOmseMetric();
+
+      void requestCmseMetric();
 
       //------------------------------------------------------------------------//
     Q_SIGNALS:

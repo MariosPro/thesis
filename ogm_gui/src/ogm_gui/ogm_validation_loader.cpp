@@ -34,39 +34,23 @@ namespace ogm_gui
     argv_(argv)
   {
     setupUi(this);
-    int x = this->validationTabWidget->indexOf(metricsTab);
-    ROS_INFO_STREAM("X=" <<  x);
-    ogmInformationTree->header()->setDefaultSectionSize(20);
-    ogmInformationTree->header()->setMinimumSectionSize(10);
-    ogmInformationTree->setColumnCount(4);
-    ogmInformationTree->setColumnWidth(0, 20);
-    ogmInformationTree->setColumnWidth(1, 20);
-    ogmInformationTree->setColumnWidth(2, 20);
-    ogmInformationTree->setColumnWidth(3, 20);
-    
-    QStringList ColumnNames;
-    ColumnNames << "" << "" << "" << "" << "";
- 
-    ogmInformationTree->setHeaderLabels(ColumnNames);
-    
-    mapInfo.setText(0,"Maps Information");
-    mapEvaluation.setText(0, "Map Evaluation");
-    pathEvaluation.setText(0, "Path Evaluation");
-    metrics.setText(0, "Image Evaluation General Metrics");
-    structEvaluation.setText(0, "Structural Evaluation");
-    featEvaluation.setText(0, "Feature-based Evaluation");
-    mapEvaluation.addChild(&metrics);
-    mapEvaluation.addChild(&structEvaluation);
-    mapEvaluation.addChild(&featEvaluation);
-     
-    ogmInformationTree->addTopLevelItem(&mapInfo);
-    ogmInformationTree->addTopLevelItem(&mapEvaluation);
-    ogmInformationTree->addTopLevelItem(&pathEvaluation);
-    mapInfo.setExpanded(true);
-    mapEvaluation.setExpanded(true);
-    pathEvaluation.setExpanded(true);
-
   
+    obstaclePushButton->setIcon(QIcon(QString::fromUtf8((
+      ogm_gui_tools::getRosPackagePath("ogm_gui") +
+      std::string("/resources/images/translate_down.png")).c_str())));
+ 
+    obstacleSettingsPushButton->setIcon(QIcon(QString::fromUtf8((
+      ogm_gui_tools::getRosPackagePath("ogm_gui") +
+      std::string("/resources/images/properties.png")).c_str())));
+
+    cornerPushButton->setIcon(QIcon(QString::fromUtf8((
+      ogm_gui_tools::getRosPackagePath("ogm_gui") +
+      std::string("/resources/images/translate_down.png")).c_str())));
+ 
+    cornerSettingsPushButton->setIcon(QIcon(QString::fromUtf8((
+      ogm_gui_tools::getRosPackagePath("ogm_gui") +
+      std::string("/resources/images/properties.png")).c_str())));
+
     posxSpinBox->setRange(-1000, 1000);
     posySpinBox->setRange(-1000, 1000);
     rotationSpinBox->setRange(0, 360);
@@ -110,14 +94,14 @@ namespace ogm_gui
   **/
   void CValidationLoader::deleteTree(void)
   {
-    int count = mapInfo.childCount();
-    for(int i = count - 1 ; i >= 0 ; i--)
-    {
-      //~ deleteTreeNode(mapInfo.child(i));
-      QTreeWidgetItem *child = mapInfo.child(i);
-      mapInfo.removeChild(mapInfo.child(i));
-      //~ delete child;
-    }
+/*    int count = mapInfo.childCount();*/
+    //for(int i = count - 1 ; i >= 0 ; i--)
+    //{
+      ////~ deleteTreeNode(mapInfo.child(i));
+      //QTreeWidgetItem *child = mapInfo.child(i);
+      //mapInfo.removeChild(mapInfo.child(i));
+      ////~ delete child;
+    /*}*/
   }
 
   /**
@@ -129,26 +113,18 @@ namespace ogm_gui
   **/
   void CValidationLoader::updateMapInfo(float width, float height, float ocgd, bool groundTruth)
   {
-      QTreeWidgetItem *mnode = new QTreeWidgetItem();
-      if(groundTruth)
-       mnode->setText(0, QString("Ground Truth Map"));
+     if (groundTruth)
+      {
+        groundMapHeightLabel->setText("Ground Truth Map Height: " + QString().setNum(height) + QString(" m"));
+        groundMapWidthLabel->setText("Ground Truth Map Width: " + QString().setNum(width) + QString(" m"));
+        groundMapResLabel->setText("Ground Truth Map Resolution: " + QString().setNum(width) + QString(" m/px"));
+      }
       else
-       mnode->setText(0, QString("Slam-Produced Map"));
-
-      QTreeWidgetItem *mapWidth = new QTreeWidgetItem(),
-                    *mapHeight = new QTreeWidgetItem(),
-                    *mapOcgd = new QTreeWidgetItem();
-
-      mapWidth->setText(0,"Map Width");
-      mapWidth->setText(1, (QString().setNum(width) + QString(" m")));
-      mapHeight->setText(0, "Map Height");
-      mapHeight->setText(1, (QString().setNum(height) + QString(" m")));
-      mapOcgd->setText(0,"Map Resolution");
-      mapOcgd->setText(1, (QString().setNum(ocgd) + QString(" m/px")));
-      mnode->addChild(mapWidth);
-      mnode->addChild(mapHeight);
-      mnode->addChild(mapOcgd);
-      mapInfo.addChild(mnode);
+      {
+        producedMapHeightLabel->setText("SLAM Produced Map Height: " + QString().setNum(height) + QString(" m"));
+        producedMapWidthLabel->setText("SLAM Produced Map Width: " + QString().setNum(width) + QString(" m"));
+        producedMapResLabel->setText("SLAM Produced Map Resolution: " + QString().setNum(width) + QString(" m/px"));
+      }
   }
 
   void CValidationLoader::showMapXposition(qreal x)

@@ -70,6 +70,10 @@ namespace ogm_gui
 
       void resetMapProperties();
 
+      void displayOmseResult(double result);
+
+      void displayCmseResult(double result);
+
       /**
       @brief Returns the CValidationLoader object
       @return QWidget*
@@ -126,6 +130,14 @@ namespace ogm_gui
       void showMapScale(qreal s);
 
       void showMapTransparency(double t);
+
+      void obstacleTriggered();
+
+      void obstacleSettingsTriggered();
+
+      void cornerTriggered();
+
+      void cornerSettingsTriggered();
     //------------------------------------------------------------------------//
     Q_SIGNALS:
 
@@ -144,6 +156,10 @@ namespace ogm_gui
       void changeScale(double s);
 
       void changeTransparency(double t);
+
+      void omseMetricNeeded(void);
+
+      void cmseMetricNeeded(void);
 
   };
 }
