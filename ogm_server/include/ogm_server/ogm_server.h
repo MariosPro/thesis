@@ -38,7 +38,8 @@
 #include <ogm_msgs/LoadMap.h>
 #include <ogm_msgs/LoadMaps.h>
 #include <ogm_msgs/LoadExternalMap.h>
-
+#include <ogm_msgs/GuiRequestEvaluation.h>
+#include <ogm_msgs/ServerRequestEvaluation.h>
 /**
 @namespace ogm_server
 @brief The main namespace for OGM Server
@@ -107,6 +108,15 @@ namespace ogm_server {
       bool loadExternalMapCallback(ogm_msgs::LoadExternalMap::Request& req,
         ogm_msgs::LoadExternalMap::Response& res);
 
+      /**
+      @brief Service callback for map Evaluation request form GUI
+      @param req [ogm_msgs::GuiRequestEvaluation::Request&] The service request
+      @param res [ogm_msgs::GuiRequestEvaluation::Response&] The service response
+      @return bool
+      **/
+      bool guiRequestEvaluationCallback(ogm_msgs::GuiRequestEvaluation::Request& req,
+        ogm_msgs::GuiRequestEvaluation::Response& res);
+
     private:
 
       //!< THe ROS node handle
@@ -121,6 +131,8 @@ namespace ogm_server {
       ros::ServiceServer _loadMapsService;
       //!< Service server for loading maps from GUI
       ros::ServiceServer _loadExternalMapService;
+      //!< Service server for mapEvaluation
+      ros::ServiceServer _guiRequestEvaluationService;
       //!< ROS publisher for posting the map
       ros::Publisher map_pub;
       //!< ROS publisher for posting the map metadata

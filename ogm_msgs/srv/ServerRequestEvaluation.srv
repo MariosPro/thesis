@@ -1,5 +1,5 @@
 string method
-ogm_msgs/MapPose pose
+ogm_msgs/MapPose transform
 nav_msgs/OccupancyGrid groundTruthMap
 nav_msgs/OccupancyGrid slamMap
 ---

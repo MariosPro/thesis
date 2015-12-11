@@ -56,6 +56,9 @@ namespace ogm_server
     _loadMapsService = _nh.advertiseService(
      "/ogm_server/load_maps", &Server::loadMapsCallback, this);
 
+    _guiRequestEvaluationService = _nh.advertiseService(
+     "/ogm_server/gui_map_evaluation", &Server::guiRequestEvaluationCallback, this);
+
   }
 
   /**
@@ -125,6 +128,48 @@ namespace ogm_server
 
     return true;
   }
+
+  /**
+  @brief Service callback for map Evaluation request form GUI
+  @param req [ogm_msgs::GuiRequestEvaluation::Request&] The service request
+  @param res [ogm_msgs::GuiRequestEvaluation::Response&] The service response
+  @return bool
+  **/
+  bool Server::guiRequestEvaluationCallback(
+    ogm_msgs::GuiRequestEvaluation::Request& req,
+    ogm_msgs::GuiRequestEvaluation::Response& res)
+  {
+    ros::ServiceClient client;
+    ogm_msgs::ServerRequestEvaluation srv;
+
+   while (!ros::service::waitForService
+       ("/ogm_evaluation/map_evaluation", ros::Duration(.1)) &&
+         ros::ok())
+    {
+       ROS_WARN
+         ("Trying to register to /ogm_evaluation/map_evaluation..");
+    }
+
+    client = _nh.serviceClient<ogm_msgs::ServerRequestEvaluation>
+       ("/ogm_evaluation/map_evaluation", true);
+
+    srv.request.method = req.method;
+    srv.request.transform = req.transform;
+    srv.request.groundTruthMap = _groundTruthMap->getMap();
+    srv.request.slamMap = _slamMap->getMap();
+
+    if (client.call(srv)) 
+    {
+      ROS_INFO("Map Evaluation metric succesfully completed");
+      res.result =  srv.response.result ;
+    }
+    else
+    {
+       ROS_ERROR("Map Evaluation request failed...");
+    }
+
+  }
+
 
   /**
   @brief Publishes the map data and metadata
