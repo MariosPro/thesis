@@ -443,15 +443,15 @@ namespace ogm_gui
     ogm_msgs::GuiRequestEvaluation srv;
 
     while (!ros::service::waitForService
-       ("/ogm_server/gui_map_evaluation", ros::Duration(.1)) &&
+       ("/ogm_server/map_evaluation", ros::Duration(.1)) &&
          ros::ok())
     {
        ROS_WARN
-         ("Trying to register to /ogm_server/gui_map_evaluation...");
+         ("Trying to register to /ogm_server/map_evaluation...");
     }
 
     client = n_.serviceClient<ogm_msgs::GuiRequestEvaluation>
-       ("/ogm_server/gui_map_evaluation", true);
+       ("/ogm_server/map_evaluation", true);
 
     QPointF pos =  map_connector_.getPosition();
     qreal rot =  map_connector_.getRotation(); 
@@ -480,15 +480,15 @@ namespace ogm_gui
     ogm_msgs::GuiRequestEvaluation srv;
 
     while (!ros::service::waitForService
-       ("/ogm_server/gui_map_evaluation", ros::Duration(.1)) &&
+       ("/ogm_server/map_evaluation", ros::Duration(.1)) &&
          ros::ok())
     {
        ROS_WARN
-         ("Trying to register to /ogm_server/gui_map_evaluation...");
+         ("Trying to register to /ogm_server/map_evaluation...");
     }
 
     client = n_.serviceClient<ogm_msgs::GuiRequestEvaluation>
-       ("/ogm_server/gui_map_evaluation", true);
+       ("/ogm_server/map_evaluation", true);
 
     QPointF pos =  map_connector_.getPosition();
     qreal rot =  map_connector_.getRotation(); 
