@@ -117,13 +117,13 @@ namespace ogm_gui
       {
         groundMapHeightLabel->setText("Ground Truth Map Height: " + QString().setNum(height) + QString(" m"));
         groundMapWidthLabel->setText("Ground Truth Map Width: " + QString().setNum(width) + QString(" m"));
-        groundMapResLabel->setText("Ground Truth Map Resolution: " + QString().setNum(width) + QString(" m/px"));
+        groundMapResLabel->setText("Ground Truth Map Resolution: " + QString().setNum(ocgd) + QString(" m/px"));
       }
       else
       {
         producedMapHeightLabel->setText("SLAM Produced Map Height: " + QString().setNum(height) + QString(" m"));
         producedMapWidthLabel->setText("SLAM Produced Map Width: " + QString().setNum(width) + QString(" m"));
-        producedMapResLabel->setText("SLAM Produced Map Resolution: " + QString().setNum(width) + QString(" m/px"));
+        producedMapResLabel->setText("SLAM Produced Map Resolution: " + QString().setNum(ocgd) + QString(" m/px"));
       }
   }
 

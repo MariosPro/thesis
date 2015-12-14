@@ -48,6 +48,7 @@ namespace ogm_gui
            qreal xCoord;
            qreal yCoord;
            qreal rot;
+           bool itemChangeLock;
 
     //------------------------------------------------------------------------//
     public:

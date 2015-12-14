@@ -31,17 +31,21 @@ namespace ogm_gui
   CMapItem::CMapItem()
   {
     factor = 1.05;
+    itemChangeLock = false;
   }
 
   QVariant CMapItem::itemChange(GraphicsItemChange change, const QVariant & value)
   {
-    if (change == ItemPositionChange && scene()) 
+    if(!itemChangeLock)
     {
-      setPos( x(),  y());
-      Q_EMIT posChanged(x(), y());
+      if ((change == ItemPositionHasChanged || change == ItemRotationHasChanged || change == ItemScaleHasChanged) && scene()) 
+      {
+        QPointF sp = scenePos();
+        //setPos( sp.x(),  sp.y());
+        Q_EMIT posChanged(sp.x(), sp.y());
+      }
     }
-
-    return QGraphicsItem::itemChange(change, value);
+      return QGraphicsItem::itemChange(change, value); 
   }
 
   void CMapItem::setMapRotation(int r)
@@ -68,6 +72,7 @@ namespace ogm_gui
   **/
   void CMapItem::keyPressEvent(QKeyEvent *event)
   {
+    itemChangeLock = true;
 
     setTransformOriginPoint(QPointF(this->boundingRect().center()));
     QPointF sp;
@@ -142,6 +147,7 @@ namespace ogm_gui
     /*  qDebug() << "pos=" << x() <<" " <<y();*/
       /*qDebug() << "scenePos=" << scenePos() << sceneTransform();*/
     }
+    itemChangeLock = false;
   }
  }
 

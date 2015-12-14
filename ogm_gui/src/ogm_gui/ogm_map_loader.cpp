@@ -126,36 +126,47 @@ namespace ogm_gui
   void CMapLoader::updateImage(QImage *img, bool groundTruth)
   {
     //internal_img_ = img;
+    std::pair<int,int> newDims;
+    newDims.first = img->width();
+    newDims.second = img->height();
+
     if(groundTruth)
     {
-     std::pair<int,int> newDims = checkDimensions(img->width(), img->height(), 
-                                                 this->width(), this->height());
+/*     std::pair<int,int> newDims = checkDimensions(img->width(), img->height(), */
+                                                 /*this->width(), this->height());*/
       ground_truth_map->setPixmap(
         QPixmap().fromImage((
             *img).scaled(newDims.first,newDims.second,
                 Qt::IgnoreAspectRatio,
                 Qt::SmoothTransformation)));
-      mapGraphicsView->resize(newDims.first, newDims.second);
-      scene->setSceneRect(0, 0, newDims.first, newDims.second);
-      mapGraphicsView->fitInView(scene->sceneRect());
+      if(newDims.first > slam_map->boundingRect().width() && newDims.second > slam_map->boundingRect().height())
+      {
+        mapGraphicsView->resize(newDims.first, newDims.second);
+        scene->setSceneRect(0, 0, newDims.first, newDims.second);
+        mapGraphicsView->fitInView(scene->sceneRect());
+      }
     }
       else
       {
-        std::pair<int,int> newDims = checkDimensions(img->width(), img->height(), 
-                                                 ground_truth_map->boundingRect().width(),
-                                                 ground_truth_map->boundingRect().height());
+/*        std::pair<int,int> newDims = checkDimensions(img->width(), img->height(), */
+                                                 //ground_truth_map->boundingRect().width(),
+                                                 /*ground_truth_map->boundingRect().height());*/
         QPixmap pixmap = QPixmap::fromImage(
-              (*img).scaled(newDims.first, newDims.second,
+              (*img).scaled(newDims.first,newDims.second,
                   Qt::IgnoreAspectRatio,
                   Qt::SmoothTransformation));
         makeTransparent(&pixmap, transparency);
         slam_map->setPixmap(pixmap);
 
-      /*mapGraphicsView->resize(newDims.first, newDims.second);*/
-      //scene->setSceneRect(0, 0, newDims.first, newDims.second);
-      /*mapGraphicsView->fitInView(scene->sceneRect());*/
+      if(newDims.first > ground_truth_map->boundingRect().width() && newDims.second > ground_truth_map->boundingRect().height())
+      {
+      mapGraphicsView->resize(newDims.first, newDims.second);
+      scene->setSceneRect(0, 0, newDims.first, newDims.second);
+      mapGraphicsView->fitInView(scene->sceneRect());
+      }
     }
-  }
+  }//.scaled(newDims.first, newDims.second,
+
 
   /**
   @brief Makes the image transparent
