@@ -26,7 +26,7 @@
 **/
 int main(int argc, char** argv) {
 
-  ros::init(argc, argv, "ogm_evaluation");
+  ros::init(argc, argv, "ogm_evaluation_node");
 
   ogm_evaluation::MapEvaluator evaluator(argc, argv);
 

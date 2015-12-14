@@ -160,12 +160,13 @@ namespace ogm_server
 
     if (client.call(srv)) 
     {
-      ROS_INFO("Map Evaluation metric succesfully completed");
+      ROS_INFO("[ogm_server] Map Evaluation metric succesfully completed");
       res.result =  srv.response.result ;
     }
     else
     {
-       ROS_ERROR("Map Evaluation request failed...");
+       ROS_ERROR("[ogm_server] Map Evaluation request failed...");
+       return false;
     }
 
     return true;

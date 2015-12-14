@@ -22,6 +22,7 @@
 #include <ros/ros.h>
 #include <opencv2/opencv.hpp>
 #include "ogm_msgs/ServerRequestEvaluation.h"
+#include "ogm_msgs/MapPose.h"
 
 /**
 @namespace ogm_evaluation
@@ -59,7 +60,14 @@ namespace ogm_evaluation
       @oaram map [const nav_msgs::OccupancyGrid&] the OccupancyGrid map
       @return void
       **/
-      void convertOccupancyGridToCvMat(const nav_msgs::OccupancyGrid& map);
+      cv::Mat mapToMat(const nav_msgs::OccupancyGrid& map);
+
+      /**
+      @brief Method that aligns the two maps using the transform received from server
+      @return void
+      **/
+      void alignMaps();
+
     private:
 
         //!< The Ros node Handle
@@ -73,6 +81,9 @@ namespace ogm_evaluation
 
         //!< the slam produced map
         cv::Mat _slamMap;
+
+        //!<  the transform converting slamMap to groundTruthMap Coordinates System
+        ogm_msgs::MapPose transform;
   };
 }
 #endif

@@ -40,6 +40,13 @@ namespace ogm_evaluation
   bool MapEvaluator::evaluationCallback(ogm_msgs::ServerRequestEvaluation::Request& req,
     ogm_msgs::ServerRequestEvaluation::Response& res)
   {
+    _groundTruthMap = mapToMat(req.groundTruthMap);
+    _slamMap = mapToMat(req.slamMap);
+    cv::imshow("groundTruthMap", _groundTruthMap );
+    cv::waitKey(30);
+    cv::imshow("slamMap", _slamMap);
+    cv::waitKey(30);
+
     if (req.method == "OMSE")
     {
 
@@ -53,7 +60,9 @@ namespace ogm_evaluation
     else
     {
       ROS_ERROR("No such evaluation method");
+      return false;
     }
+    return true;
   }
 
   /**
@@ -61,8 +70,38 @@ namespace ogm_evaluation
   @oaram map [const nav_msgs::OccupancyGrid&] the OccupancyGrid map
   @return void
   **/
-  void MapEvaluator::convertOccupancyGridToCvMat(const nav_msgs::OccupancyGrid& map)
+  cv::Mat MapEvaluator::mapToMat(const nav_msgs::OccupancyGrid& map)
+  {
+    cv::Mat im(map.info.height, map.info.width, CV_8UC1);
+    
+    if (map.info.height*map.info.width != map.data.size())
+    {
+        ROS_ERROR("Data size doesn't match width*height: width = %d, height = %d, data size = %zu", map.info.width, map.info.height, map.data.size());
+    }
+
+    // transform the map in the same way the map_saver component does
+    for (size_t i=0; i < map.info.height*map.info.width; i++)
+    {
+        if (map.data.at(i) == -1)
+        {
+            im.data[i] = 127;
+        }
+        else
+        {
+          im.data[i] = (100.0 - map.data.at(i))/100.0 *255.0;
+        }
+    }
+
+    return im;
+  }
+
+  /**
+  @brief Method that aligns the two maps using the transform received from server
+  @return void
+  **/
+  void MapEvaluator::alignMaps()
   {
     
   }
+
 }  // namespace ogm_evaluation

@@ -465,12 +465,12 @@ namespace ogm_gui
     if (client.call(srv)) 
     {
       omse_ = srv.response.result;
-      ROS_INFO_STREAM("OMSE metric successfully calculated OMSE=" << omse_);
+      ROS_INFO_STREAM("[ogm_gui] OMSE metric successfully calculated OMSE=" << omse_);
       validation_connector_.displayOmseResult(omse_);
     }
     else
     {
-       ROS_ERROR("Could not calculate OMSE..");
+       ROS_ERROR("[ogm_gui] OMSE not received..");
     }
   }
 
@@ -502,12 +502,12 @@ namespace ogm_gui
     if (client.call(srv)) 
     {
       cmse_ = srv.response.result;
-      ROS_INFO_STREAM("Corner metric successfully calculated CMSE=" << omse_);
+      ROS_INFO_STREAM("[omg_gui] Corner metric successfully calculated CMSE=" << omse_);
       validation_connector_.displayCmseResult(cmse_);
     }
     else
     {
-       ROS_ERROR("Could not calculate CMSE..");
+       ROS_ERROR("[ogm_gui] CMSE not received..");
     }
   }
 

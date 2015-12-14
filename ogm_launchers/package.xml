@@ -19,6 +19,7 @@
 
   <depend>ogm_server</depend>
   <depend>ogm_gui</depend>
+  <depend>ogm_evaluation</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

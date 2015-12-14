@@ -20,7 +20,7 @@ catkin_package(
   INCLUDE_DIRS 
     include
   LIBRARIES
-  ogm_evaluator
+  ogm_evaluation
   CATKIN_DEPENDS
     roscpp
     cv_bridge
@@ -33,18 +33,18 @@ catkin_package(
 add_library(ogm_metric_base src/ogm_evaluation/ogm_evaluation_metrics/metric_base.cpp)
 target_link_libraries(ogm_metric_base ${catkin_LIBRARIES})
 
-add_library (ogm_evaluator src/ogm_evaluation/ogm_evaluation.cpp)
-add_dependencies(ogm_evaluator ogm_msgs_gencpp) #wait for ogm_msgs to be build
-target_link_libraries(ogm_evaluator ${catkin_LIBRARIES})
+add_library (ogm_evaluation src/ogm_evaluation/ogm_evaluation.cpp)
+add_dependencies(ogm_evaluation ogm_msgs_gencpp) #wait for ogm_msgs to be build
+target_link_libraries(ogm_evaluation ${catkin_LIBRARIES})
 
-add_executable(ogm_evaluation src/ogm_evaluation/ogm_evaluation_node.cpp)
-add_dependencies(ogm_evaluation ogm_msgs_gencpp) # wait for ogm_msgs to be build
-target_link_libraries(ogm_evaluation ${catkin_LIBRARIES} ogm_evaluator)
+add_executable(ogm_evaluation_node src/ogm_evaluation/ogm_evaluation_node.cpp)
+add_dependencies(ogm_evaluation_node ogm_msgs_gencpp) # wait for ogm_msgs to be build
+target_link_libraries(ogm_evaluation_node ${catkin_LIBRARIES} ogm_evaluation)
 
 # Install libraries
 install(TARGETS
     ogm_metric_base
-    ogm_evaluator
+    ogm_evaluation
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
@@ -56,6 +56,6 @@ install(DIRECTORY include/${PROJECT_NAME}/
 )
 
 # Install excecutables
-install(TARGETS ogm_evaluation
+install(TARGETS ogm_evaluation_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
