@@ -49,10 +49,14 @@ namespace ogm_gui
            qreal yCoord;
            qreal rot;
            bool itemChangeLock;
+           qreal offsetScale;
 
     //------------------------------------------------------------------------//
     public:
 
+           bool translated;
+           bool rotated;
+           bool scaled;
       /**
       @brief Default contructor
       @return void
@@ -62,7 +66,11 @@ namespace ogm_gui
       QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
       void setMapRotation(int r);
+
       void setMapScale(double s);
+
+      void setInitialMapScale(double s);
+
       /**
       @brief Captures the keypress event
       @param event [QKeyEvent*] The key event

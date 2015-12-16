@@ -145,11 +145,11 @@ namespace ogm_gui
       
       initial_map_ = running_map_ = QImage((
         ogm_gui_tools::getRosPackagePath("ogm_resources") +
-        std::string("/maps/slam_env_2.png")).c_str());
+        std::string("/maps/slam_env_1.png")).c_str());
 
       initial_slam_map_ = slam_map_ = QImage((
         ogm_gui_tools::getRosPackagePath("ogm_resources") +
-        std::string("/maps/slam_final_2.png")).c_str());
+        std::string("/maps/slam_final_1.png")).c_str());
 
       nav_msgs::OccupancyGrid map;
       map.info.width = initial_map_.width();

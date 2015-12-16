@@ -54,7 +54,19 @@ namespace ogm_gui
       QImage*  internal_img_;
 
       double transparency;
-      
+
+      int groundTruthMapWidth;
+
+      int groundTruthMapHeight;
+
+      int slamMapWidth;
+
+      int slamMapHeight;
+
+      float offsetScale;
+
+      bool offsetNotSet;
+
       /**
       @brief Return the dimensions according to the container size
       @param w [int] Image width

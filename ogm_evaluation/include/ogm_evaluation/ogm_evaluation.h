@@ -19,6 +19,8 @@
 #ifndef OGM_EVALUATION_H
 #define OGM_EVALUATION_H
 
+#include <vector>
+#include <math.h> 
 #include <ros/ros.h>
 #include <opencv2/opencv.hpp>
 #include "ogm_msgs/ServerRequestEvaluation.h"
@@ -83,7 +85,7 @@ namespace ogm_evaluation
         cv::Mat _slamMap;
 
         //!<  the transform converting slamMap to groundTruthMap Coordinates System
-        ogm_msgs::MapPose transform;
+        ogm_msgs::MapPose _transform;
   };
 }
 #endif

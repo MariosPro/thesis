@@ -71,6 +71,12 @@ namespace ogm_gui
       //!< True if map is initialized
       bool map_initialized_;
 
+      bool translated;
+
+      bool rotated;
+
+      bool scaled;
+
     //------------------------------------------------------------------------//
     public:
 

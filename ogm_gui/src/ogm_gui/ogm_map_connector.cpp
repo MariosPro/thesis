@@ -62,7 +62,8 @@ namespace ogm_gui{
     zoom_out_cursor_ = QCursor(p.scaled(20,20));
 
     bool map_initialized_ = false;
-  }
+    
+   }
 
   /**
   @brief Default destructor

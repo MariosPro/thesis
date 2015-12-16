@@ -42,6 +42,10 @@ namespace ogm_evaluation
   {
     _groundTruthMap = mapToMat(req.groundTruthMap);
     _slamMap = mapToMat(req.slamMap);
+    ROS_INFO_STREAM("GROUND TRUTH MAP SIZE=" << _groundTruthMap.size());
+    ROS_INFO_STREAM("SLAM MAP SIZE=" << _slamMap.size());
+    alignMaps();
+    _transform = req.transform;
     cv::imshow("groundTruthMap", _groundTruthMap );
     cv::waitKey(30);
     cv::imshow("slamMap", _slamMap);
@@ -101,7 +105,51 @@ namespace ogm_evaluation
   **/
   void MapEvaluator::alignMaps()
   {
+    cv::Mat translation(2, 3, CV_32FC1);
+    cv::Mat rotation,temp, temp1;
+    translation.at<float>(0, 0) = 1;
+    translation.at<float>(0, 1) = 0;
+    translation.at<float>(0, 2) = _transform.pose.x; // * _transform.scale;
+    translation.at<float>(1, 0) = 0;
+    translation.at<float>(1, 1) = 1;
+    translation.at<float>(1, 2) = _transform.pose.y; // * _transform.scale;
+    cv::Size s;
+    s.width = _transform.scale * _slamMap.cols + abs(_transform.pose.x);
+    s.height = _transform.scale * _slamMap.rows + abs( _transform.pose.y);
     
+  /*  std::vector<cv::Point> srcPoints;*/
+    //if( _transform.pose.x > 0 && _transform.pose.y > 0)
+    //{   
+      //srcPoints.push_back(cv::Point(0, 0));
+      //srcPoints.push_back(cv::Point(_slamMap.cols + _transform.pose.x, 0));
+      //srcPoints.push_back(cv::Point(0, _slamMap.rows + _transform.pose.y));
+      //srcPoints.push_back(cv::Point(_slamMap.cols + _transform.pose.x, _slamMap.rows + _transform.pose.y));
+      ////cv::transform(srcPoints, srcPoints, translation);
+      //cv::Rect box(srcPoints[0], srcPoints[3]);
+    /*}*/
+
+ /*   ROS_INFO_STREAM("box SIZE=" <<box.size()<< " " <<box.tl() << " " << box.br());*/
+    ////translation.at<float>(0, 2) =  _transform.pose.; // * _transform.scale;
+    ////translation.at<float>(1, 2) =  box.tl().y; // * _transform.scale;
+    //ROS_INFO_STREAM("SIZE=" <<_slamMap.size());
+    //cv::warpAffine(_slamMap, _slamMap, translation, box.size());
+    /*ROS_INFO_STREAM("SIZE after=" <<_slamMap.size());*/
+    cv::Point2f center(_slamMap.cols/2.0,  _slamMap.rows/2.0);
+    cv::Rect bbox = cv::RotatedRect(center, _slamMap.size(), -_transform.pose.theta).boundingRect();
+  /*  bbox.width += abs(_transform.pose.x);*/
+    /*bbox.height += abs(_transform.pose.y);*/
+    rotation = getRotationMatrix2D(center, -_transform.pose.theta, _transform.scale);
+    //rotation.at<double>(0,2) += bbox.width/2.0 - center.x; //+ _transform.pose.x;
+    //rotation.at<double>(1,2) += bbox.height/2.0 -center.y;// + _transform.pose.y;
+    cv::warpAffine(_slamMap, temp1, rotation, _slamMap.size(), CV_INTER_CUBIC);
+    _slamMap = temp1.clone();
+    ROS_INFO_STREAM("GROUND TRUTH MAP SIZE after=" << _groundTruthMap.size());
+    ROS_INFO_STREAM("SLAM MAP SIZE after=" << _slamMap.size());
+    ROS_INFO_STREAM("X=" << _transform.pose.x);
+    ROS_INFO_STREAM("Y=" << _transform.pose.y);
+    ROS_INFO_STREAM("theta=" << _transform.pose.theta);
+    ROS_INFO_STREAM("scale=" << _transform.scale);
+
   }
 
 }  // namespace ogm_evaluation
