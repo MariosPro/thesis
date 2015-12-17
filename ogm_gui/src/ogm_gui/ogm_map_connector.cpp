@@ -39,11 +39,11 @@ namespace ogm_gui{
     //loader_.mapGraphicsView->setScaledContents(true);
 
     QObject::connect(
-      loader_.slam_map, SIGNAL(posChanged(qreal, qreal)),
+      loader_.ground_truth_map, SIGNAL(posChanged(qreal, qreal)),
       this, SIGNAL(mapPosChanged(qreal, qreal)));
  
     QObject::connect(
-      loader_.slam_map, SIGNAL(rotationChanged(qreal)),
+      loader_.ground_truth_map, SIGNAL(rotationChanged(qreal)),
       this, SIGNAL(mapRotationChanged(qreal)));
  
     QObject::connect(

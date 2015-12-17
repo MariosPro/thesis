@@ -143,13 +143,13 @@ namespace ogm_gui
   {
       gui_connector_.addToGrid(validation_connector_.getLoader(), 0, 0, 0, 0);
       
-      initial_map_ = running_map_ = QImage((
-        ogm_gui_tools::getRosPackagePath("ogm_resources") +
-        std::string("/maps/slam_env_1.png")).c_str());
-
       initial_slam_map_ = slam_map_ = QImage((
         ogm_gui_tools::getRosPackagePath("ogm_resources") +
         std::string("/maps/slam_final_1.png")).c_str());
+ 
+      initial_map_ = running_map_ = QImage((
+        ogm_gui_tools::getRosPackagePath("ogm_resources") +
+        std::string("/maps/slam_env_1.png")).c_str());
 
       nav_msgs::OccupancyGrid map;
       map.info.width = initial_map_.width();
@@ -165,8 +165,8 @@ namespace ogm_gui
       validation_connector_.updateMapInfo(maps_);
       validation_connector_.resetMapProperties();
 
-      map_connector_.updateImage(&running_map_, true);
       map_connector_.updateImage(&slam_map_, false);
+      map_connector_.updateImage(&running_map_, true);
 
       gui_connector_.addToGrid(map_connector_.getLoader(), 0, 1, 0, 0);
 
@@ -394,8 +394,8 @@ namespace ogm_gui
       map_connector_.drawGrid(&running_map_, maps_.groundTruthMap.info.resolution);
       map_connector_.drawGrid(&slam_map_, maps_.slamMap.info.resolution);
     }
-    map_connector_.updateImage(&running_map_, true);
     map_connector_.updateImage(&slam_map_, false);
+    map_connector_.updateImage(&running_map_, true);
 
       gui_connector_.setStatusBarMessage(
       QString("Time elapsed : ") +

@@ -36,13 +36,12 @@ namespace ogm_gui
     scene = new QGraphicsScene(mapGraphicsView);
     ground_truth_map = new CMapItem();
     slam_map = new CMapItem();
-    scene->addItem(ground_truth_map);
     scene->addItem(slam_map);
-    slam_map->setFlag(QGraphicsItem::ItemIsMovable);
-    slam_map->setFlag(QGraphicsItem::ItemIsFocusable);
-    slam_map->setFlag(QGraphicsItem::ItemSendsGeometryChanges);
-    //slam_map->setAcceptHoverEvents(true);
-    slam_map->setFocus();
+    scene->addItem(ground_truth_map);
+    ground_truth_map->setFlag(QGraphicsItem::ItemIsMovable);
+    ground_truth_map->setFlag(QGraphicsItem::ItemIsFocusable);
+    ground_truth_map->setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+    ground_truth_map->setFocus();
     mapGraphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     mapGraphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     mapGraphicsView->setScene(scene);
@@ -58,34 +57,34 @@ namespace ogm_gui
   **/
   void CMapLoader::resetMap()
   {
-      slam_map->setPos(0 ,0);
-      slam_map->setRotation(0);
-      slam_map->setScale(1.0);
+      ground_truth_map->setPos(0 ,0);
+      ground_truth_map->setRotation(0);
+      ground_truth_map->setScale(1.0);
   }
 
   void CMapLoader::setMapXposition(double x)
   {
-    slam_map->setPos(x, slam_map->y());
+    ground_truth_map->setPos(x, slam_map->y());
 
   }
 
   void CMapLoader::setMapYposition(double y)
   {
-    slam_map->setPos(slam_map->x(), y);
+    ground_truth_map->setPos(slam_map->x(), y);
   }
 
   void CMapLoader::setMapRotation(int r)
   {
-    /*slam_map->setTransformOriginPoint(QPointF(slam_map->boundingRect().center()));*/
-    /*slam_map->setRotation(r);*/
-    slam_map->setMapRotation(r);
+    /*ground_truth_map->setTransformOriginPoint(QPointF(slam_map->boundingRect().center()));*/
+    /*ground_truth_map->setRotation(r);*/
+    ground_truth_map->setMapRotation(r);
   }
  
   void CMapLoader::setMapScale(double s)
   {
-/*    slam_map->setTransformOriginPoint(QPointF(slam_map->boundingRect().center()));*/
-    /*slam_map->setScale(s);*/
-    slam_map->setMapScale(s);
+/*    ground_truth_map->setTransformOriginPoint(QPointF(slam_map->boundingRect().center()));*/
+    /*ground_truth_map->setScale(s);*/
+    ground_truth_map->setMapScale(s);
   }
 
   void CMapLoader::setMapTransparency(double t)
@@ -135,13 +134,13 @@ namespace ogm_gui
     std::pair<int,int> newDims;
     /*newDims.first = img->width();*/
     /*newDims.second = img->height();*/
-  /*  ROS_INFO_STREAM("container WIDTH=" << this->width());*/
-    /*ROS_INFO_STREAM("container HEIGHT=" << this->height());*/
+    ROS_INFO_STREAM("container WIDTH=" << this->width());
+    ROS_INFO_STREAM("container HEIGHT=" << this->height());
 
-    if(groundTruth)
+    if(!groundTruth)
     {
-     groundTruthMapWidth = img->width();
-     groundTruthMapHeight =  img->height();
+     slamMapWidth = img->width();
+     slamMapHeight =  img->height();
 /*     ROS_INFO_STREAM("GROUND WIDTH=" << groundTruthMapWidth);*/
      /*ROS_INFO_STREAM("GROUND HEIGHT=" << groundTruthMapHeight);*/
      /*ROS_INFO_STREAM("ASPECT RATIO BEFORE=" << groundTruthMapWidth / (float)groundTruthMapHeight);*/
@@ -149,16 +148,16 @@ namespace ogm_gui
      std::pair<int,int> newDims = checkDimensions(img->width(), img->height(), 
                                                   this->width(), this->height());
  
-  /*   ROS_INFO_STREAM("GROUND WIDTH AFTER=" <<  ground_truth_map->boundingRect().width()) ;*/
-     /*ROS_INFO_STREAM("GROUND HEIGHT AFTER=" << ground_truth_map->boundingRect().height()) ;*/
-     /*ROS_INFO_STREAM("ASPECT RATIO AFTER=" << ground_truth_map->boundingRect().width() / (float)ground_truth_map->boundingRect().height()) ;*/
+  /*   ROS_INFO_STREAM("GROUND WIDTH AFTER=" <<  slam_map->boundingRect().width()) ;*/
+     /*ROS_INFO_STREAM("GROUND HEIGHT AFTER=" << slam_map->boundingRect().height()) ;*/
+     /*ROS_INFO_STREAM("ASPECT RATIO AFTER=" << slam_map->boundingRect().width() / (float)ground_truth_map->boundingRect().height()) ;*/
 
-      ground_truth_map->setPixmap(
+      slam_map->setPixmap(
         QPixmap().fromImage((
             *img).scaled(newDims.first,newDims.second,
                 Qt::IgnoreAspectRatio,
                 Qt::SmoothTransformation)));
-      /*if(newDims.first > slam_map->boundingRect().width() && newDims.second > slam_map->boundingRect().height())*/
+      if(newDims.first > ground_truth_map->boundingRect().width() && newDims.second > ground_truth_map->boundingRect().height())
       {
         mapGraphicsView->resize(newDims.first, newDims.second);
         scene->setSceneRect(0, 0, newDims.first, newDims.second);
@@ -167,8 +166,8 @@ namespace ogm_gui
     }
       else
       {
-        slamMapWidth = img->width();
-        slamMapHeight =  img->height();
+        groundTruthMapWidth = img->width();
+        groundTruthMapHeight =  img->height();
       /*  ROS_INFO_STREAM("SLAM WIDTH BEFORE=" << slamMapWidth);*/
         /*ROS_INFO_STREAM("SLAM HEIGHT BEFORE=" << slamMapHeight);*/
         /*ROS_INFO_STREAM("slam ASPECT RATIO BEFORE=" << slamMapWidth / (float) slamMapHeight);*/
@@ -188,7 +187,7 @@ namespace ogm_gui
                 Qt::IgnoreAspectRatio,
                 Qt::SmoothTransformation));
         makeTransparent(&pixmap, transparency);
-        slam_map->setPixmap(pixmap);
+        ground_truth_map->setPixmap(pixmap);
 
 /*        if(offsetNotSet)*/
         /*{*/
@@ -211,11 +210,11 @@ namespace ogm_gui
         /*ROS_INFO_STREAM("SCALE AFTER=" << nx << " " <<  ny);*/
 
 
-      if(newDims.first > ground_truth_map->boundingRect().width() && newDims.second > ground_truth_map->boundingRect().height())
+      if(newDims.first > slam_map->boundingRect().width() && newDims.second > slam_map->boundingRect().height())
       {
       mapGraphicsView->resize(newDims.first, newDims.second);
       scene->setSceneRect(0, 0, newDims.first, newDims.second);
-      mapGraphicsView->fitInView(scene->sceneRect());
+    mapGraphicsView->fitInView(scene->sceneRect());
       }
     }
  
@@ -267,8 +266,8 @@ namespace ogm_gui
   QPointF CMapLoader::getPosition()
   {
     QPointF p(0,0);
-    if (slam_map->translated)
-      return slam_map->scenePos();
+    if (ground_truth_map->translated)
+      return ground_truth_map->scenePos();
     else 
       return p;
   }
@@ -279,8 +278,8 @@ namespace ogm_gui
   **/
   qreal CMapLoader::getRotation()
   {
-    if(slam_map->rotated)
-      return slam_map->rotation();
+    if(ground_truth_map->rotated)
+      return ground_truth_map->rotation();
     else
       return 0;
   }
@@ -291,8 +290,8 @@ namespace ogm_gui
   **/
   qreal CMapLoader::getScale()
   {
-    if (slam_map->scaled)
-      return slam_map->scale();
+    if (ground_truth_map->scaled)
+      return ground_truth_map->scale();
     else
       return 1;
   }
@@ -303,7 +302,7 @@ namespace ogm_gui
   **/
   QTransform CMapLoader::getTransform()
   {
-    return slam_map->sceneTransform();
+    return ground_truth_map->sceneTransform();
   }
 
 }
