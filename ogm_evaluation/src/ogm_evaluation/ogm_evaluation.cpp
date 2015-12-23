@@ -122,6 +122,16 @@ namespace ogm_evaluation
     // resize slam produced map to offset scale
     cv::resize(_slamMap, _slamMap, cv::Size(), _transform.slamOffsetScale,  _transform.slamOffsetScale,  CV_INTER_CUBIC);
 
+    //"unknown" padding to fix images size
+    int paddedWidth, paddedHeight;
+    paddedHeight = abs(_slamMap.rows - _groundTruthMap.rows);
+    paddedWidth = abs(_slamMap.cols - _groundTruthMap.cols);
+ 
+    if(_slamMap.rows > _groundTruthMap.rows  &&  _slamMap.cols > _groundTruthMap.cols)
+      cv::copyMakeBorder(_groundTruthMap, _groundTruthMap, 0, paddedHeight, 0, paddedWidth, IPL_BORDER_CONSTANT, cv::Scalar(127));
+    else
+      cv::copyMakeBorder(_slamMap, _slamMap, 0, paddedHeight, 0, paddedWidth, IPL_BORDER_CONSTANT, cv::Scalar(127));
+
     ROS_INFO_STREAM("GROUND TRUTH MAP SIZE after=" << _groundTruthMap.size());
     ROS_INFO_STREAM("SLAM MAP SIZE after=" << _slamMap.size());
     ROS_INFO_STREAM("X=" << _transform.pose.x);
