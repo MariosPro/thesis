@@ -49,14 +49,10 @@ namespace ogm_gui
            qreal yCoord;
            qreal rot;
            bool itemChangeLock;
-           qreal offsetScale;
 
     //------------------------------------------------------------------------//
     public:
 
-           bool translated;
-           bool rotated;
-           bool scaled;
       /**
       @brief Default contructor
       @return void

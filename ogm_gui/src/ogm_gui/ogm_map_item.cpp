@@ -32,41 +32,26 @@ namespace ogm_gui
   {
     factor = 1.05;
     itemChangeLock = false;
-    rotated = false;
-    translated = false;
-    scaled = false;
   }
 
   QVariant CMapItem::itemChange(GraphicsItemChange change, const QVariant & value)
   {
     if(!itemChangeLock)
     {
-      if ((change == ItemPositionHasChanged || change == ItemRotationHasChanged || change == ItemScaleHasChanged) && scene()) 
+      if (change == ItemPositionHasChanged && scene()) 
       {
         QPointF sp = scenePos();
-        Q_EMIT posChanged(sp.x(), sp.y());
-        translated = true;
+        Q_EMIT posChanged(x(), y());
       }
     }
       return QGraphicsItem::itemChange(change, value); 
-  }
-
-  void CMapItem::setInitialMapScale(double s)
-  {
-    setTransformOriginPoint(QPointF(this->boundingRect().center()));
-    offsetScale = s;
-    setScale(offsetScale);
-    QPointF  sp = scenePos();
-    scaled = true;
-    Q_EMIT scaleChanged(scale());
   }
 
   void CMapItem::setMapRotation(int r)
   {
     setTransformOriginPoint(QPointF(this->boundingRect().center()));
     setRotation(r);
-    QPointF sp = scenePos();
-    rotated = true;
+    //QPointF sp = scenePos();
     //Q_EMIT posChanged(sp.x(), sp.y());
   }
 
@@ -74,8 +59,7 @@ namespace ogm_gui
   {
     setTransformOriginPoint(QPointF(this->boundingRect().center()));
     setScale(s);
-    QPointF  sp = scenePos();
-    scaled = true;
+    //QPointF  sp = scenePos();
     //Q_EMIT posChanged(sp.x(), sp.y());
     //Q_EMIT rotationChanged(rotation());
   }
@@ -94,36 +78,32 @@ namespace ogm_gui
     if (event->key() == Qt::Key_Left)
     {
       setPos(x() - 1, y());
-      sp = scenePos();
+      //sp = scenePos();
       Q_EMIT posChanged(x(), y());
-      translated = true;
       /*qDebug() << "pos=" << x() <<" " <<y();*/
       /*qDebug() << "scenePos=" << scenePos();*/
     }
     else if (event->key() == Qt::Key_Right)
     {
       setPos(x() + 1, y());
-      sp = scenePos();
+      //sp = scenePos();
       Q_EMIT posChanged(x(), y());
-      translated = true;
       /*qDebug() << "pos=" << x() <<" " <<y();*/
       /*qDebug() << "scenePos=" << scenePos();*/
     }
     else if (event->key() == Qt::Key_Up)
     {
       setPos(x(), y() - 1);
-      sp = scenePos();
+      //sp = scenePos();
       Q_EMIT posChanged(x(), y());
-      translated = true;
      /* qDebug() << "pos=" << x() <<" " <<y();*/
       /*qDebug() << "scenePos=" << scenePos();*/
     }
     else if (event->key() == Qt::Key_Down)
     {
       setPos(x(), y() + 1);
-      sp = scenePos();
+      //sp = scenePos();
       Q_EMIT posChanged(x(), y());
-      translated = true;
   /*    qDebug() << "pos=" << x() <<" " << y();*/
       /*qDebug() << "scenePos=" << scenePos();*/
     }
@@ -132,8 +112,7 @@ namespace ogm_gui
       setRotation(rotation() - 1);
       sp = scenePos();
       Q_EMIT rotationChanged(rotation());
-      Q_EMIT posChanged(sp.x(), sp.y());
-      rotated = true;
+      //Q_EMIT posChanged(sp.x(), sp.y());
 /*      qDebug() << "pos=" << x() <<" " <<y() << rotation();*/
       /*qDebug() << "scenePos=" << scenePos();*/
     }
@@ -142,8 +121,7 @@ namespace ogm_gui
       setRotation(rotation() + 1);
       sp = scenePos();
       Q_EMIT rotationChanged(rotation());
-      Q_EMIT posChanged(sp.x(), sp.y());
-      rotated = true;
+      //Q_EMIT posChanged(sp.x(), sp.y());
   /*    qDebug() << "pos=" << x() <<" " <<y();*/
       //qDebug() << "scenePos=" << scenePos();
     }
@@ -152,15 +130,11 @@ namespace ogm_gui
       setScale(scale() * factor);
       sp = scenePos();
       Q_EMIT scaleChanged(scale());
-      Q_EMIT posChanged(sp.x(), sp.y());
-      Q_EMIT rotationChanged(rotation());
-      scaled = true;
+      //Q_EMIT posChanged(sp.x(), sp.y());
+      //Q_EMIT rotationChanged(rotation());
       //qDebug() << "pos=" << x() <<" " <<y();
       //qDebug() << "scenePos=" << scenePos() << sceneTransform();
-      ROS_INFO_STREAM("SLAM WIDTH AFTER scaling = " <<  this->boundingRect().width() / offsetScale);
-      ROS_INFO_STREAM("SLAM HEIGHT AFTER scaling = " << this->boundingRect().height() / offsetScale);
-      ROS_INFO_STREAM("OFFSET=" << offsetScale);
-
+   
     }
 
     else if (event->key() == Qt::Key_Minus)
@@ -168,14 +142,10 @@ namespace ogm_gui
       setScale(scale() / factor);
       sp = scenePos();
       Q_EMIT scaleChanged(scale());
-      Q_EMIT posChanged(sp.x(), sp.y());
-      Q_EMIT rotationChanged(rotation());
-      scaled = true;
+      //Q_EMIT posChanged(sp.x(), sp.y());
+      //Q_EMIT rotationChanged(rotation());
     /*  qDebug() << "pos=" << x() <<" " <<y();*/
       /*qDebug() << "scenePos=" << scenePos() << sceneTransform();*/
-      ROS_INFO_STREAM("SLAM WIDTH AFTER scaling = " <<  this->boundingRect().width() / offsetScale);
-      ROS_INFO_STREAM("SLAM HEIGHT AFTER scaling = " << this->boundingRect().height() / offsetScale);
-      ROS_INFO_STREAM("OFFSET=" << offsetScale);
     }
 
     itemChangeLock = false;

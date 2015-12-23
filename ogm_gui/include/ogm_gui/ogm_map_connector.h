@@ -123,6 +123,18 @@ namespace ogm_gui
       qreal getScale();
 
       /**
+      @brief Returns the scaling of the slam Map
+      @return qreal : The scaling
+      **/
+      qreal getSlamMapScale();
+
+      /**
+      @brief Returns the scaling of the ground Truth Map
+      @return qreal : The scaling
+      **/
+      qreal getGroundTruthMapScale();
+
+      /**
       @brief Returns the item's scene transformation matrix
       @return QTransform : The transformation matrix
       **/

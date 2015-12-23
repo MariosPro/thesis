@@ -165,6 +165,7 @@ namespace ogm_gui
       validation_connector_.updateMapInfo(maps_);
       validation_connector_.resetMapProperties();
 
+      map_connector_.resetMap();
       map_connector_.updateImage(&slam_map_, false);
       map_connector_.updateImage(&running_map_, true);
 
@@ -172,8 +173,6 @@ namespace ogm_gui
 
       gui_connector_.setGridColumnStretch(1, 5);
       gui_connector_.setGridColumnStretch(0, 2);
-
-      //gui_connector_.addToGrid(alignment_connector_.getLoader(), 1, 0, 0, 0);
 
   }
 
@@ -456,11 +455,15 @@ namespace ogm_gui
     QPointF pos =  map_connector_.getPosition();
     qreal rot =  map_connector_.getRotation(); 
     qreal scale =  map_connector_.getScale();
+    qreal slamScale = map_connector_.getSlamMapScale();
+    qreal groundTruthScale = map_connector_.getGroundTruthMapScale();
     srv.request.method = "OMSE";
     srv.request.transform.pose.x = pos.x();
     srv.request.transform.pose.y = pos.y();
     srv.request.transform.pose.theta =rot;
     srv.request.transform.scale = scale;
+    srv.request.transform.slamOffsetScale = slamScale;
+    srv.request.transform.groundTruthOffsetScale = groundTruthScale;
 
     if (client.call(srv)) 
     {
@@ -472,7 +475,7 @@ namespace ogm_gui
     {
        ROS_ERROR("[ogm_gui] OMSE not received..");
     }
-  }
+   }
 
   void CGuiController::requestCmseMetric()
   {
@@ -493,11 +496,15 @@ namespace ogm_gui
     QPointF pos =  map_connector_.getPosition();
     qreal rot =  map_connector_.getRotation(); 
     qreal scale =  map_connector_.getScale();
+    qreal slamScale = map_connector_.getSlamMapScale();
+    qreal groundTruthScale = map_connector_.getGroundTruthMapScale();
     srv.request.method = "CMSE";
     srv.request.transform.pose.x = pos.x();
     srv.request.transform.pose.y = pos.y();
     srv.request.transform.pose.theta =rot;
     srv.request.transform.scale = scale;
+    srv.request.transform.slamOffsetScale = slamScale;
+    srv.request.transform.groundTruthOffsetScale = groundTruthScale;
 
     if (client.call(srv)) 
     {
@@ -509,7 +516,8 @@ namespace ogm_gui
     {
        ROS_ERROR("[ogm_gui] CMSE not received..");
     }
-  }
+    
+   }
 
 }
 

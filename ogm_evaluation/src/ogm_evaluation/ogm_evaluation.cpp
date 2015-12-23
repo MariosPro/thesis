@@ -28,7 +28,6 @@ namespace ogm_evaluation
   {
     _mapEvaluationService =  _nh.advertiseService(
         "ogm_evaluation/map_evaluation", &MapEvaluator::evaluationCallback, this);
-
   }
 
   /**
@@ -44,21 +43,16 @@ namespace ogm_evaluation
     _slamMap = mapToMat(req.slamMap);
     ROS_INFO_STREAM("GROUND TRUTH MAP SIZE=" << _groundTruthMap.size());
     ROS_INFO_STREAM("SLAM MAP SIZE=" << _slamMap.size());
-    alignMaps();
     _transform = req.transform;
-    cv::imshow("groundTruthMap", _groundTruthMap );
-    cv::waitKey(30);
-    cv::imshow("slamMap", _slamMap);
-    cv::waitKey(30);
 
     if (req.method == "OMSE")
     {
-
+      alignMaps();
     }
 
     else if(req.method == "CMSE")
     {
-
+      alignMaps();
     }
 
     else
@@ -66,6 +60,12 @@ namespace ogm_evaluation
       ROS_ERROR("No such evaluation method");
       return false;
     }
+
+    cv::imshow("groundTruthMap", _groundTruthMap );
+    cv::waitKey(30);
+    cv::imshow("slamMap", _slamMap);
+    cv::waitKey(30);
+
     return true;
   }
 
@@ -83,7 +83,6 @@ namespace ogm_evaluation
         ROS_ERROR("Data size doesn't match width*height: width = %d, height = %d, data size = %zu", map.info.width, map.info.height, map.data.size());
     }
 
-    // transform the map in the same way the map_saver component does
     for (size_t i=0; i < map.info.height*map.info.width; i++)
     {
         if (map.data.at(i) == -1)
@@ -105,51 +104,31 @@ namespace ogm_evaluation
   **/
   void MapEvaluator::alignMaps()
   {
-    cv::Mat translation(2, 3, CV_32FC1);
-    cv::Mat rotation,temp, temp1;
-    translation.at<float>(0, 0) = 1;
-    translation.at<float>(0, 1) = 0;
-    translation.at<float>(0, 2) = _transform.pose.x; // * _transform.scale;
-    translation.at<float>(1, 0) = 0;
-    translation.at<float>(1, 1) = 1;
-    translation.at<float>(1, 2) = _transform.pose.y; // * _transform.scale;
-    cv::Size s;
-    s.width = _transform.scale * _slamMap.cols + abs(_transform.pose.x);
-    s.height = _transform.scale * _slamMap.rows + abs( _transform.pose.y);
-    
-  /*  std::vector<cv::Point> srcPoints;*/
-    //if( _transform.pose.x > 0 && _transform.pose.y > 0)
-    //{   
-      //srcPoints.push_back(cv::Point(0, 0));
-      //srcPoints.push_back(cv::Point(_slamMap.cols + _transform.pose.x, 0));
-      //srcPoints.push_back(cv::Point(0, _slamMap.rows + _transform.pose.y));
-      //srcPoints.push_back(cv::Point(_slamMap.cols + _transform.pose.x, _slamMap.rows + _transform.pose.y));
-      ////cv::transform(srcPoints, srcPoints, translation);
-      //cv::Rect box(srcPoints[0], srcPoints[3]);
-    /*}*/
+    cv::Mat transformMat;
 
- /*   ROS_INFO_STREAM("box SIZE=" <<box.size()<< " " <<box.tl() << " " << box.br());*/
-    ////translation.at<float>(0, 2) =  _transform.pose.; // * _transform.scale;
-    ////translation.at<float>(1, 2) =  box.tl().y; // * _transform.scale;
-    //ROS_INFO_STREAM("SIZE=" <<_slamMap.size());
-    //cv::warpAffine(_slamMap, _slamMap, translation, box.size());
-    /*ROS_INFO_STREAM("SIZE after=" <<_slamMap.size());*/
-    cv::Point2f center(_slamMap.cols/2.0,  _slamMap.rows/2.0);
-    cv::Rect bbox = cv::RotatedRect(center, _slamMap.size(), -_transform.pose.theta).boundingRect();
-  /*  bbox.width += abs(_transform.pose.x);*/
-    /*bbox.height += abs(_transform.pose.y);*/
-    rotation = getRotationMatrix2D(center, -_transform.pose.theta, _transform.scale);
-    //rotation.at<double>(0,2) += bbox.width/2.0 - center.x; //+ _transform.pose.x;
-    //rotation.at<double>(1,2) += bbox.height/2.0 -center.y;// + _transform.pose.y;
-    cv::warpAffine(_slamMap, temp1, rotation, _slamMap.size(), CV_INTER_CUBIC);
-    _slamMap = temp1.clone();
+    // resize ground truth map to offset scale
+    cv::resize(_groundTruthMap, _groundTruthMap, cv::Size(), _transform.groundTruthOffsetScale, _transform.groundTruthOffsetScale, CV_INTER_CUBIC);
+    
+    // construct the transformation Matrix
+    cv::Point2f center(_groundTruthMap.cols/2.0,  _groundTruthMap.rows/2.0);
+    transformMat = cv::getRotationMatrix2D(center, -_transform.pose.theta, _transform.scale);
+
+    transformMat.at<double>(0,2) += _transform.pose.x;
+    transformMat.at<double>(1,2) += _transform.pose.y;
+
+    // apply the transformation
+    cv::warpAffine(_groundTruthMap, _groundTruthMap, transformMat, _groundTruthMap.size(), CV_INTER_CUBIC, IPL_BORDER_CONSTANT, cv::Scalar::all(127));
+
+    // resize slam produced map to offset scale
+    cv::resize(_slamMap, _slamMap, cv::Size(), _transform.slamOffsetScale,  _transform.slamOffsetScale,  CV_INTER_CUBIC);
+
     ROS_INFO_STREAM("GROUND TRUTH MAP SIZE after=" << _groundTruthMap.size());
     ROS_INFO_STREAM("SLAM MAP SIZE after=" << _slamMap.size());
     ROS_INFO_STREAM("X=" << _transform.pose.x);
     ROS_INFO_STREAM("Y=" << _transform.pose.y);
     ROS_INFO_STREAM("theta=" << _transform.pose.theta);
     ROS_INFO_STREAM("scale=" << _transform.scale);
-
+    ROS_INFO_STREAM("SlamScale=" << _transform.slamOffsetScale);
   }
 
 }  // namespace ogm_evaluation

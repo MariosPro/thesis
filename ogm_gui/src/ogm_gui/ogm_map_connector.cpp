@@ -47,7 +47,7 @@ namespace ogm_gui{
       this, SIGNAL(mapRotationChanged(qreal)));
  
     QObject::connect(
-      loader_.slam_map, SIGNAL(scaleChanged(qreal)),
+      loader_.ground_truth_map, SIGNAL(scaleChanged(qreal)),
       this, SIGNAL(mapScaleChanged(qreal)));
 
 
@@ -133,6 +133,24 @@ namespace ogm_gui{
   qreal CMapConnector::getScale()
   {
     return loader_.getScale();
+  }
+
+  /**
+  @brief Returns the scaling of the slam Map
+  @return qreal : The scaling
+  **/
+  qreal CMapConnector::getSlamMapScale()
+  {
+    return loader_.getSlamMapScale();
+  }
+
+  /**
+  @brief Returns the scaling of the ground truth Map
+  @return qreal : The scaling
+  **/
+  qreal CMapConnector::getGroundTruthMapScale()
+  {
+    return loader_.getGroundTruthMapScale();
   }
 
   /**

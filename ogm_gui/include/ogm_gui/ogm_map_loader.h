@@ -55,17 +55,9 @@ namespace ogm_gui
 
       double transparency;
 
-      int groundTruthMapWidth;
+      float slamOffsetScale;
 
-      int groundTruthMapHeight;
-
-      int slamMapWidth;
-
-      int slamMapHeight;
-
-      float offsetScale;
-
-      bool offsetNotSet;
+      float groundTruthOffsetScale;
 
       /**
       @brief Return the dimensions according to the container size
@@ -77,7 +69,8 @@ namespace ogm_gui
       **/
       std::pair<int,int> checkDimensions(int w, int h,
                                          int containerWidth,
-                                         int containerHeight);
+                                         int containerHeight,
+                                         bool groundTruth);
       
     //------------------------------------------------------------------------//  
     public:
@@ -101,7 +94,7 @@ namespace ogm_gui
       @return void
       **/
       void resetMap();
-       
+
       /**
       @brief Updates the image
       @param img [QImage*] The image to be updated
@@ -144,6 +137,18 @@ namespace ogm_gui
       @return qreal : The scaling
       **/
       qreal getScale();
+
+      /**
+      @brief Returns the scaling of the slam Map
+      @return qreal : The scaling
+      **/
+      qreal getSlamMapScale();
+
+      /**
+      @brief Returns the scaling of the ground truth Map
+      @return qreal : The scaling
+      **/
+      qreal getGroundTruthMapScale();
 
       /**
       @brief Returns the item's scene transformation matrix

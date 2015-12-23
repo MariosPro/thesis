@@ -38,6 +38,7 @@ namespace ogm_gui
     slam_map = new CMapItem();
     scene->addItem(slam_map);
     scene->addItem(ground_truth_map);
+    scene->setSceneRect(0, 0, this->width(), this->height());
     ground_truth_map->setFlag(QGraphicsItem::ItemIsMovable);
     ground_truth_map->setFlag(QGraphicsItem::ItemIsFocusable);
     ground_truth_map->setFlag(QGraphicsItem::ItemSendsGeometryChanges);
@@ -47,7 +48,6 @@ namespace ogm_gui
     mapGraphicsView->setScene(scene);
     mapGraphicsView->setInteractive(true);
     transparency = 0.5;
-    offsetNotSet = true;
     //mapGraphicsView->show();
   }
 
@@ -60,17 +60,19 @@ namespace ogm_gui
       ground_truth_map->setPos(0 ,0);
       ground_truth_map->setRotation(0);
       ground_truth_map->setScale(1.0);
+      //slamOffsetScale = 1.0;
+      //groundTruthOffsetScale = 1.0;
   }
 
   void CMapLoader::setMapXposition(double x)
   {
-    ground_truth_map->setPos(x, slam_map->y());
+    ground_truth_map->setPos(x, ground_truth_map->y());
 
   }
 
   void CMapLoader::setMapYposition(double y)
   {
-    ground_truth_map->setPos(slam_map->x(), y);
+    ground_truth_map->setPos(ground_truth_map->x(), y);
   }
 
   void CMapLoader::setMapRotation(int r)
@@ -99,30 +101,37 @@ namespace ogm_gui
   @return std::pair<int,int> : The size the map must be resized to
   **/
   std::pair<int,int> CMapLoader::checkDimensions(int w, int h, 
-                      int containerWidth, int containerHeight)
+                      int containerWidth, int containerHeight, bool groundTruth)
   {
-    /*float containerWidth = this->width();*/
-    /*float containerHeight = this->height();*/
+
     float aspectRatio = (float)w / (float)h;
     float finalW,finalH;
+
     if(containerHeight * aspectRatio > containerWidth)
     {
       finalW = containerWidth;
       finalH = containerWidth / aspectRatio;
-      /*ROS_INFO_STREAM("INITIAL SCALING =" << (float)containerHeight / h );*/
-      offsetScale = (float) containerHeight / h;
+
+      if(groundTruth)
+        groundTruthOffsetScale = (float) containerWidth / w;
+      else
+        slamOffsetScale = (float) containerWidth / w;
     }
     else
     {
       finalW = containerHeight * aspectRatio;
       finalH = containerHeight;
-      /*ROS_INFO_STREAM("INITIAL SCALING =" << (float)containerWidth / w );*/
-      offsetScale = (float) containerWidth / w;
+
+      if(groundTruth)
+        groundTruthOffsetScale = (float) containerHeight / h;
+      else
+        slamOffsetScale = (float) containerHeight / h;
 
     }
-       return std::pair<int,int>(finalW,finalH);
+
+    return std::pair<int,int>(finalW,finalH);
   }
-  
+
   /**
   @brief Updates the image
   @param img [QImage*] The image to be updated
@@ -130,96 +139,38 @@ namespace ogm_gui
   **/
   void CMapLoader::updateImage(QImage *img, bool groundTruth)
   {
-    //internal_img_ = img;
     std::pair<int,int> newDims;
-    /*newDims.first = img->width();*/
-    /*newDims.second = img->height();*/
-    ROS_INFO_STREAM("container WIDTH=" << this->width());
-    ROS_INFO_STREAM("container HEIGHT=" << this->height());
 
     if(!groundTruth)
     {
-     slamMapWidth = img->width();
-     slamMapHeight =  img->height();
-/*     ROS_INFO_STREAM("GROUND WIDTH=" << groundTruthMapWidth);*/
-     /*ROS_INFO_STREAM("GROUND HEIGHT=" << groundTruthMapHeight);*/
-     /*ROS_INFO_STREAM("ASPECT RATIO BEFORE=" << groundTruthMapWidth / (float)groundTruthMapHeight);*/
 
-     std::pair<int,int> newDims = checkDimensions(img->width(), img->height(), 
-                                                  this->width(), this->height());
- 
-  /*   ROS_INFO_STREAM("GROUND WIDTH AFTER=" <<  slam_map->boundingRect().width()) ;*/
-     /*ROS_INFO_STREAM("GROUND HEIGHT AFTER=" << slam_map->boundingRect().height()) ;*/
-     /*ROS_INFO_STREAM("ASPECT RATIO AFTER=" << slam_map->boundingRect().width() / (float)ground_truth_map->boundingRect().height()) ;*/
-
+      newDims = checkDimensions(img->width(), img->height(),
+                               this->width(), this->height(), false);
       slam_map->setPixmap(
         QPixmap().fromImage((
             *img).scaled(newDims.first,newDims.second,
                 Qt::IgnoreAspectRatio,
                 Qt::SmoothTransformation)));
-      if(newDims.first > ground_truth_map->boundingRect().width() && newDims.second > ground_truth_map->boundingRect().height())
-      {
-        mapGraphicsView->resize(newDims.first, newDims.second);
-        scene->setSceneRect(0, 0, newDims.first, newDims.second);
-        mapGraphicsView->fitInView(scene->sceneRect());
-      }
-    }
-      else
-      {
-        groundTruthMapWidth = img->width();
-        groundTruthMapHeight =  img->height();
-      /*  ROS_INFO_STREAM("SLAM WIDTH BEFORE=" << slamMapWidth);*/
-        /*ROS_INFO_STREAM("SLAM HEIGHT BEFORE=" << slamMapHeight);*/
-        /*ROS_INFO_STREAM("slam ASPECT RATIO BEFORE=" << slamMapWidth / (float) slamMapHeight);*/
-        /*float sy = groundTruthMapWidth / (float)slamMapWidth;*/
-        /*float sx = groundTruthMapHeight / (float)slamMapHeight;*/
- 
-        /*ROS_INFO_STREAM("SCALE BEFORE=" << sx << " " <<  sy);*/
 
-        std::pair<int,int> newDims = checkDimensions(img->width(), img->height(), 
-                                                 this->width(),this->height());
-      
- /*       newDims.first = offsetScale * img->width();*/
-        /*newDims.second = offsetScale * img->height();*/
-
-        QPixmap pixmap = QPixmap::fromImage(
-            (*img).scaled(newDims.first, newDims.second,
-                Qt::IgnoreAspectRatio,
-                Qt::SmoothTransformation));
-        makeTransparent(&pixmap, transparency);
-        ground_truth_map->setPixmap(pixmap);
-
-/*        if(offsetNotSet)*/
-        /*{*/
-          /*slam_map->setInitialMapScale(offsetScale);*/
-          /*offsetNotSet = false;*/
-        /*}*/
-
-  /*      ROS_INFO_STREAM("OFFSET=" << offsetScale);*/
-        /*ROS_INFO_STREAM("SLAM WIDTH =" <<  img->width());*/
-        /*ROS_INFO_STREAM("SLAM HEIGHT =" << img->height());*/
-
-      /*  ROS_INFO_STREAM("SLAM WIDTH AFTER=" <<  newDims.first);*/
-        /*ROS_INFO_STREAM("SLAM HEIGHT AFTER=" << newDims.second);*/
-
- /*       ROS_INFO_STREAM("SLAM WIDTH AFTER=" <<  slam_map->boundingRect().width()) ;*/
-        /*ROS_INFO_STREAM("SLAM HEIGHT AFTER=" << slam_map->boundingRect().height()) ;*/
-        /*ROS_INFO_STREAM("SLAM ASPECT RATIO AFTER=" << slam_map->boundingRect().width() / (float)slam_map->boundingRect().height());*/
-        /*float ny = ground_truth_map->boundingRect().width() / (float) slam_map->boundingRect().width();*/
-        /*float nx = ground_truth_map->boundingRect().height() / (float) slam_map->boundingRect().height();*/
-        /*ROS_INFO_STREAM("SCALE AFTER=" << nx << " " <<  ny);*/
-
-
-      if(newDims.first > slam_map->boundingRect().width() && newDims.second > slam_map->boundingRect().height())
-      {
       mapGraphicsView->resize(newDims.first, newDims.second);
       scene->setSceneRect(0, 0, newDims.first, newDims.second);
-    mapGraphicsView->fitInView(scene->sceneRect());
-      }
+      mapGraphicsView->fitInView(scene->sceneRect());
     }
- 
-  }//.scaled(newDims.first, newDims.second,
 
+    else
+    {
+      newDims = checkDimensions(img->width(), img->height(),
+                                slam_map->boundingRect().width(),
+                                slam_map->boundingRect().height(), true);
+
+      QPixmap pixmap = QPixmap::fromImage(
+          (*img).scaled(newDims.first, newDims.second,
+              Qt::IgnoreAspectRatio,
+              Qt::SmoothTransformation));
+      makeTransparent(&pixmap, transparency);
+      ground_truth_map->setPixmap(pixmap);
+    }
+  }
 
   /**
   @brief Makes the image transparent
@@ -265,11 +216,7 @@ namespace ogm_gui
   **/
   QPointF CMapLoader::getPosition()
   {
-    QPointF p(0,0);
-    if (ground_truth_map->translated)
-      return ground_truth_map->scenePos();
-    else 
-      return p;
+    return ground_truth_map->pos();
   }
   
   /**
@@ -278,10 +225,7 @@ namespace ogm_gui
   **/
   qreal CMapLoader::getRotation()
   {
-    if(ground_truth_map->rotated)
-      return ground_truth_map->rotation();
-    else
-      return 0;
+    return ground_truth_map->rotation();
   }
   
   /**
@@ -290,10 +234,25 @@ namespace ogm_gui
   **/
   qreal CMapLoader::getScale()
   {
-    if (ground_truth_map->scaled)
-      return ground_truth_map->scale();
-    else
-      return 1;
+    return ground_truth_map->scale();
+  }
+
+  /**
+  @brief Returns the scaling of the slam Map
+  @return qreal : The scaling
+  **/
+  qreal CMapLoader::getSlamMapScale()
+  {
+    return slamOffsetScale;
+  }
+
+  /**
+  @brief Returns the scaling of the slam Map
+  @return qreal : The scaling
+  **/
+  qreal CMapLoader::getGroundTruthMapScale()
+  {
+    return groundTruthOffsetScale;
   }
 
   /**
