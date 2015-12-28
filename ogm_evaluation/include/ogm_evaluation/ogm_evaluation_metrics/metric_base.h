@@ -51,15 +51,17 @@ namespace ogm_evaluation
       virtual ~Metric(void) 
       {
       }
+      
+      double getResult();
 
     protected:
+
       /**
       @brief Default Constructor
       @param groundTruthMap [const cv::Mat& ] the ground truth map
       @param slamMap[const cv::Mat&] the slam produced Map
       @return void
       **/
-
       Metric(const cv::Mat& groundTruthMap,
              const cv::Mat& slamMap);
 
@@ -71,6 +73,13 @@ namespace ogm_evaluation
       //!< the slam produced Map
       cv::Mat _slamMap;
 
+      //!< the metric result
+      double _result;
+
   };
+
+  typedef boost::shared_ptr<Metric> MetricPtr;
+  typedef std::vector<MetricPtr> MetricPtrVector;
+
 }
 #endif

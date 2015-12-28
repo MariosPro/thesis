@@ -48,6 +48,9 @@ namespace ogm_evaluation
     if (req.method == "OMSE")
     {
       alignMaps();
+      _metric.reset(new OmseMetric(_groundTruthMap, _slamMap, 0, 2));
+      _metric->calculateMetric();
+      res.result = _metric->getResult();
     }
 
     else if(req.method == "CMSE")

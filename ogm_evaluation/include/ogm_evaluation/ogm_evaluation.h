@@ -25,6 +25,8 @@
 #include <opencv2/opencv.hpp>
 #include "ogm_msgs/ServerRequestEvaluation.h"
 #include "ogm_msgs/MapPose.h"
+#include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
+#include "ogm_evaluation/ogm_evaluation_metrics/omse.h"
 
 /**
 @namespace ogm_evaluation
@@ -85,7 +87,10 @@ namespace ogm_evaluation
         cv::Mat _slamMap;
 
         //!<  the transform converting slamMap to groundTruthMap Coordinates System
-        ogm_msgs::MapPose _transform;
+        ogm_msgs::MapPose _transform; 
+
+        //!< Container for the Metric object
+        MetricPtr _metric;
   };
 }
 #endif

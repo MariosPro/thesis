@@ -33,6 +33,12 @@ namespace ogm_evaluation
   {
     _groundTruthMap = groundTruthMap;
     _slamMap = slamMap;
+    _result = 999;
   
   }
-}  // namespace ogm_evaluation
+
+  double Metric::getResult()
+  {
+    return _result;
+  }
+} // namespace ogm_evaluation

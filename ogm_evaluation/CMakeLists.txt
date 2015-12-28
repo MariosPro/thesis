@@ -33,9 +33,13 @@ catkin_package(
 add_library(ogm_metric_base src/ogm_evaluation/ogm_evaluation_metrics/metric_base.cpp)
 target_link_libraries(ogm_metric_base ${catkin_LIBRARIES})
 
+add_library(ogm_omse_metric src/ogm_evaluation/ogm_evaluation_metrics/omse.cpp)
+target_link_libraries(ogm_omse_metric ${catkin_LIBRARIES} ogm_metric_base)
+
+
 add_library (ogm_evaluation src/ogm_evaluation/ogm_evaluation.cpp)
 add_dependencies(ogm_evaluation ogm_msgs_gencpp) #wait for ogm_msgs to be build
-target_link_libraries(ogm_evaluation ${catkin_LIBRARIES})
+target_link_libraries(ogm_evaluation ${catkin_LIBRARIES} ogm_omse_metric)
 
 add_executable(ogm_evaluation_node src/ogm_evaluation/ogm_evaluation_node.cpp)
 add_dependencies(ogm_evaluation_node ogm_msgs_gencpp) # wait for ogm_msgs to be build
