@@ -86,6 +86,8 @@ namespace ogm_evaluation
         //!< the slam produced map
         cv::Mat _slamMap;
 
+        cv::Mat diff;
+
         //!<  the transform converting slamMap to groundTruthMap Coordinates System
         ogm_msgs::MapPose _transform; 
 

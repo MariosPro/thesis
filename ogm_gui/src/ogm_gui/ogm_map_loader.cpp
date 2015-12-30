@@ -104,8 +104,8 @@ namespace ogm_gui
                       int containerWidth, int containerHeight, bool groundTruth)
   {
 
-    float aspectRatio = (float)w / (float)h;
-    float finalW,finalH;
+    double aspectRatio = (double)w / (double)h;
+    double finalW,finalH;
 
     if(containerHeight * aspectRatio > containerWidth)
     {
@@ -113,9 +113,9 @@ namespace ogm_gui
       finalH = containerWidth / aspectRatio;
 
       if(groundTruth)
-        groundTruthOffsetScale = (float) containerWidth / w;
+        groundTruthOffsetScale = (double) containerWidth / (double)w;
       else
-        slamOffsetScale = (float) containerWidth / w;
+        slamOffsetScale = (double) containerWidth / (double)w;
     }
     else
     {
@@ -123,11 +123,13 @@ namespace ogm_gui
       finalH = containerHeight;
 
       if(groundTruth)
-        groundTruthOffsetScale = (float) containerHeight / h;
+        groundTruthOffsetScale = (double) containerHeight / (double)h;
       else
-        slamOffsetScale = (float) containerHeight / h;
+        slamOffsetScale = (double) containerHeight / (double)h;
 
     }
+    groundTruthOffsetScale = round(groundTruthOffsetScale * 100) / 100;
+    slamOffsetScale = round(slamOffsetScale * 100) / 100;
 
     return std::pair<int,int>(finalW,finalH);
   }
@@ -243,6 +245,7 @@ namespace ogm_gui
   **/
   qreal CMapLoader::getSlamMapScale()
   {
+    ROS_INFO_STREAM("SLAMoffsetScale=" << slamOffsetScale);
     return slamOffsetScale;
   }
 
@@ -252,6 +255,8 @@ namespace ogm_gui
   **/
   qreal CMapLoader::getGroundTruthMapScale()
   {
+
+    ROS_INFO_STREAM("GroundoffsetScale=" << groundTruthOffsetScale);
     return groundTruthOffsetScale;
   }
 

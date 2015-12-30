@@ -47,6 +47,9 @@ namespace ogm_evaluation
   void OmseMetric::calculateMetric()
   {
      _result = 0;
+    ROS_INFO_STREAM("GROUND POINTS= " << _groundTruthObstaclePoints.size());
+    ROS_INFO_STREAM("SLAM POINTS= " << _slamObstaclePoints.size());
+
     _groundTruthObstaclePoints = extractObstaclePoints(_groundTruthMap);
     _slamObstaclePoints = extractObstaclePoints(_slamMap);
     ROS_INFO_STREAM("GROUND POINTS= " << _groundTruthObstaclePoints.size());
@@ -72,6 +75,8 @@ namespace ogm_evaluation
       {
         if(mapMat.ptr<uchar>(i)[j] == 0)
           p.push_back(cv::Point(i, j));
+/*        if(mapMat.at<uchar>(i, j) == 0)*/
+          /*p.push_back(cv::Point(i,j));*/
       }
     return p;
   }
@@ -107,9 +112,9 @@ namespace ogm_evaluation
     double dst;
     cv::Point diff = p1 - p2;
     if (method == 1)
-      dst = std::abs(diff.x - diff.y);
+      dst = std::abs(p1.x - p2.x) + std::abs(p1.y-p2.y);
     else if (method == 2)
-      dst = cv::sqrt(diff.x * diff.x + diff.y + diff.y);
+      dst = cv::sqrt(diff.x * diff.x + diff.y * diff.y);
     else 
     {
       ROS_ERROR("No such method for distance calculation");
