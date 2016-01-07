@@ -80,7 +80,13 @@ namespace ogm_evaluation
       @param method [int] the distance calculation method (1-Manhattan 2-Euclidean)
       @return double the distance
       **/
-      double bruteForceClosestPair(cv::Point sp, int method);
+      double bruteForceNearestNeighbor(cv::Point sp, int method);
+
+      /**
+      @brief Calculates the minimum distance of all free and unknown cells from the closest occupied cells
+      @return void
+      **/
+      void brushfireSearch();
 
       /**
       @brief Calculates the distance of points given
@@ -114,6 +120,10 @@ namespace ogm_evaluation
 
       //!< the distanc norm to be used
       int _distNorm;
+
+      //!< the brushFire array holds the min Manhattan distance from nearest
+      //obstacle
+      int **_brushfire;
   };
 }
 #endif

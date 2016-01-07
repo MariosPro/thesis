@@ -54,12 +54,26 @@ namespace ogm_evaluation
     _slamObstaclePoints = extractObstaclePoints(_slamMap);
     ROS_INFO_STREAM("GROUND POINTS= " << _groundTruthObstaclePoints.size());
     ROS_INFO_STREAM("SLAM POINTS= " << _slamObstaclePoints.size());
+
+    brushfireSearch();
     for (int i = 0; i < _slamObstaclePoints.size(); i++)
     {
-      _result += bruteForceClosestPair(_slamObstaclePoints[i], _distNorm) *
-                 bruteForceClosestPair(_slamObstaclePoints[i], _distNorm);
+      if(_omse_method == 0)
+      {
+        _result += bruteForceNearestNeighbor(_slamObstaclePoints[i], _distNorm) *
+                 bruteForceNearestNeighbor(_slamObstaclePoints[i], _distNorm);
+      }
+      else
+      {
+        _result += _brushfire[_slamObstaclePoints[i].x][_slamObstaclePoints[i].y] *
+                 _brushfire[_slamObstaclePoints[i].x][_slamObstaclePoints[i].y];
+      }
     }
     _result = _result / _slamObstaclePoints.size();
+
+    for (int i = 0; i < _groundTruthMap.rows; i++)
+      delete[] _brushfire[i];
+    delete[] _brushfire;
   }
 
   /**
@@ -87,7 +101,7 @@ namespace ogm_evaluation
   @param method [int] the distance calculation method (1-Manhattan 2-Euclidean)
   @return double the distance
   **/
-  double OmseMetric::bruteForceClosestPair(cv::Point sp, int method)
+  double OmseMetric::bruteForceNearestNeighbor(cv::Point sp, int method)
   {
     double minDst = calculateDistance(sp, _groundTruthObstaclePoints[0], method);
     double dst;
@@ -99,7 +113,58 @@ namespace ogm_evaluation
     }
     return minDst;
   }
-  
+
+  /**
+  @brief Calculates the minimum distance of all free and unknown cells from the closest occupied cells
+  @return void
+  **/
+  void OmseMetric::brushfireSearch()
+  {
+    _brushfire = new int*[_groundTruthMap.rows];
+    for(int i = 0 ; i < _groundTruthMap.rows ; i++)
+    {
+      _brushfire[i] = new int[_groundTruthMap.cols];
+      for(int j = 0 ; j < _groundTruthMap.cols; j++)
+      {
+        if(_groundTruthMap.at<uchar>(i, j) >= 127) // the wave can be spread in free and unknown space
+          _brushfire[i][j] = -1;
+        else
+          _brushfire[i][j] = 0;
+
+      }
+    }
+
+    // Create brushfire (Manhattan distance transformation)
+    bool foundWave = true;
+    int currentWave = 0; //initial wave is Obstacles (0)
+
+    while(foundWave)
+    {
+      foundWave = false;
+      for (int i = 0; i < _groundTruthMap.rows; i++)
+        for(int j = 0; j < _groundTruthMap.cols; j++)
+          if(_brushfire[i][j] == currentWave)
+          {
+            foundWave = true;
+            if(i > 0 ) //This code checks the array bounds heading WEST
+              if(_brushfire[i - 1][j] == -1)//This code checks the WEST direction
+                _brushfire[i - 1][j] = currentWave + 1;
+
+            if(i < (_groundTruthMap.rows -1)) //This code checks the array bounds heading EAST
+              if(_brushfire[i + 1][j] == -1)//This code checks the EAST direction
+                _brushfire[i + 1][j] = currentWave + 1;
+
+            if(j > 0) //This code checks the array bounds heading SOUTH
+              if(_brushfire[i][j - 1] == -1)//This code checks the SOUTH direction
+                _brushfire[i][j - 1] = currentWave + 1;
+            if(j < (_groundTruthMap.cols - 1)) //This code checks the array bounds heading NORTH
+              if(_brushfire[i][j + 1] == -1)//This code checks the NORTH direction
+                _brushfire[i][j + 1] = currentWave + 1;
+          }
+      currentWave++;
+    }
+  }
+
   /**
   @brief Calculates the distance of points given
   @param p1 [cv::Point] the first point

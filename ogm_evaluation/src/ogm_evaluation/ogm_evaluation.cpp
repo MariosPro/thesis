@@ -48,7 +48,7 @@ namespace ogm_evaluation
     if (req.method == "OMSE")
     {
       alignMaps();
-      _metric.reset(new OmseMetric(_groundTruthMap, _slamMap, 0, 1));
+      _metric.reset(new OmseMetric(_groundTruthMap, _slamMap, 1, 1));
       _metric->calculateMetric();
       res.result = _metric->getResult();
       ROS_INFO_STREAM("RESULT=" << res.result);
