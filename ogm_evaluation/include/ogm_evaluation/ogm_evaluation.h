@@ -27,6 +27,7 @@
 #include "ogm_msgs/MapPose.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/omse.h"
+#include "ogm_evaluation/ogm_evaluation_metrics/cmse.h"
 
 /**
 @namespace ogm_evaluation

@@ -51,12 +51,17 @@ namespace ogm_evaluation
       _metric.reset(new OmseMetric(_groundTruthMap, _slamMap, 1, 1));
       _metric->calculateMetric();
       res.result = _metric->getResult();
-      ROS_INFO_STREAM("RESULT=" << res.result);
+      ROS_INFO_STREAM("OMSE RESULT=" << res.result);
     }
 
     else if(req.method == "CMSE")
     {
       alignMaps();
+      _metric.reset(new CmseMetric(_groundTruthMap, _slamMap, 1, 1));
+      _metric->calculateMetric();
+      res.result = _metric->getResult();
+      ROS_INFO_STREAM("CMSE RESULT=" << res.result);
+
     }
 
     else
