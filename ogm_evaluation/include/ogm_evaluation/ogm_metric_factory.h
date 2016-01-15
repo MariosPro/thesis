@@ -16,27 +16,33 @@
    Authors :
    * Marios Protopapas, protopapasmarios@gmail.com
 ******************************************************************************/
+#ifndef OGM_METRIC_FACTORY_H
+#define OGM_METRIC_FACTORY_H
 
+#include <string>
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
 
+/**
+@namespace ogm_evaluation
+@brief The main namespace for OGM Evaluation
+**/ 
 namespace ogm_evaluation
 {
- /**
-  @brief Default Constructor
-  @param groundTruthMap [const cv::Mat& ] the ground truth map
-  @param slamMap[const cv::Mat&] the slam produced Map
-  @return void
-  **/
+   /**
+   * @class MetricFactory
+   * @brief The class that is used to produce the metrics.
+   */
+   class MetricFactory
+   {
+       public:
+       /**
+       * @brief Default Constructor
+       */
+       MetricFactory()
+       {
+       };
 
-  Metric::Metric(const cv::Mat& groundTruthMap,
-                 const cv::Mat& slamMap)
-  {
-    _groundTruthMap = groundTruthMap;
-    _slamMap = slamMap;
-  }
-
-  double Metric::getResult()
-  {
-    return _result;
-  }
-} // namespace ogm_evaluation
+       Metric* createMetricInstance(std::string name, const cv::Mat& groundTruthMap, const cv::Mat& slamMap);
+   };
+}
+#endif

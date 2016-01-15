@@ -20,14 +20,14 @@
 #define OGM_EVALUATION_H
 
 #include <vector>
+#include <string>
 #include <math.h> 
 #include <ros/ros.h>
 #include <opencv2/opencv.hpp>
 #include "ogm_msgs/ServerRequestEvaluation.h"
 #include "ogm_msgs/MapPose.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
-#include "ogm_evaluation/ogm_evaluation_metrics/omse.h"
-#include "ogm_evaluation/ogm_evaluation_metrics/cmse.h"
+#include "ogm_evaluation/ogm_metric_factory.h"
 
 /**
 @namespace ogm_evaluation
@@ -92,8 +92,11 @@ namespace ogm_evaluation
         //!<  the transform converting slamMap to groundTruthMap Coordinates System
         ogm_msgs::MapPose _transform; 
 
-        //!< Container for the Metric object
-        MetricPtr _metric;
+        //!< The Metrics Factory
+        MetricFactory _metric_factory;
+
+        //!< Pointer to the Metric used
+        Metric* _metric;
   };
 }
 #endif

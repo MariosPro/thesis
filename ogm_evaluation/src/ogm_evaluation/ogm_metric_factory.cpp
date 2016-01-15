@@ -17,26 +17,29 @@
    * Marios Protopapas, protopapasmarios@gmail.com
 ******************************************************************************/
 
-#include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
+#include <string>
+#include "ogm_evaluation/ogm_metric_factory.h"
+#include "ogm_evaluation/ogm_evaluation_metrics/omse.h"
+#include "ogm_evaluation/ogm_evaluation_metrics/cmse.h"
 
 namespace ogm_evaluation
 {
- /**
-  @brief Default Constructor
-  @param groundTruthMap [const cv::Mat& ] the ground truth map
-  @param slamMap[const cv::Mat&] the slam produced Map
-  @return void
-  **/
-
-  Metric::Metric(const cv::Mat& groundTruthMap,
-                 const cv::Mat& slamMap)
+   /**
+   * @brief The main factory method that creates the different metrics
+   * @param name [std::string] The name of the metric
+   * @param groundTruthMap [const cv::Mat&] the ground truth map
+   * @oaram slamMap [const cv::Mat&] the slam map
+   * that will be used.
+   */
+  Metric* MetricFactory::createMetricInstance(std::string name, const cv::Mat& groundTruthMap, const cv::Mat& slamMap)
   {
-    _groundTruthMap = groundTruthMap;
-    _slamMap = slamMap;
+    if (name == "OMSE") return new OmseMetric(groundTruthMap, slamMap, 1 ,1);
+    else
+      {
+        ROS_FATAL_STREAM("[OGM_EVALUATION]: Invalid metric method!"
+            << " Detection cannot continue!");
+        return NULL;
+      }
+      return NULL;
   }
-
-  double Metric::getResult()
-  {
-    return _result;
-  }
-} // namespace ogm_evaluation
+}  // namespace ogm_evaluation

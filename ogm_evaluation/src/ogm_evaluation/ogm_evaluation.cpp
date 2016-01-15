@@ -25,51 +25,30 @@ namespace ogm_evaluation
   @brief Implements the OGM evaluations methods
   **/ 
   MapEvaluator::MapEvaluator(int argc, char** argv)
-  {
-    _mapEvaluationService =  _nh.advertiseService(
-        "ogm_evaluation/map_evaluation", &MapEvaluator::evaluationCallback, this);
-  }
-
-  /**
-  @brief Service callback for performing map evaluation
-  @param req [ogm_msgs::ServerRequestEvaluation::Request&] The service request
-  @param res [ogm_msgs::ServerRequestEvaluation::Response&] The service response
-  @return bool
-  **/
-  bool MapEvaluator::evaluationCallback(ogm_msgs::ServerRequestEvaluation::Request& req,
-    ogm_msgs::ServerRequestEvaluation::Response& res)
-  {
-    _groundTruthMap = mapToMat(req.groundTruthMap);
-    _slamMap = mapToMat(req.slamMap);
-    ROS_INFO_STREAM("GROUND TRUTH MAP SIZE=" << _groundTruthMap.size());
-    ROS_INFO_STREAM("SLAM MAP SIZE=" << _slamMap.size());
-    _transform = req.transform;
-
-    if (req.method == "OMSE")
     {
-      alignMaps();
-      _metric.reset(new OmseMetric(_groundTruthMap, _slamMap, 1, 1));
-      _metric->calculateMetric();
-      res.result = _metric->getResult();
-      ROS_INFO_STREAM("OMSE RESULT=" << res.result);
+      _mapEvaluationService =  _nh.advertiseService(
+          "ogm_evaluation/map_evaluation", &MapEvaluator::evaluationCallback, this);
     }
 
-    else if(req.method == "CMSE")
+    /**
+    @brief Service callback for performing map evaluation
+    @param req [ogm_msgs::ServerRequestEvaluation::Request&] The service request
+    @param res [ogm_msgs::ServerRequestEvaluation::Response&] The service response
+    @return bool
+    **/
+    bool MapEvaluator::evaluationCallback(ogm_msgs::ServerRequestEvaluation::Request& req,
+      ogm_msgs::ServerRequestEvaluation::Response& res)
     {
-      alignMaps();
-      _metric.reset(new CmseMetric(_groundTruthMap, _slamMap, 1, 1));
-      _metric->calculateMetric();
-      res.result = _metric->getResult();
-      ROS_INFO_STREAM("CMSE RESULT=" << res.result);
+      _groundTruthMap = mapToMat(req.groundTruthMap);
+      _slamMap = mapToMat(req.slamMap);
+      ROS_INFO_STREAM("GROUND TRUTH MAP SIZE=" << _groundTruthMap.size());
+      ROS_INFO_STREAM("SLAM MAP SIZE=" << _slamMap.size());
+      _transform = req.transform;
 
-    }
-
-    else
-    {
-      ROS_ERROR("No such evaluation method");
-      return false;
-    }
-
+    alignMaps();
+    _metric =  _metric_factory.createMetricInstance(req.method, _groundTruthMap, _slamMap);
+    _metric->calculateMetric();
+    res.result = _metric->getResult();
     cv::imshow("groundTruthMap", _groundTruthMap );
     cv::waitKey(30);
     cv::imshow("slamMap", _slamMap);

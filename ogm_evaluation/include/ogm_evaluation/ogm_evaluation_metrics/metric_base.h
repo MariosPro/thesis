@@ -77,9 +77,5 @@ namespace ogm_evaluation
       double _result;
 
   };
-
-  typedef boost::shared_ptr<Metric> MetricPtr;
-  typedef std::vector<MetricPtr> MetricPtrVector;
-
 }
 #endif

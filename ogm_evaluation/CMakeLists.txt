@@ -39,10 +39,16 @@ target_link_libraries(ogm_omse_metric ${catkin_LIBRARIES} ogm_metric_base)
 add_library(ogm_cmse_metric src/ogm_evaluation/ogm_evaluation_metrics/cmse.cpp)
 target_link_libraries(ogm_cmse_metric ${catkin_LIBRARIES} ogm_metric_base)
 
+add_library(ogm_metric_factory src/ogm_evaluation/ogm_metric_factory.cpp)
+target_link_libraries(ogm_metric_factory
+                      ${catkin_LIBRARIES}
+                      ogm_omse_metric
+                      ogm_cmse_metric
+                      )
+
 add_library (ogm_evaluation src/ogm_evaluation/ogm_evaluation.cpp)
 add_dependencies(ogm_evaluation ogm_msgs_gencpp) #wait for ogm_msgs to be build
-target_link_libraries(ogm_evaluation ${catkin_LIBRARIES} ogm_omse_metric
-  ogm_cmse_metric)
+target_link_libraries(ogm_evaluation ${catkin_LIBRARIES} ogm_metric_factory)
 
 add_executable(ogm_evaluation_node src/ogm_evaluation/ogm_evaluation_node.cpp)
 add_dependencies(ogm_evaluation_node ogm_msgs_gencpp) # wait for ogm_msgs to be build
@@ -53,6 +59,7 @@ install(TARGETS
     ogm_metric_base
     ogm_omse_metric
     ogm_cmse_metric
+    ogm_metric_factory
     ogm_evaluation
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
