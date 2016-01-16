@@ -46,15 +46,15 @@ namespace ogm_evaluation
       _transform = req.transform;
 
     alignMaps();
-    _metric =  _metric_factory.createMetricInstance(req.method, _groundTruthMap, _slamMap);
+    _metric =  _metric_factory.createMetricInstance("SIFT", _groundTruthMap, _slamMap);
     _metric->calculateMetric();
     res.result = _metric->getResult();
-    cv::imshow("groundTruthMap", _groundTruthMap );
-    cv::waitKey(30);
-    cv::imshow("slamMap", _slamMap);
-    cv::waitKey(30);
-    cv::imshow("diff", diff);
-    cv::waitKey(30);
+  /*  cv::imshow("groundTruthMap", _groundTruthMap );*/
+    //cv::waitKey(30);
+    //cv::imshow("slamMap", _slamMap);
+    //cv::waitKey(30);
+    //cv::imshow("diff", diff);
+    /*cv::waitKey(30);*/
 
     return true;
   }

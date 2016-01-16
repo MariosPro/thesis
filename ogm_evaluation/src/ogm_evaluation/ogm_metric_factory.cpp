@@ -21,6 +21,7 @@
 #include "ogm_evaluation/ogm_metric_factory.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/omse.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/cmse.h"
+#include "ogm_evaluation/ogm_evaluation_metrics/feature_metrics.h"
 
 namespace ogm_evaluation
 {
@@ -34,6 +35,8 @@ namespace ogm_evaluation
   Metric* MetricFactory::createMetricInstance(std::string name, const cv::Mat& groundTruthMap, const cv::Mat& slamMap)
   {
     if (name == "OMSE") return new OmseMetric(groundTruthMap, slamMap, 1 ,1);
+    else if (name == "SIFT") return new FeatureMetrics(groundTruthMap, slamMap, 1 ,1);
+
     else
       {
         ROS_FATAL_STREAM("[OGM_EVALUATION]: Invalid metric method!"

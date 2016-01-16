@@ -20,8 +20,8 @@
 #ifndef OMSE_H
 #define OMSE_H
 
-#include <ros/ros.h>
-#include <opencv2/opencv.hpp>
+/*#include <ros/ros.h>*/
+/*#include <opencv2/opencv.hpp>*/
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
 
 /**

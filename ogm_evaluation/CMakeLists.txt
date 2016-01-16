@@ -8,12 +8,14 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   nav_msgs
 )
+find_package(OpenCV REQUIRED nonfree)
 
 set(CMAKE_BUILD_TYPE Release)
 
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 catkin_package(
@@ -39,11 +41,20 @@ target_link_libraries(ogm_omse_metric ${catkin_LIBRARIES} ogm_metric_base)
 add_library(ogm_cmse_metric src/ogm_evaluation/ogm_evaluation_metrics/cmse.cpp)
 target_link_libraries(ogm_cmse_metric ${catkin_LIBRARIES} ogm_metric_base)
 
+add_library(ogm_feature_metrics
+  src/ogm_evaluation/ogm_evaluation_metrics/feature_metrics.cpp)
+target_link_libraries(ogm_feature_metrics 
+                      ${catkin_LIBRARIES}
+                      ${OpenCV_LIBRARIES}
+                      ogm_metric_base)
+
+
 add_library(ogm_metric_factory src/ogm_evaluation/ogm_metric_factory.cpp)
 target_link_libraries(ogm_metric_factory
                       ${catkin_LIBRARIES}
                       ogm_omse_metric
                       ogm_cmse_metric
+                      ogm_feature_metrics
                       )
 
 add_library (ogm_evaluation src/ogm_evaluation/ogm_evaluation.cpp)
@@ -59,6 +70,7 @@ install(TARGETS
     ogm_metric_base
     ogm_omse_metric
     ogm_cmse_metric
+    ogm_feature_metrics
     ogm_metric_factory
     ogm_evaluation
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
