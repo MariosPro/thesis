@@ -43,15 +43,15 @@ namespace ogm_evaluation
       @brief Default Constructor
       @param groundTruthMap [const cv::Mat& ] the ground truth map
       @param slamMap[const cv::Mat&] the slam produced Map
-      @param int [method] the omse method to be used
-      @param int [distNorm] the distance norm to be used
+      @param std::string [closestPointMethod] the closestPoint method to be used
+      @param std::string [distNorm] the distance norm to be used
       @return void
       **/
 
       OmseMetric(const cv::Mat& groundTruthMap,
                  const cv::Mat& slamMap,
-                 int method,
-                 int distNorm);
+                 std::string closestPointMethod,
+                 std::string distNorm);
 
       /**
       @brief Default destructor
@@ -77,10 +77,10 @@ namespace ogm_evaluation
       /**
       @brief Calculates the closest obstacle of a slamObstaclePoint from a groundTruthObstaclePoint (BruteForce)
       @param sp [cv::Point] an obstacle point of slam-produced map
-      @param method [int] the distance calculation method (1-Manhattan 2-Euclidean)
+      @param distNorm [std::string] the distance calculation norm (Manhattan/Euclidean)
       @return double the distance
       **/
-      double bruteForceNearestNeighbor(cv::Point sp, int method);
+      double bruteForceNearestNeighbor(cv::Point sp, std::string distNorm);
 
       /**
       @brief Calculates the minimum distance of all free and unknown cells from the closest occupied cells
@@ -92,10 +92,10 @@ namespace ogm_evaluation
       @brief Calculates the distance of points given
       @param p1 [cv::Point] the first point
       @param p2 [cv::Point] the second point
-      @param method [int] the norm to be used (1-Manhattan 2-Eucledian)
+      @param distNorm [std::string] the norm to be used (Manhattan/Euclidean)
       @return double the distance
       **/
-      double calculateDistance(cv::Point p1, cv::Point p2, int method);
+      double calculateDistance(cv::Point p1, cv::Point p2, std::string distNorm);
 
 
     private:
@@ -115,11 +115,11 @@ namespace ogm_evaluation
       //!< the vector of slam-produced map obstacle points
       std::vector<cv::Point> _slamObstaclePoints;
 
-      //!< the omse method to be used
-      int _omse_method;
+      //!< the closestPoint method to be used
+      std::string _closestPointMethod;
 
-      //!< the distanc norm to be used
-      int _distNorm;
+      //!< the distance norm to be used
+      std::string _distNorm;
 
       //!< the brushFire array holds the min Manhattan distance from nearest
       //obstacle

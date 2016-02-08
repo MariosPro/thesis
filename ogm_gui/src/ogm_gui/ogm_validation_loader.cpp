@@ -43,11 +43,11 @@ namespace ogm_gui
       ogm_gui_tools::getRosPackagePath("ogm_gui") +
       std::string("/resources/images/properties.png")).c_str())));
 
-    cornerPushButton->setIcon(QIcon(QString::fromUtf8((
+    featuresPushButton->setIcon(QIcon(QString::fromUtf8((
       ogm_gui_tools::getRosPackagePath("ogm_gui") +
       std::string("/resources/images/translate_down.png")).c_str())));
  
-    cornerSettingsPushButton->setIcon(QIcon(QString::fromUtf8((
+    featuresSettingsPushButton->setIcon(QIcon(QString::fromUtf8((
       ogm_gui_tools::getRosPackagePath("ogm_gui") +
       std::string("/resources/images/properties.png")).c_str())));
 

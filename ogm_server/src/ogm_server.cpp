@@ -154,6 +154,11 @@ namespace ogm_server
        ("/ogm_evaluation/map_evaluation", true);
 
     srv.request.method = req.method;
+    srv.request.detector = req.detector;
+    srv.request.descriptor = req.descriptor;
+    srv.request.matcher = req.matcher;
+    srv.request.closestPointMethod = req.closestPointMethod;
+    srv.request.distNorm = req.distNorm;
     srv.request.transform = req.transform;
     srv.request.groundTruthMap = _groundTruthMap->getMap();
     srv.request.slamMap = _slamMap->getMap();

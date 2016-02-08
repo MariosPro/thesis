@@ -74,9 +74,6 @@ namespace ogm_gui
       //!< The ROS node handle
       ros::NodeHandle n_;
 
-      //!< ROS tf transform listener
-      //tf::TransformListener listener_;
-
      //!< The MapsMsg hold the two Maps
      ogm_msgs::MapsMsg maps_;
 
@@ -111,13 +108,10 @@ namespace ogm_gui
       //!< Object of CMapConnector
       CMapConnector map_connector_;
 
-      //!< OMSE metric result
-      double omse_;
+      //!< Metric result
+      double metricResult_;
 
-      //!< CMSE metric result
-      double cmse_;
-
-       //------------------------------------------------------------------------//
+      //------------------------------------------------------------------------//
     public:
 
       /**
@@ -200,9 +194,7 @@ namespace ogm_gui
 
       void changeMapTransparency(double t);
 
-      void requestOmseMetric();
-
-      void requestCmseMetric();
+      void requestMetric(QString metricMethod);
 
       //------------------------------------------------------------------------//
     Q_SIGNALS:

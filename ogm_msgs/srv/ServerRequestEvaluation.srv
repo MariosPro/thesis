@@ -1,4 +1,9 @@
 string method
+string detector
+string descriptor
+string matcher
+string closestPointMethod
+string distNorm
 ogm_msgs/MapPose transform
 nav_msgs/OccupancyGrid groundTruthMap
 nav_msgs/OccupancyGrid slamMap

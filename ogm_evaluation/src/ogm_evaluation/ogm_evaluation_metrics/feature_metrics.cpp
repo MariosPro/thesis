@@ -24,23 +24,29 @@ namespace ogm_evaluation
   @brief Default Constructor
   @param groundTruthMap [const cv::Mat& ] the ground truth map
   @param slamMap[const cv::Mat&] the slam produced Map
-  @param int [method] the omse method to be used
-  @param int [distNorm] the distance norm to be used
+  @param std::string [detector] the featureDetector to be used
+  @param std::string [descriptor] the DescriptorExtractor to be used
+  @param std::string [matcher] the FeatureMatcher to be used
+  @param std::string [distNorm] the distance norm to be used
   @return void
   **/
 
   FeatureMetrics::FeatureMetrics(const cv::Mat& groundTruthMap,
                          const cv::Mat& slamMap,
-                         int method,
-                         int distNorm)
+                         std::string detector,
+                         std::string descriptor,
+                         std::string matcher,
+                         std::string distNorm)
                 : Metric(groundTruthMap, slamMap)
   {
-    _omse_method = method;
     _distNorm = distNorm;
+    _detector = detector;
+    _descriptor = descriptor;
+    _matcherName = matcher;
     cv::initModule_nonfree();
-    _featureDetector =  cv::FeatureDetector::create("SIFT");
-    _descriptorExtractor = cv::DescriptorExtractor::create("SIFT");
-    _matcher = cv::DescriptorMatcher::create("BruteForce");
+    _featureDetector =  cv::FeatureDetector::create(_detector);
+    _descriptorExtractor = cv::DescriptorExtractor::create(_descriptor);
+    _matcher = cv::DescriptorMatcher::create(_matcherName);
     ROS_INFO_STREAM("Created FeatureMetrics Instance");
 
   }

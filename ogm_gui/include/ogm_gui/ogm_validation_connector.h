@@ -70,9 +70,7 @@ namespace ogm_gui
 
       void resetMapProperties();
 
-      void displayOmseResult(double result);
-
-      void displayCmseResult(double result);
+      void displayMetricResult(QString method, double result);
 
       /**
       @brief Returns the CValidationLoader object
@@ -135,9 +133,9 @@ namespace ogm_gui
 
       void obstacleSettingsTriggered();
 
-      void cornerTriggered();
+      void featureMatchingTriggered();
 
-      void cornerSettingsTriggered();
+      void featureMatchingSettingsTriggered();
     //------------------------------------------------------------------------//
     Q_SIGNALS:
 
@@ -157,9 +155,7 @@ namespace ogm_gui
 
       void changeTransparency(double t);
 
-      void omseMetricNeeded(void);
-
-      void cmseMetricNeeded(void);
+      void MetricNeeded(QString metricMethod);
 
   };
 }

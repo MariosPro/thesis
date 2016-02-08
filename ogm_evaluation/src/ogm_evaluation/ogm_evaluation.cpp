@@ -41,19 +41,19 @@ namespace ogm_evaluation
     {
       _groundTruthMap = mapToMat(req.groundTruthMap);
       _slamMap = mapToMat(req.slamMap);
-      ROS_INFO_STREAM("GROUND TRUTH MAP SIZE=" << _groundTruthMap.size());
-      ROS_INFO_STREAM("SLAM MAP SIZE=" << _slamMap.size());
+      ROS_INFO_STREAM("GROUND TRUTH MAP SIZE=" << _groundTruthMap.size() << "type=" << _groundTruthMap.type() << "channels="<< _groundTruthMap.channels());
+      ROS_INFO_STREAM("SLAM MAP SIZE=" << _slamMap.size()<<  "type=" << _slamMap.type() << "channels=" <<_slamMap.channels());
       _transform = req.transform;
 
     alignMaps();
-    _metric =  _metric_factory.createMetricInstance("SIFT", _groundTruthMap, _slamMap);
+    _metric =  _metric_factory.createMetricInstance(req.method, _groundTruthMap, _slamMap, req.detector, req.descriptor, req.matcher, req.closestPointMethod, req.distNorm);
     _metric->calculateMetric();
     res.result = _metric->getResult();
-  /*  cv::imshow("groundTruthMap", _groundTruthMap );*/
-    //cv::waitKey(30);
-    //cv::imshow("slamMap", _slamMap);
-    //cv::waitKey(30);
-    //cv::imshow("diff", diff);
+    cv::imshow("groundTruthMap", _groundTruthMap );
+    cv::waitKey(30);
+    cv::imshow("slamMap", _slamMap);
+    cv::waitKey(30);
+ /*   cv::imshow("diff", diff);*/
     /*cv::waitKey(30);*/
 
     return true;
@@ -121,14 +121,19 @@ namespace ogm_evaluation
     paddedWidth = abs(_slamMap.cols - _groundTruthMap.cols);
 
     ROS_INFO_STREAM("PADDED WIDTH/HEIGHT=" << paddedWidth << " " << paddedHeight);
- 
-    if(_slamMap.rows >= _groundTruthMap.rows  &&  _slamMap.cols >= _groundTruthMap.cols)
-      cv::copyMakeBorder(_groundTruthMap, _groundTruthMap, 0, paddedHeight, 0, paddedWidth, IPL_BORDER_CONSTANT, cv::Scalar(127));
+
+    if(_slamMap.rows >= _groundTruthMap.rows)
+      cv::copyMakeBorder(_groundTruthMap, _groundTruthMap, 0, paddedHeight, 0, 0, IPL_BORDER_CONSTANT, cv::Scalar(127));
     else
-      cv::copyMakeBorder(_slamMap, _slamMap, 0, paddedHeight, 0, paddedWidth, IPL_BORDER_CONSTANT, cv::Scalar(127));
+      cv::copyMakeBorder(_slamMap, _slamMap, 0, paddedHeight, 0, 0, IPL_BORDER_CONSTANT, cv::Scalar(127));
+
+    if(_slamMap.cols >= _groundTruthMap.cols)
+      cv::copyMakeBorder(_groundTruthMap, _groundTruthMap, 0, 0, 0, paddedWidth, IPL_BORDER_CONSTANT, cv::Scalar(127));
+    else
+      cv::copyMakeBorder(_slamMap, _slamMap, 0, 0, 0, paddedWidth, IPL_BORDER_CONSTANT, cv::Scalar(127));
 
     cv::absdiff(_groundTruthMap, _slamMap, diff);
-  
+
     ROS_INFO_STREAM("GROUND TRUTH MAP SIZE after padding=" << _groundTruthMap.size());
     ROS_INFO_STREAM("SLAM MAP SIZE after padding =" << _slamMap.size());
     ROS_INFO_STREAM("X=" << _transform.pose.x);

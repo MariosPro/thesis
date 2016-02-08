@@ -45,14 +45,18 @@ namespace ogm_evaluation
       @brief Default Constructor
       @param groundTruthMap [const cv::Mat& ] the ground truth map
       @param slamMap[const cv::Mat&] the slam produced Map
-      @param int [method] the omse method to be used
-      @param int [distNorm] the distance norm to be used
+      @param std::string [detector] the featureDetector to be used
+      @param std::string [descriptor] the DescriptorExtractor to be used
+      @param std::string [matcher] the FeatureMatcher to be used
+      @param std::string [distNorm] the distance norm to be used
       @return void
       **/
       FeatureMetrics(const cv::Mat& groundTruthMap,
                  const cv::Mat& slamMap,
-                 int method,
-                 int distNorm);
+                 std::string detector,
+                 std::string descriptor,
+                 std::string matcher,
+                 std::string distNorm);
 
       /**
       @brief Default destructor
@@ -70,11 +74,20 @@ namespace ogm_evaluation
 
     private:
 
-      //!< the omse method to be used
-      int _omse_method;
+   /*   //!< the omse method to be used*/
+      /*int _omse_method;*/
+
+      //!< the Detector name to be created
+      std::string _detector;
+
+      //!< the Descriptor name to be created
+      std::string _descriptor;
+
+      //!< the matcher name to be created
+      std::string _matcherName;
 
       //!< the distance norm to be used
-      int _distNorm;
+      std::string _distNorm;
       
       //!< the instance of opencv's FeatureDetector class to be used
       cv::Ptr<cv::FeatureDetector> _featureDetector;

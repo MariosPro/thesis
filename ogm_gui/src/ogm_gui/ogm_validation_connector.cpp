@@ -87,12 +87,12 @@ namespace ogm_gui
       this, SLOT(obstacleSettingsTriggered()));
 
    QObject::connect(
-      loader.cornerPushButton, SIGNAL(clicked(bool)),
-      this, SLOT(cornerTriggered()));
+      loader.featuresPushButton, SIGNAL(clicked(bool)),
+      this, SLOT(featureMatchingTriggered()));
 
    QObject::connect(
-      loader.cornerSettingsPushButton, SIGNAL(clicked(bool)),
-      this, SLOT(cornerSettingsTriggered()));
+      loader.featuresSettingsPushButton, SIGNAL(clicked(bool)),
+      this, SLOT(featureMatchingSettingsTriggered()));
 
   }
 
@@ -223,34 +223,32 @@ namespace ogm_gui
 
   void CValidationConnector::obstacleTriggered()
   {
-    Q_EMIT omseMetricNeeded();
+    Q_EMIT MetricNeeded("OMSE");
   }
 
   void CValidationConnector::obstacleSettingsTriggered()
   {
-    
+
   }
 
-  void CValidationConnector::cornerTriggered()
+  void CValidationConnector::featureMatchingTriggered()
   {
-    Q_EMIT cmseMetricNeeded();
+    Q_EMIT MetricNeeded("FEATURES");
+    //TO DO call featureMatchingSettingsTriggered (default values)
   }
 
-  void CValidationConnector::cornerSettingsTriggered()
+  void CValidationConnector::featureMatchingSettingsTriggered()
   {
-    
+
   }
 
-  void CValidationConnector::displayOmseResult(double result)
+  void CValidationConnector::displayMetricResult(QString method, double result)
   {
-    loader.obstacleLabel->setText(QString().setNum(result));
+    if (method == "OMSE")
+      loader.obstacleLabel->setText(QString().setNum(result));
+    if (method == "FEATURES")
+      loader.featuresLabel->setText(QString().setNum(result));
   }
-
-  void CValidationConnector::displayCmseResult(double result)
-  {
-    loader.cornerLabel->setText(QString().setNum(result));
-  }
-
 
   /**
   @brief Returns the CValidationLoader object

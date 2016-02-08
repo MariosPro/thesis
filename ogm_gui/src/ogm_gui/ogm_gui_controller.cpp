@@ -97,12 +97,12 @@ namespace ogm_gui
         this, SLOT(changeMapTransparency(double)));
 
     QObject::connect(
-        &validation_connector_, SIGNAL(omseMetricNeeded()),
-        this, SLOT(requestOmseMetric()));
+        &validation_connector_, SIGNAL(MetricNeeded(QString)),
+        this, SLOT(requestMetric(QString)));
 
-    QObject::connect(
-        &validation_connector_, SIGNAL(cmseMetricNeeded()),
-        this, SLOT(requestCmseMetric()));
+ /*   QObject::connect(*/
+        //&validation_connector_, SIGNAL(cmseMetricNeeded()),
+        /*this, SLOT(requestCmseMetric()));*/
 
     QObject::connect(
         &map_connector_, SIGNAL(mapPosChanged(qreal, qreal)),
@@ -436,7 +436,7 @@ namespace ogm_gui
     map_connector_.setMapTransparency(t);
   }
 
-  void CGuiController::requestOmseMetric()
+  void CGuiController::requestMetric(QString metricMethod)
   {
     ros::ServiceClient client;
     ogm_msgs::GuiRequestEvaluation srv;
@@ -457,68 +457,36 @@ namespace ogm_gui
     qreal scale =  map_connector_.getScale();
     qreal slamScale = map_connector_.getSlamMapScale();
     qreal groundTruthScale = map_connector_.getGroundTruthMapScale();
-    srv.request.method = "OMSE";
-    srv.request.transform.pose.x = pos.x();
-    srv.request.transform.pose.y = pos.y();
-    srv.request.transform.pose.theta =rot;
-    srv.request.transform.scale = scale;
-    srv.request.transform.slamOffsetScale = slamScale;
-    srv.request.transform.groundTruthOffsetScale = groundTruthScale;
-
-    if (client.call(srv)) 
+    srv.request.method = metricMethod.toStdString();
+    // TO DO get the arguments for detector/descriptor/matcher from gui
+    if (metricMethod == "FEATURES")
     {
-      omse_ = srv.response.result;
-      ROS_INFO_STREAM("[ogm_gui] OMSE metric successfully calculated OMSE=" << omse_);
-      validation_connector_.displayOmseResult(omse_);
+      srv.request.detector = "SIFT";
+      srv.request.descriptor = "SIFT";
+      srv.request.matcher = "BruteForce";
     }
-    else
-    {
-       ROS_ERROR("[ogm_gui] OMSE not received..");
-    }
-   }
-
-  void CGuiController::requestCmseMetric()
-  {
-    ros::ServiceClient client;
-    ogm_msgs::GuiRequestEvaluation srv;
-
-    while (!ros::service::waitForService
-       ("/ogm_server/map_evaluation", ros::Duration(.1)) &&
-         ros::ok())
-    {
-       ROS_WARN
-         ("Trying to register to /ogm_server/map_evaluation...");
-    }
-
-    client = n_.serviceClient<ogm_msgs::GuiRequestEvaluation>
-       ("/ogm_server/map_evaluation", true);
-
-    QPointF pos =  map_connector_.getPosition();
-    qreal rot =  map_connector_.getRotation(); 
-    qreal scale =  map_connector_.getScale();
-    qreal slamScale = map_connector_.getSlamMapScale();
-    qreal groundTruthScale = map_connector_.getGroundTruthMapScale();
-    srv.request.method = "CMSE";
-    srv.request.transform.pose.x = pos.x();
-    srv.request.transform.pose.y = pos.y();
-    srv.request.transform.pose.theta =rot;
-    srv.request.transform.scale = scale;
-    srv.request.transform.slamOffsetScale = slamScale;
-    srv.request.transform.groundTruthOffsetScale = groundTruthScale;
-
-    if (client.call(srv)) 
-    {
-      cmse_ = srv.response.result;
-      ROS_INFO_STREAM("[omg_gui] Corner metric successfully calculated CMSE=" << omse_);
-      validation_connector_.displayCmseResult(cmse_);
-    }
-    else
-    {
-       ROS_ERROR("[ogm_gui] CMSE not received..");
-    }
+    if (metricMethod == "OMSE")
+      srv.request.closestPointMethod = "Brushfire";
     
-   }
+    srv.request.distNorm = "Manhattan";
+    srv.request.transform.pose.x = pos.x();
+    srv.request.transform.pose.y = pos.y();
+    srv.request.transform.pose.theta =rot;
+    srv.request.transform.scale = scale;
+    srv.request.transform.slamOffsetScale = slamScale;
+    srv.request.transform.groundTruthOffsetScale = groundTruthScale;
 
+    if (client.call(srv)) 
+    {
+      metricResult_ = srv.response.result;
+      ROS_INFO_STREAM("[ogm_gui] " << metricMethod.toStdString() << " metric successfully calculated Result=" << metricResult_);
+      validation_connector_.displayMetricResult(metricMethod, metricResult_);
+    }
+    else
+    {
+       ROS_ERROR_STREAM("[ogm_gui] " << metricMethod.toStdString() << " not received..");
+    }
+  }
 }
 
 

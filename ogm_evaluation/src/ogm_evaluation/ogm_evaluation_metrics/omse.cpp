@@ -25,18 +25,18 @@ namespace ogm_evaluation
   @brief Default Constructor
   @param groundTruthMap [const cv::Mat& ] the ground truth map
   @param slamMap[const cv::Mat&] the slam produced Map
-  @param int [method] the omse method to be used
-  @param int [distNorm] the distance norm to be used
+  @param std::string [closestPointMethod] the closestPoint method to be used
+  @param std::string [distNorm] the distance norm to be used
   @return void
   **/
 
   OmseMetric::OmseMetric(const cv::Mat& groundTruthMap,
                          const cv::Mat& slamMap,
-                         int method,
-                         int distNorm)
+                         std::string closestPointMethod,
+                         std::string distNorm)
                 : Metric(groundTruthMap, slamMap)
   {
-    _omse_method = method;
+    _closestPointMethod = closestPointMethod;
     _distNorm = distNorm;
   }
 
@@ -58,15 +58,19 @@ namespace ogm_evaluation
     brushfireSearch();
     for (int i = 0; i < _slamObstaclePoints.size(); i++)
     {
-      if(_omse_method == 0)
+      if(_closestPointMethod == "NearestNeighbor")
       {
         _result += bruteForceNearestNeighbor(_slamObstaclePoints[i], _distNorm) *
                  bruteForceNearestNeighbor(_slamObstaclePoints[i], _distNorm);
       }
-      else
+      else if(_closestPointMethod == "Brushfire")
       {
         _result += _brushfire[_slamObstaclePoints[i].x][_slamObstaclePoints[i].y] *
                  _brushfire[_slamObstaclePoints[i].x][_slamObstaclePoints[i].y];
+      }
+      else
+      {
+        ROS_ERROR("[OMSE] NO SUCH CLOSEST POINT METHOD");
       }
     }
     _result = _result / _slamObstaclePoints.size();
@@ -98,16 +102,16 @@ namespace ogm_evaluation
   /**
   @brief Calculates the closest obstacle of a slamObstaclePoint from a groundTruthObstaclePoint (BruteForce)
   @param sp [cv::Point] an obstacle point of slam-produced map
-  @param method [int] the distance calculation method (1-Manhattan 2-Euclidean)
+  @param distNorm [std::string] the distance calculation norm (1-Manhattan 2-Euclidean)
   @return double the distance
   **/
-  double OmseMetric::bruteForceNearestNeighbor(cv::Point sp, int method)
+  double OmseMetric::bruteForceNearestNeighbor(cv::Point sp, std::string distNorm)
   {
-    double minDst = calculateDistance(sp, _groundTruthObstaclePoints[0], method);
+    double minDst = calculateDistance(sp, _groundTruthObstaclePoints[0], distNorm);
     double dst;
     for (int i = 0; i < _groundTruthObstaclePoints.size(); i++)
     {
-      dst = calculateDistance(sp, _groundTruthObstaclePoints[i], method);
+      dst = calculateDistance(sp, _groundTruthObstaclePoints[i], distNorm);
       if( dst < minDst )
         minDst = dst;
     }
@@ -169,16 +173,16 @@ namespace ogm_evaluation
   @brief Calculates the distance of points given
   @param p1 [cv::Point] the first point
   @param p2 [cv::Point] the second point
-  @param method [int] the norm to be used (1-Manhattan 2-Euclidean)
+  @param distNorm [std::string] the norm to be used (Manhattan/Euclidean)
   @return double the distance
   **/
-  double OmseMetric::calculateDistance(cv::Point p1, cv::Point p2, int method)
+  double OmseMetric::calculateDistance(cv::Point p1, cv::Point p2, std::string distNorm)
   {
     double dst;
     cv::Point diff = p1 - p2;
-    if (method == 1)
+    if ( distNorm == "Manhattan")
       dst = std::abs(p1.x - p2.x) + std::abs(p1.y-p2.y);
-    else if (method == 2)
+    else if (distNorm == "Euclidean")
       dst = cv::sqrt(diff.x * diff.x + diff.y * diff.y);
     else 
     {
