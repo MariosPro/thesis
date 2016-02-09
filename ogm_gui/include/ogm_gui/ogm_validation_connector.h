@@ -45,6 +45,21 @@ namespace ogm_gui
       //!< Input arguments
       char**  argv_;
 
+      //!< the Feature Detector to be implemented
+      std::string _detector;
+
+      //!< the Feature Descriptor to be implemented
+      std::string _descriptor;
+ 
+      //!< the Feature matcher to be implemented
+      std::string _matcher;
+  
+      //!< the closestObstacle method to be implemented
+      std::string _closestObstacleMethod;
+  
+      //!< the distance  method to be used
+      std::string _distMethod;
+
     //------------------------------------------------------------------------//
     public:
 
@@ -78,38 +93,19 @@ namespace ogm_gui
       **/
       QWidget* getLoader(void);
 
+      std::string getDescriptor();
+
+      std::string getDetector();
+
+      std::string getMatcher();
+ 
+      std::string getClosestObstacleMethod();
+
+      std::string getDistanceMethod();
+
 
     //------------------------------------------------------------------------//
     public Q_SLOTS:
-
-      /**
-      @brief Called when a click occurs in the tree
-      @param item [QTreeWidgetItem*] Item clicked
-      @param column [int] Column clicked
-      @return void
-      **/
-      void treeItemClicked(QTreeWidgetItem * item, int column ); 
-
-      /**
-      @brief Adapts the columns width according to what is visible when an item is clicked
-      @param item [QTreeWidgetItem*] Item clicked
-      @param column [int] Column clicked
-      @return void
-      **/
-      void adaptColumns(QTreeWidgetItem *item, int column);
-
-      /**
-      @brief Adapts the columns width according to what is visible when an item expands or collapses
-      @param item [QTreeWidgetItem*] Item expanded / collapsed
-      @return void
-      **/
-      void adaptColumns(QTreeWidgetItem *item);
-
-      /**
-      @brief Adapts the columns width according to what is visible. Called when adaptSignal is emmited
-      @return void
-      **/
-      void adaptSlot(void);
 
       void posxChanged(double x);
 
@@ -131,19 +127,20 @@ namespace ogm_gui
 
       void obstacleTriggered();
 
-      void obstacleSettingsTriggered();
-
       void featureMatchingTriggered();
 
-      void featureMatchingSettingsTriggered();
+      void detectorComboBoxActivated(const QString& text);
+
+      void descriptorComboBoxActivated(const QString& text);
+
+      void matcherComboBoxActivated(const QString& text);
+
+      void closestObstacleComboBoxActivated(const QString& text);
+
+      void distanceComboBoxActivated(const QString& text);
+
     //------------------------------------------------------------------------//
     Q_SIGNALS:
-
-      /**
-      @brief Emmited when resize of columns according to whats visible is needed
-      @return void
-      **/
-      void adaptSignal(void);
 
       void changeXPos(double x);
  

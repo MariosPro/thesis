@@ -461,14 +461,14 @@ namespace ogm_gui
     // TO DO get the arguments for detector/descriptor/matcher from gui
     if (metricMethod == "FEATURES")
     {
-      srv.request.detector = "SIFT";
-      srv.request.descriptor = "SIFT";
-      srv.request.matcher = "BruteForce";
+      srv.request.detector = validation_connector_.getDetector();
+      srv.request.descriptor = validation_connector_.getDescriptor();
+      srv.request.matcher = validation_connector_.getMatcher();
     }
     if (metricMethod == "OMSE")
-      srv.request.closestPointMethod = "Brushfire";
+      srv.request.closestPointMethod = validation_connector_.getClosestObstacleMethod();
     
-    srv.request.distNorm = "Manhattan";
+    srv.request.distNorm = validation_connector_.getDistanceMethod();
     srv.request.transform.pose.x = pos.x();
     srv.request.transform.pose.y = pos.y();
     srv.request.transform.pose.theta =rot;

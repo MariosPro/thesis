@@ -34,22 +34,14 @@ namespace ogm_gui
     argv_(argv)
   {
     setupUi(this);
-  
+
     obstaclePushButton->setIcon(QIcon(QString::fromUtf8((
       ogm_gui_tools::getRosPackagePath("ogm_gui") +
       std::string("/resources/images/translate_down.png")).c_str())));
- 
-    obstacleSettingsPushButton->setIcon(QIcon(QString::fromUtf8((
-      ogm_gui_tools::getRosPackagePath("ogm_gui") +
-      std::string("/resources/images/properties.png")).c_str())));
 
     featuresPushButton->setIcon(QIcon(QString::fromUtf8((
       ogm_gui_tools::getRosPackagePath("ogm_gui") +
       std::string("/resources/images/translate_down.png")).c_str())));
- 
-    featuresSettingsPushButton->setIcon(QIcon(QString::fromUtf8((
-      ogm_gui_tools::getRosPackagePath("ogm_gui") +
-      std::string("/resources/images/properties.png")).c_str())));
 
     posxSpinBox->setRange(-1000, 1000);
     posySpinBox->setRange(-1000, 1000);
@@ -68,40 +60,6 @@ namespace ogm_gui
   CValidationLoader::~CValidationLoader(void)
   {
 
-  }
-
-  /**
-  @brief Deletes a specific tree node. Recursive function.
-  @param item [QTreeWidgetItem*] The item to be deleted
-  @return void
-  **/
-  void CValidationLoader::deleteTreeNode(QTreeWidgetItem *item)
-  {
-    int count = item->childCount();
-
-    for(int i = count - 1 ; i >= 0 ; i--)
-    {
-      deleteTreeNode(item->child(i));
-      QTreeWidgetItem *child = item->child(i);
-      item->removeChild(item->child(i));
-      delete child;
-    }
-  }
-
-  /**
-  @brief Deletes the information tree
-  @return void
-  **/
-  void CValidationLoader::deleteTree(void)
-  {
-/*    int count = mapInfo.childCount();*/
-    //for(int i = count - 1 ; i >= 0 ; i--)
-    //{
-      ////~ deleteTreeNode(mapInfo.child(i));
-      //QTreeWidgetItem *child = mapInfo.child(i);
-      //mapInfo.removeChild(mapInfo.child(i));
-      ////~ delete child;
-    /*}*/
   }
 
   /**
@@ -165,7 +123,5 @@ namespace ogm_gui
     scaleSpinBox->setValue(1);
     transSpinBox->setValue(0.5);
   }
-
-
 }
 

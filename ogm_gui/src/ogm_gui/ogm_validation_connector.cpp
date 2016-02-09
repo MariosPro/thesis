@@ -34,30 +34,6 @@ namespace ogm_gui
     argc_(argc),
     argv_(argv)
   {
-    /*QObject::connect(*/
-      //loader.ogmInformationTree,
-        //SIGNAL(itemClicked(QTreeWidgetItem*, int)),
-      //this,
-        //SLOT(treeItemClicked(QTreeWidgetItem*, int)));
-        
-    //QObject::connect(
-      //this,
-        //SIGNAL(adaptSignal()),
-      //this,
-        //SLOT(adaptSlot()));
-        
-    //QObject::connect(
-      //loader.ogmInformationTree, 
-        //SIGNAL(itemCollapsed(QTreeWidgetItem *)),
-      //this, 
-        //SLOT(adaptColumns(QTreeWidgetItem *)));
-        
-    //QObject::connect(
-      //loader.ogmInformationTree, 
-        //SIGNAL(itemExpanded(QTreeWidgetItem *)),
-      //this, 
-        /*SLOT(adaptColumns(QTreeWidgetItem *)));*/
-
     QObject::connect(
       loader.posxSpinBox, SIGNAL(valueChanged(double)),
       this, SLOT(posxChanged(double)));
@@ -73,7 +49,7 @@ namespace ogm_gui
    QObject::connect(
       loader.scaleSpinBox, SIGNAL(valueChanged(double)),
       this, SLOT(scaleChanged(double)));
- 
+
    QObject::connect(
       loader.transSpinBox, SIGNAL(valueChanged(double)),
       this, SLOT(transparencyChanged(double)));
@@ -81,61 +57,40 @@ namespace ogm_gui
    QObject::connect(
       loader.obstaclePushButton, SIGNAL(clicked(bool)),
       this, SLOT(obstacleTriggered()));
+
+   QObject::connect(
+      loader.detectorComboBox, SIGNAL(currentIndexChanged(const QString&)),
+      this, SLOT(detectorComboBoxActivated(const QString&)));
+
+   QObject::connect(
+      loader.descriptorComboBox, SIGNAL(currentIndexChanged(const QString&)),
+      this, SLOT(descriptorComboBoxActivated(const QString&)));
+
+   QObject::connect(
+      loader.matcherComboBox, SIGNAL(currentIndexChanged(const QString&)),
+      this, SLOT(matcherComboBoxActivated(const QString&)));
  
    QObject::connect(
-      loader.obstacleSettingsPushButton, SIGNAL(clicked(bool)),
-      this, SLOT(obstacleSettingsTriggered()));
+      loader.closestObstacleComboBox, SIGNAL(currentIndexChanged(const QString&)),
+      this, SLOT(closestObstacleComboBoxActivated(const QString&)));
+
+   QObject::connect(
+      loader.distanceComboBox, SIGNAL(currentIndexChanged(const QString&)),
+      this, SLOT(distanceComboBoxActivated(const QString&)));
 
    QObject::connect(
       loader.featuresPushButton, SIGNAL(clicked(bool)),
       this, SLOT(featureMatchingTriggered()));
 
-   QObject::connect(
-      loader.featuresSettingsPushButton, SIGNAL(clicked(bool)),
-      this, SLOT(featureMatchingSettingsTriggered()));
+   _detector = "SIFT";
+   _descriptor = "SIFT";
+   _matcher = "BruteForce";
+   _closestObstacleMethod = "Brushfire";
+   _distMethod = "Manhattan";
 
   }
 
-  /**
-  @brief Adapts the columns width according to what is visible when an item is clicked
-  @param item [QTreeWidgetItem*] Item clicked
-  @param column [int] Column clicked
-  @return void
-  **/
-  void CValidationConnector::adaptColumns(QTreeWidgetItem *item, int column)
-  {
-/*    loader.ogmInformationTree->resizeColumnToContents(0);*/
-    //loader.ogmInformationTree->resizeColumnToContents(1);
-    //loader.ogmInformationTree->resizeColumnToContents(2);
-    /*loader.ogmInformationTree->resizeColumnToContents(3);*/
-  }
-  
-  /**
-  @brief Adapts the columns width according to what is visible when an item expands or collapses
-  @param item [QTreeWidgetItem*] Item expanded / collapsed
-  @return void
-  **/
-  void CValidationConnector::adaptColumns(QTreeWidgetItem *item)
-  {
-/*    loader.ogmInformationTree->resizeColumnToContents(0);*/
-    //loader.ogmInformationTree->resizeColumnToContents(1);
-    //loader.ogmInformationTree->resizeColumnToContents(2);
-    /*loader.ogmInformationTree->resizeColumnToContents(3);*/
-  }
-  
-  /**
-  @brief Adapts the columns width according to what is visible. Called when adaptSignal is emmited
-  @return void
-  **/
-  void CValidationConnector::adaptSlot(void)
-  {
-/*    loader.ogmInformationTree->resizeColumnToContents(0);*/
-    //loader.ogmInformationTree->resizeColumnToContents(1);
-    //loader.ogmInformationTree->resizeColumnToContents(2);
-    /*loader.ogmInformationTree->resizeColumnToContents(3);*/
-  }
-
-  /**
+   /**
   @brief Updates the information tree according to the specific map
   @param width [float] The map width
   @param height [float] The map height
@@ -144,25 +99,37 @@ namespace ogm_gui
   **/
   void CValidationConnector::updateMapInfo(const ogm_msgs::MapsMsg& msg)
   {
-    //loader.deleteTree();
     loader.updateMapInfo(msg.groundTruthMap.info.width * msg.groundTruthMap.info.resolution,
                          msg.groundTruthMap.info.height * msg.groundTruthMap.info.resolution,
                          msg.groundTruthMap.info.resolution, true);
     loader.updateMapInfo(msg.slamMap.info.width * msg.slamMap.info.resolution,
                          msg.slamMap.info.height * msg.slamMap.info.resolution,
                          msg.slamMap.info.resolution, false);
-    //Q_EMIT adaptSignal();
   }
 
-  /**
-  @brief Called when a click occurs in the tree
-  @param item [QTreeWidgetItem*] Item clicked
-  @param column [int] Column clicked
-  @return void
-  **/
-  void CValidationConnector::treeItemClicked(QTreeWidgetItem * item, int column)
+  std::string CValidationConnector::getDetector()
   {
+    return _detector;
+  }
 
+  std::string CValidationConnector::getDescriptor()
+  {
+    return _descriptor;
+  }
+
+  std::string CValidationConnector::getMatcher()
+  {
+    return _matcher;
+  }
+
+  std::string CValidationConnector::getClosestObstacleMethod()
+  {
+    return _closestObstacleMethod;
+  }
+
+  std::string CValidationConnector::getDistanceMethod()
+  {
+    return _distMethod;
   }
 
   void CValidationConnector::posxChanged(double x)
@@ -226,20 +193,40 @@ namespace ogm_gui
     Q_EMIT MetricNeeded("OMSE");
   }
 
-  void CValidationConnector::obstacleSettingsTriggered()
-  {
-
-  }
-
   void CValidationConnector::featureMatchingTriggered()
   {
     Q_EMIT MetricNeeded("FEATURES");
     //TO DO call featureMatchingSettingsTriggered (default values)
   }
 
-  void CValidationConnector::featureMatchingSettingsTriggered()
+  void CValidationConnector::detectorComboBoxActivated(const QString& text)
   {
+    _detector = text.toStdString();
+    ROS_INFO_STREAM("DETECTOR:" << text.toStdString());
+  }
+ 
+  void CValidationConnector::descriptorComboBoxActivated(const QString& text)
+  {
+    _descriptor = text.toStdString();
+    ROS_INFO_STREAM("DESCRIPTOR:" << text.toStdString());
+  }
 
+  void CValidationConnector::matcherComboBoxActivated(const QString& text)
+  {
+    _matcher = text.toStdString();
+    ROS_INFO_STREAM("MATCHER:" << text.toStdString());
+  }
+
+  void CValidationConnector::closestObstacleComboBoxActivated(const QString& text)
+  {
+    _closestObstacleMethod = text.toStdString();
+    ROS_INFO_STREAM("CLOSEST OBSTACLE METHOD: " << text.toStdString());
+  }
+
+  void CValidationConnector::distanceComboBoxActivated(const QString& text)
+  {
+    _distMethod = text.toStdString();
+    ROS_INFO_STREAM("DISTANCE METHOD: " << text.toStdString());
   }
 
   void CValidationConnector::displayMetricResult(QString method, double result)
