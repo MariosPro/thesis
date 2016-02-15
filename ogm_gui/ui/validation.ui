@@ -492,6 +492,11 @@
               <string>ORB</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>RADIUS</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>

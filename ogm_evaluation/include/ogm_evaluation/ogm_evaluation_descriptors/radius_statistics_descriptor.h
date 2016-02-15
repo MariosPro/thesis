@@ -37,7 +37,7 @@ namespace ogm_evaluation
       @param descriptors [cv::Mat&] the descriptors to be extracted
       @return void
       **/
-      virtual void compute(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& descriptors);
+      virtual void compute(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat* descriptors);
 
       /**
       @brief Default Constructor

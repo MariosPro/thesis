@@ -17,41 +17,33 @@
    * Marios Protopapas, protopapasmarios@gmail.com
    * Manos Tsardoulias, etsardou@gmail.com
 ******************************************************************************/
-#ifndef DESCRIPTOR_EXTRACTOR_H
-#define DESCRIPTOR_EXTRACTOR_H
+#ifndef DESCRIPTOR_FACTORY_H
+#define DESCRIPTOR_FACTORY_H
 
-#include <vector>
-#include <opencv2/opencv.hpp>
-#include <ros/ros.h>
+#include <string>
+#include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_extractor.h"
 
+/**
+@namespace ogm_evaluation
+@brief The main namespace for OGM Evaluation
+**/ 
 namespace ogm_evaluation
 {
-  class DescriptorExtractor
-  {
-    public:
- 
-      /**
-      @brief Virtual function for description extract computation. Implement this function
-      on derived class to compute the individual descriptors of each detected keypoint.
-      @return void
-      **/ 
-      virtual void compute(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat* descriptors) = 0;
- 
-      /**
-      @brief Default Constructor
-      @return void
-      **/ 
-      DescriptorExtractor(void)
-      {
-      };
+   /**
+   * @class DescriptorFactory
+   * @brief The class that is used to produce the customs Descriptors.
+   */
+   class DescriptorFactory
+   {
+       public:
+       /**
+       * @brief Default Constructor
+       */
+       DescriptorFactory()
+       {
+       };
 
-      /**
-      @brief Default destructor
-      @return void
-      **/ 
-      virtual ~DescriptorExtractor(void)
-      {
-      }
-  };
+       DescriptorExtractor* create(std::string name);
+   };
 }
 #endif

@@ -45,7 +45,12 @@ namespace ogm_evaluation
     _matcherName = matcher;
     cv::initModule_nonfree();
     _featureDetector =  cv::FeatureDetector::create(_detector);
+    if(_descriptor == "SIFT" || _descriptor == "SURF" || _descriptor == "BRIEF" ||
+       _descriptor == "BRISK" || _descriptor == "FREAK" || _descriptor == "ORB")
     _descriptorExtractor = cv::DescriptorExtractor::create(_descriptor);
+    else
+    _customDescriptorExtractor = _descriptorFactory.create(_descriptor);
+    
     _matcher = cv::DescriptorMatcher::create(_matcherName);
     ROS_INFO_STREAM("Created FeatureMetrics Instance");
 
@@ -62,18 +67,21 @@ namespace ogm_evaluation
     _featureDetector->detect(_slamMap, _slamKeypoints);
 
     //!< extract Descriptors for each detected keypoint
-    _descriptorExtractor->compute(_groundTruthMap, _groundTruthKeypoints, _groundTruthDescriptors);
-    _descriptorExtractor->compute(_slamMap, _slamKeypoints, _slamDescriptors);
-
+    //_descriptorExtractor->compute(_groundTruthMap, _groundTruthKeypoints, _groundTruthDescriptors);
+    //_descriptorExtractor->compute(_slamMap, _slamKeypoints, _slamDescriptors);
+    _customDescriptorExtractor->compute(_slamMap, _slamKeypoints, &_slamDescriptors);
+    _customDescriptorExtractor->compute(_groundTruthMap, _groundTruthKeypoints,  &_groundTruthDescriptors);
+    
     std::vector<std::vector<cv::DMatch> > matches12, matches21, matches;
     std::vector<cv::DMatch> crossCheckedMatches;
     std::vector< cv::DMatch > goodmatches;
     //!< Matching descriptor vectors using a matcher
     //_matcher->match(_slamDescriptors, _groundTruthDescriptors, matches);
+    ROS_INFO_STREAM("SLAM KEYPOINTS= " << _slamKeypoints.size());
+    ROS_INFO_STREAM("SLAM DESCRIPTORS=" << _slamDescriptors.rows << " "  << _slamDescriptors.cols << " " << _slamDescriptors.type());
+
     _matcher->knnMatch(_slamDescriptors, _groundTruthDescriptors, matches, 1);
 
-    ROS_INFO_STREAM("SLAM KEYPOINTS= " << _slamKeypoints.size());
-    ROS_INFO_STREAM("SLAM DESCRIPTORS=" << _slamDescriptors.rows << " "  << _slamDescriptors.cols);
     // find matching point pairs with same distance in both images
  /*   for (size_t i = 0; i < matches.size(); i++) */
     //{

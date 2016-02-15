@@ -17,41 +17,28 @@
    * Marios Protopapas, protopapasmarios@gmail.com
    * Manos Tsardoulias, etsardou@gmail.com
 ******************************************************************************/
-#ifndef DESCRIPTOR_EXTRACTOR_H
-#define DESCRIPTOR_EXTRACTOR_H
 
-#include <vector>
-#include <opencv2/opencv.hpp>
-#include <ros/ros.h>
+#include <string>
+#include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_factory.h"
+#include "ogm_evaluation/ogm_evaluation_descriptors/radius_statistics_descriptor.h"
 
 namespace ogm_evaluation
 {
-  class DescriptorExtractor
+   /**
+   * @brief The main factory method that creates the different descriptors
+   * @param name [std::string] The name of the descriptor
+   */
+  DescriptorExtractor* DescriptorFactory::create(std::string name)
   {
-    public:
- 
-      /**
-      @brief Virtual function for description extract computation. Implement this function
-      on derived class to compute the individual descriptors of each detected keypoint.
-      @return void
-      **/ 
-      virtual void compute(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat* descriptors) = 0;
- 
-      /**
-      @brief Default Constructor
-      @return void
-      **/ 
-      DescriptorExtractor(void)
-      {
-      };
+    ROS_INFO_STREAM("ENTER DescriptorFactory");
+    if (name == "RADIUS") return new RadiusStatisticsDescriptor();
 
-      /**
-      @brief Default destructor
-      @return void
-      **/ 
-      virtual ~DescriptorExtractor(void)
+    else
       {
+    /*    ROS_FATAL_STREAM("[OGM_EVALUATION]: Invalid metric method!"*/
+            /*<< " Detection cannot continue!");*/
+        return NULL;
       }
-  };
-}
-#endif
+      return NULL;
+  }
+}  // namespace ogm_evaluation

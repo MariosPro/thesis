@@ -25,6 +25,8 @@
 #include <opencv2/nonfree/nonfree.hpp>
 #include <opencv2/nonfree/features2d.hpp>
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
+#include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_extractor.h"
+#include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_factory.h"
 
 /**
 @namespace ogm_evaluation
@@ -93,6 +95,12 @@ namespace ogm_evaluation
 
       //!< the instance of opencv's DescriptorExtractor class to be used
       cv::Ptr<cv::DescriptorExtractor> _descriptorExtractor;
+      
+      //!< the instance of custom's DescriptorExtractor class to be used
+      cv::Ptr<ogm_evaluation::DescriptorExtractor>  _customDescriptorExtractor;
+
+      //!< the Descriptors Factory
+      DescriptorFactory _descriptorFactory;
 
       //!< the instance of opencv's DescriptorMatcher class to be used
       cv::Ptr<cv::DescriptorMatcher> _matcher;

@@ -28,7 +28,7 @@ namespace ogm_evaluation
     **/ 
     RadiusStatisticsDescriptor::RadiusStatisticsDescriptor():DescriptorExtractor()
     {
-
+        ROS_INFO_STREAM("Created RadiusStatisticsDescriptor instance");
     }
     
     /**
@@ -38,22 +38,23 @@ namespace ogm_evaluation
     @param descriptors [cv::Mat&] the descriptors to be extracted
     @return void
     **/
-    void RadiusStatisticsDescriptor::compute(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& descriptors)
+    void RadiusStatisticsDescriptor::compute(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat* descriptors)
     {
+      ROS_INFO_STREAM("ENTER COMPUTE " << keypoints.size());
       int radius = 50;
       int obstacles;
       int frees;
-      descriptors = cv::Mat(keypoints.size(), 2, CV_64FC1);
+      cv::Mat desc = cv::Mat(keypoints.size(), 2, CV_32FC1);
 
       for (int k = 0; k < keypoints.size(); k++)
       {
-        obstacles;
-        frees;
+        obstacles = 0;
+        frees = 0;
         cv::Mat mask = cv::Mat::zeros(image.rows, image.cols, CV_8U);
         cv::circle(mask, keypoints[k].pt, radius, cv::Scalar(255), -1);
         for(unsigned int i = 0; i < image.rows; i++)
           for(unsigned int j = 0; j < image.cols; j++)
-            if( mask.at<unsigned char>(i, j) > 0)
+            if(mask.at<unsigned char>(i, j) > 0)
             {
               //pixel (i,j) in original image is within that circle so do whatever you want.
               if(image.at<unsigned char>(i, j) == 0)
@@ -61,8 +62,9 @@ namespace ogm_evaluation
               else if(image.at<unsigned char>(i, j) == 255)
                 frees++;
             }
-        descriptors.at<double>(k, 0) = obstacles;
-        descriptors.at<double>(k, 1) =  frees;
-       }
+        desc.at<float>(k, 0) = obstacles;
+        desc.at<float>(k, 1) =  frees;
+      }
+      desc.copyTo(*descriptors);
     }
 } // namespace ogm_evaluation

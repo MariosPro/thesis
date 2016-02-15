@@ -44,13 +44,15 @@ target_link_libraries(ogm_omse_metric ${catkin_LIBRARIES} ogm_metric_base)
 add_library(ogm_cmse_metric src/ogm_evaluation/ogm_evaluation_metrics/cmse.cpp)
 target_link_libraries(ogm_cmse_metric ${catkin_LIBRARIES} ogm_metric_base)
 
-add_library(ogm_feature_metrics
-  src/ogm_evaluation/ogm_evaluation_metrics/feature_metrics.cpp)
+add_library(ogm_descriptor_factory src/ogm_evaluation/ogm_evaluation_descriptors/descriptor_factory.cpp)
+target_link_libraries(ogm_descriptor_factory ${catkin_LIBRARIES} ogm_radius_statistics_descriptor)
+
+add_library(ogm_feature_metrics src/ogm_evaluation/ogm_evaluation_metrics/feature_metrics.cpp)
 target_link_libraries(ogm_feature_metrics 
                       ${catkin_LIBRARIES}
                       ${OpenCV_LIBRARIES}
                       ogm_metric_base
-                      ogm_radius_statistics_descriptor)
+                      ogm_descriptor_factory)
 
 
 add_library(ogm_metric_factory src/ogm_evaluation/ogm_metric_factory.cpp)
@@ -74,6 +76,8 @@ install(TARGETS
     ogm_metric_base
     ogm_omse_metric
     ogm_cmse_metric
+    ogm_radius_statistics_descriptor
+    ogm_descriptor_factory
     ogm_feature_metrics
     ogm_metric_factory
     ogm_evaluation
