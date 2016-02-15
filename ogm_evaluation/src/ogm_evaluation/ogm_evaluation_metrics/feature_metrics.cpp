@@ -72,6 +72,8 @@ namespace ogm_evaluation
     //_matcher->match(_slamDescriptors, _groundTruthDescriptors, matches);
     _matcher->knnMatch(_slamDescriptors, _groundTruthDescriptors, matches, 1);
 
+    ROS_INFO_STREAM("SLAM KEYPOINTS= " << _slamKeypoints.size());
+    ROS_INFO_STREAM("SLAM DESCRIPTORS=" << _slamDescriptors.rows << " "  << _slamDescriptors.cols);
     // find matching point pairs with same distance in both images
  /*   for (size_t i = 0; i < matches.size(); i++) */
     //{

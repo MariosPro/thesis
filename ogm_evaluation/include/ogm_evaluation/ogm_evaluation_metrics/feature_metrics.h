@@ -21,7 +21,6 @@
 #define FEATURE_METRICS_H
 
 //#include <ros/ros.h>
-#include <opencv2/opencv.hpp>
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/nonfree/nonfree.hpp>
 #include <opencv2/nonfree/features2d.hpp>

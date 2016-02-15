@@ -32,6 +32,9 @@ catkin_package(
 )
 
 ######################### Metrics ######################################
+add_library(ogm_radius_statistics_descriptor src/ogm_evaluation/ogm_evaluation_descriptors/radius_statistics_descriptor.cpp)
+target_link_libraries(ogm_radius_statistics_descriptor)
+
 add_library(ogm_metric_base src/ogm_evaluation/ogm_evaluation_metrics/metric_base.cpp)
 target_link_libraries(ogm_metric_base ${catkin_LIBRARIES})
 
@@ -46,7 +49,8 @@ add_library(ogm_feature_metrics
 target_link_libraries(ogm_feature_metrics 
                       ${catkin_LIBRARIES}
                       ${OpenCV_LIBRARIES}
-                      ogm_metric_base)
+                      ogm_metric_base
+                      ogm_radius_statistics_descriptor)
 
 
 add_library(ogm_metric_factory src/ogm_evaluation/ogm_metric_factory.cpp)
