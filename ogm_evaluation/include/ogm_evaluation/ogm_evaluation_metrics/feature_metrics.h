@@ -112,6 +112,12 @@ namespace ogm_evaluation
      
      //!< the Matching descriptor vectors
      std::vector< cv::DMatch > _matches;
+    
+     std::vector<cv::KeyPoint> fil1,fil2;
+
+     std::vector<cv::Point2f>  coord1,coord2;
+
+     cv::Mat H;
   };
 }
 #endif
