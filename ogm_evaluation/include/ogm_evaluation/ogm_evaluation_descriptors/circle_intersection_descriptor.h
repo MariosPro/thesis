@@ -18,29 +18,42 @@
    * Manos Tsardoulias, etsardou@gmail.com
 ******************************************************************************/
 
-#include <string>
-#include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_factory.h"
-#include "ogm_evaluation/ogm_evaluation_descriptors/radius_statistics_descriptor.h"
-#include "ogm_evaluation/ogm_evaluation_descriptors/circle_intersection_descriptor.h"
+#ifndef CIRCLE_INTERSECTION_DESCRIPTOR_H
+#define CIRCLE_INTERSECTION_DESCRIPTOR_H
+
+#include <math.h>
+#include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_extractor.h"
 
 namespace ogm_evaluation
 {
-   /**
-   * @brief The main factory method that creates the different descriptors
-   * @param name [std::string] The name of the descriptor
-   */
-  DescriptorExtractor* DescriptorFactory::create(std::string name)
-  {
-    ROS_INFO_STREAM("ENTER DescriptorFactory");
-    if (name == "RADIUS STATISTICS") return new RadiusStatisticsDescriptor();
-    else if (name == "CIRCLE INTERSECTIONS") return new CircleIntersectionDescriptor();
 
-    else
+  class CircleIntersectionDescriptor : public DescriptorExtractor
+  {
+    public:
+ 
+      /**
+      @brief function for description extract computation.
+      @param image [const cv::Mat&] the image 
+      @param keypoints [std::vector<cv::Keypoint>&] the image detected keypoints
+      @param descriptors [cv::Mat&] the descriptors to be extracted
+      @return void
+      **/
+      virtual void compute(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat* descriptors);
+
+      /**
+      @brief Default Constructor
+      @return void
+      **/ 
+      CircleIntersectionDescriptor(void);
+ 
+      /**
+      @brief Default destructor
+      @return void
+      **/ 
+      virtual ~CircleIntersectionDescriptor(void)
       {
-    /*    ROS_FATAL_STREAM("[OGM_EVALUATION]: Invalid metric method!"*/
-            /*<< " Detection cannot continue!");*/
-        return NULL;
-      }
-      return NULL;
-  }
-}  // namespace ogm_evaluation
+      };
+  };
+}
+#endif
+

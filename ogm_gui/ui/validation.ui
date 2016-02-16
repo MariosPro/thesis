@@ -215,8 +215,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>100</width>
-        <height>30</height>
+        <width>98</width>
+        <height>28</height>
        </rect>
       </property>
       <attribute name="label">
@@ -494,7 +494,12 @@
             </item>
             <item>
              <property name="text">
-              <string>RADIUS</string>
+              <string> RADIUS STATISTICS</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>CIRCLE INTERSECTIONS</string>
              </property>
             </item>
            </widget>
