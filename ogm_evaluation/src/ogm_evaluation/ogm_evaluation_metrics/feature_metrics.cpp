@@ -202,7 +202,7 @@ namespace ogm_evaluation
 
     for( int i = 0; i < (int)goodmatches.size(); i++ )
     {
-      ROS_INFO( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  --Distance %f  \n", i, goodmatches[i].queryIdx, goodmatches[i].trainIdx, goodmatches[i].distance );
+     /* ROS_INFO( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  --Distance %f  \n", i, goodmatches[i].queryIdx, goodmatches[i].trainIdx, goodmatches[i].distance );*/
     }
     cv::Mat img_keypoints_1, img_keypoints_2;
     cv::drawKeypoints( _groundTruthMap, _groundTruthKeypoints, img_keypoints_1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );

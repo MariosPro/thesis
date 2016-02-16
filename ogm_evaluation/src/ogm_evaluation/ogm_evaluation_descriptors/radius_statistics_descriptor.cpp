@@ -41,30 +41,59 @@ namespace ogm_evaluation
     void RadiusStatisticsDescriptor::compute(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat* descriptors)
     {
       ROS_INFO_STREAM("ENTER COMPUTE " << keypoints.size());
-      int radius = 50;
+      int radius;
       int obstacles;
       int frees;
-      cv::Mat desc = cv::Mat(keypoints.size(), 2, CV_32FC1);
-
+      float sse, dst;
+      cv::Mat img;
+      cv::cvtColor(image, img, CV_GRAY2RGB);
+      //image.copyTo(img);
+      cv::Mat desc = cv::Mat(keypoints.size(), 18, CV_32FC1);
+      std::vector<float> rowFeatures;
       for (int k = 0; k < keypoints.size(); k++)
       {
-        obstacles = 0;
-        frees = 0;
-        cv::Mat mask = cv::Mat::zeros(image.rows, image.cols, CV_8U);
-        cv::circle(mask, keypoints[k].pt, radius, cv::Scalar(255), -1);
-        for(unsigned int i = 0; i < image.rows; i++)
-          for(unsigned int j = 0; j < image.cols; j++)
-            if(mask.at<unsigned char>(i, j) > 0)
-            {
-              //pixel (i,j) in original image is within that circle so do whatever you want.
-              if(image.at<unsigned char>(i, j) == 0)
-                obstacles++;
-              else if(image.at<unsigned char>(i, j) == 255)
-                frees++;
-            }
-        desc.at<float>(k, 0) = obstacles;
-        desc.at<float>(k, 1) =  frees;
+        radius = 0;
+        rowFeatures.clear();
+        for (int l = 0; l < 6; l++)
+        {
+          radius+= 25;
+          obstacles = 0;
+          frees = 0;
+          sse = 0;
+          cv::Mat mask = cv::Mat::zeros(image.rows, image.cols, CV_8U);
+          cv::circle(mask, keypoints[k].pt, radius, cv::Scalar(255), -1);
+       /*  cv::imshow("mask", mask);*/
+         /*cv::waitKey(0);*/
+          for(unsigned int i = 0; i < image.rows; i++)
+            for(unsigned int j = 0; j < image.cols; j++)
+              if(mask.at<unsigned char>(i, j) > 0)
+              {
+                //pixel (i,j) in original image is within that circle so do whatever you want.
+                if(image.at<unsigned char>(i, j) == 0)
+                {
+                  obstacles++;
+                  dst = cv::sqrt(pow((i-keypoints[k].pt.x), 2) + pow((j-keypoints[k].pt.y), 2));
+                  sse += dst*dst;
+                }
+                else if(image.at<unsigned char>(i, j) == 255)
+                  frees++;
+              }
+          sse = sse / obstacles;
+          rowFeatures.push_back((float)obstacles / (obstacles + frees));
+          rowFeatures.push_back((float)frees / (obstacles + frees));
+          rowFeatures.push_back(sse);
+          cv::circle(img, keypoints[0].pt, radius, cv::Scalar(255, 0, 0), 2, 8);
+        }
+        for (int i = 0; i < rowFeatures.size(); i++)
+        {
+          desc.at<float>(k, i) = rowFeatures[i];
+          std::cout << rowFeatures[i] << " ";
+        }
+        std::cout << std::endl;
       }
+      cv::imshow("Radius Descriptors", img);
+      cv::waitKey(1000);
+      ROS_INFO_STREAM("DESC=" <<desc.rows << " " << desc.cols);
       desc.copyTo(*descriptors);
     }
 } // namespace ogm_evaluation
