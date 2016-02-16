@@ -40,13 +40,10 @@ namespace ogm_evaluation
     **/
     void CircleIntersectionDescriptor::compute(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat* descriptors)
     {
-      ROS_INFO_STREAM("ENTER COMPUTE " << keypoints.size());
       int radius, intersections, crosses;
       float x, y;
-      cv::Mat img, img1;
-      //image.convertTo(img1, CV_32FC1);
+      cv::Mat img;
       cv::cvtColor(image, img, CV_GRAY2RGB);
-      //image.copyTo(img);
       cv::Mat desc = cv::Mat(keypoints.size(), 6, CV_32FC1);
       std::vector<float> rowFeatures;
       for (int k = 0; k < keypoints.size(); k++)
@@ -57,10 +54,6 @@ namespace ogm_evaluation
         {
           radius+= 25;
           intersections = 0;
-          cv::Mat mask = cv::Mat::zeros(image.rows, image.cols, CV_8U);
-          cv::circle(mask, keypoints[k].pt, radius, cv::Scalar(255), 1);
-       /*  cv::imshow("mask", mask);*/
-         /*cv::waitKey(0);*/
           crosses = 0;
           for (int theta = 0; theta < 360; theta++)
           {
@@ -68,36 +61,30 @@ namespace ogm_evaluation
             y = (int) round((radius * sin(theta * M_PI / 180)) + keypoints[k].pt.y);
 
             // check if circle points are inside image boundaries
-            if(x >= 0 && x < image.rows && y >= 0 && y < image.cols )
+            if(x >= 0 && x < image.cols && y >= 0 && y < image.rows )
             {
-              /*if(theta == 0)*/
-              /*{*/
-            /*  ROS_INFO_STREAM("CIRCLE POINT X,Y=" << x <<" " << y);*/
-              /*ROS_INFO_STREAM("IMAGE=" << (int) image.at<unsigned char>(x,y));*/
-              //}
-              if(image.at<unsigned char>(x, y) == 0 && crosses == 0)
+              if(image.at<unsigned char>(y, x) == 0 && crosses == 0)
               {
                  crosses += 1;
-                 //ROS_INFO_STREAM("ENTER OBSTACLE AREA crosses=" << crosses);
               }
-              if(image.at<unsigned char>(x, y) == 255 && crosses == 1)
+              if(image.at<unsigned char>(y, x) == 255 && crosses == 1)
               {
                 intersections += 1;
                 crosses = 0;
-                //ROS_INFO_STREAM("EXIT OBSTACLE AREA crosses=" << crosses);
               }
             }
           }
           rowFeatures.push_back((float) intersections);
-          cv::circle(img, keypoints[1].pt, radius, cv::Scalar(255, 0, 0), 2, 8);
+          cv::circle(img, keypoints[k].pt, radius, cv::Scalar(255, 0, 0), 2, 8);
         }
-        if(k==1)
-        for (int i = 0; i < rowFeatures.size(); i++)
+        if(k == 100)
         {
-          desc.at<float>(k, i) = rowFeatures[i];
-          std::cout << rowFeatures[i] << " ";
+          for (int i = 0; i < rowFeatures.size(); i++)
+          {
+            desc.at<float>(k, i) = rowFeatures[i];
+            std::cout << rowFeatures[i] << " ";
+          }
         }
-        //std::cout << std::endl;
       }
       cv::imshow("Radius Descriptors", img);
       cv::waitKey(1000);

@@ -31,7 +31,6 @@ namespace ogm_evaluation
    */
   DescriptorExtractor* DescriptorFactory::create(std::string name)
   {
-    ROS_INFO_STREAM("ENTER DescriptorFactory");
     if (name == "RADIUS STATISTICS") return new RadiusStatisticsDescriptor();
     else if (name == "CIRCLE INTERSECTIONS") return new CircleIntersectionDescriptor();
 
