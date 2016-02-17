@@ -79,6 +79,9 @@ namespace ogm_evaluation
     //_matcher->match(_slamDescriptors, _groundTruthDescriptors, matches);
     ROS_INFO_STREAM("SLAM KEYPOINTS= " << _slamKeypoints.size());
     ROS_INFO_STREAM("SLAM DESCRIPTORS=" << _slamDescriptors.rows << " "  << _slamDescriptors.cols << " " << _slamDescriptors.type());
+    ROS_INFO_STREAM("GROUND TRUTH KEYPOINTS= " << _groundTruthKeypoints.size());
+    ROS_INFO_STREAM("GROUND TRUTH DESCRIPTORS=" << _groundTruthDescriptors.rows << " "  << _groundTruthDescriptors.cols << " " << _groundTruthDescriptors.type());
+
 
     _matcher->knnMatch(_slamDescriptors, _groundTruthDescriptors, matches, 1);
 

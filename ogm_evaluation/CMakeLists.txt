@@ -34,7 +34,8 @@ catkin_package(
 ######################### Metrics ######################################
 add_library(ogm_custom_descriptors 
             src/ogm_evaluation/ogm_evaluation_descriptors/radius_statistics_descriptor.cpp
-            src/ogm_evaluation/ogm_evaluation_descriptors/circle_intersection_descriptor.cpp)
+            src/ogm_evaluation/ogm_evaluation_descriptors/circle_intersection_descriptor.cpp
+            src/ogm_evaluation/ogm_evaluation_descriptors/mean_rays_descriptor.cpp)
 target_link_libraries(ogm_custom_descriptors)
 
 add_library(ogm_metric_base src/ogm_evaluation/ogm_evaluation_metrics/metric_base.cpp)
