@@ -77,14 +77,14 @@ namespace ogm_evaluation
           rowFeatures.push_back((float) intersections);
           cv::circle(img, keypoints[k].pt, radius, cv::Scalar(255, 0, 0), 2, 8);
         }
-        if(k == 100)
-        {
+       /* if(k == 100)*/
+        /*{*/
           for (int i = 0; i < rowFeatures.size(); i++)
           {
             desc.at<float>(k, i) = rowFeatures[i];
             std::cout << rowFeatures[i] << " ";
           }
-        }
+        //}
       }
       cv::imshow("Radius Descriptors", img);
       cv::waitKey(1000);

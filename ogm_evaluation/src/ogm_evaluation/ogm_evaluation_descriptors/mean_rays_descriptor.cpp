@@ -60,7 +60,6 @@ namespace ogm_evaluation
         for (int theta = 0; theta < 360; theta = theta + thetaIncrement)
         {
           outOfBounds = false;
-          //ROS_INFO_STREAM("THETA=" << theta);
           radius = 0;
           for(;;)
           {
@@ -100,17 +99,16 @@ namespace ogm_evaluation
             }
           }
         }
-        desc.at<float>(k, 1) = (float)sumOfRays / (360 / thetaIncrement);
-        //if(k == 6){
-        //ROS_INFO_STREAM("POINTS SIZE="<< p.size());
+
+        desc.at<float>(k, 0) = (float)sumOfRays / (360 / thetaIncrement);
+
         for (int i = 0; i < p.size(); i++)
         {
           cv::line(img, keypoints[k].pt, p[i], cv::Scalar(255, 0, 0), 2, 8);
-      /*    std::cout << p[i] << " ";*/
+        /*  std::cout << p[i] << " ";*/
           /*std::cout << rays[i] << " ";*/
         }
         //std::cout << std::endl;
-         //}
       }
       ROS_INFO_STREAM("DESC=" << desc.rows << " " << desc.cols);
       std::cout << "Desc = "<< std::endl << " "  << desc << std::endl << std::endl;

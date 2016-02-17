@@ -48,7 +48,7 @@ namespace ogm_evaluation
       cv::Mat img;
       cv::cvtColor(image, img, CV_GRAY2RGB);
       //image.copyTo(img);
-      cv::Mat desc = cv::Mat(keypoints.size(), 18, CV_32FC1);
+      cv::Mat desc = cv::Mat(keypoints.size(), 12, CV_32FC1);
       std::vector<float> rowFeatures;
       for (int k = 0; k < keypoints.size(); k++)
       {
@@ -81,7 +81,7 @@ namespace ogm_evaluation
           sse = sse / obstacles;
           rowFeatures.push_back((float)obstacles / (obstacles + frees));
           rowFeatures.push_back((float)frees / (obstacles + frees));
-          rowFeatures.push_back(sse);
+          //rowFeatures.push_back(sse);
           cv::circle(img, keypoints[0].pt, radius, cv::Scalar(255, 0, 0), 2, 8);
         }
         for (int i = 0; i < rowFeatures.size(); i++)
