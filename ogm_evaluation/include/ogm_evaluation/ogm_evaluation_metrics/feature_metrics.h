@@ -27,7 +27,7 @@
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
 #include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_extractor.h"
 #include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_factory.h"
-
+#include "ogm_evaluation/ogm_evaluation_metrics/omse.h"
 /**
 @namespace ogm_evaluation
 @brief The main namespace for OGM Evaluation
@@ -123,6 +123,8 @@ namespace ogm_evaluation
      std::vector<cv::KeyPoint> fil1,fil2;
 
      std::vector<cv::Point2f>  coord1,coord2;
+
+     Metric* _omseMetric;
 
      cv::Mat H;
   };

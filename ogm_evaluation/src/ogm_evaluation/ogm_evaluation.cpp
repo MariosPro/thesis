@@ -46,8 +46,8 @@ namespace ogm_evaluation
       _transform = req.transform;
 
     alignMaps();
-    cv::threshold(_groundTruthMap, _groundTruthMap, 0, 255, cv::THRESH_BINARY);
-    cv::threshold(_slamMap, _slamMap, 0, 255, cv::THRESH_BINARY);
+   /* cv::threshold(_groundTruthMap, _groundTruthMap, 0, 255, cv::THRESH_BINARY);*/
+    /*cv::threshold(_slamMap, _slamMap, 0, 255, cv::THRESH_BINARY);*/
 
   /*  cv::erode(_groundTruthMap, _groundTruthMap, cv::Mat(), cv::Point(-1, -1), 2, 1, 1);*/
     /*cv::erode(_slamMap, _slamMap, cv::Mat(), cv::Point(-1, -1), 2, 1, 1);*/
