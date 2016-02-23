@@ -65,17 +65,17 @@ namespace ogm_evaluation
             {
               if(image.at<unsigned char>(y, x) == 0 && crosses == 0)
               {
-                 crosses += 1;
+                 crosses ++;
               }
               if(image.at<unsigned char>(y, x) == 255 && crosses == 1)
               {
-                intersections += 1;
+                intersections ++;
                 crosses = 0;
               }
             }
           }
           rowFeatures.push_back((float) intersections);
-          cv::circle(img, keypoints[k].pt, radius, cv::Scalar(255, 0, 0), 2, 8);
+          cv::circle(img, keypoints[k].pt, radius, cv::Scalar(255, 0, 0), 1, 8);
         }
        /* if(k == 100)*/
         /*{*/

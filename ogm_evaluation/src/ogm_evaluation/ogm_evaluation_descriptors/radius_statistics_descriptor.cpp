@@ -40,7 +40,6 @@ namespace ogm_evaluation
     **/
     void RadiusStatisticsDescriptor::compute(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat* descriptors)
     {
-      ROS_INFO_STREAM("ENTER COMPUTE " << keypoints.size());
       int radius;
       int obstacles;
       int frees;
@@ -73,27 +72,27 @@ namespace ogm_evaluation
                 {
                   obstacles++;
                   dst = cv::sqrt(pow((i-keypoints[k].pt.x), 2) + pow((j-keypoints[k].pt.y), 2));
-                  sse += dst*dst;
+                  //sse += dst*dst;
                 }
                 else if(image.at<unsigned char>(i, j) == 255)
                   frees++;
               }
-          sse = sse / obstacles;
+          //sse = sse / obstacles;
           rowFeatures.push_back((float)obstacles / (obstacles + frees));
           rowFeatures.push_back((float)frees / (obstacles + frees));
           //rowFeatures.push_back(sse);
-          cv::circle(img, keypoints[0].pt, radius, cv::Scalar(255, 0, 0), 2, 8);
+          cv::circle(img, keypoints[k].pt, radius, cv::Scalar(255, 0, 0), 1, 8);
         }
         for (int i = 0; i < rowFeatures.size(); i++)
         {
           desc.at<float>(k, i) = rowFeatures[i];
-          std::cout << rowFeatures[i] << " ";
+          //std::cout << rowFeatures[i] << " ";
         }
-        std::cout << std::endl;
+        //std::cout << std::endl;
       }
       cv::imshow("Radius Descriptors", img);
       cv::waitKey(1000);
-      ROS_INFO_STREAM("DESC=" <<desc.rows << " " << desc.cols);
+      //ROS_INFO_STREAM("DESC=" <<desc.rows << " " << desc.cols);
       desc.copyTo(*descriptors);
     }
 } // namespace ogm_evaluation
