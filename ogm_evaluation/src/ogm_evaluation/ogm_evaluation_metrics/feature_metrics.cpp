@@ -201,20 +201,26 @@ namespace ogm_evaluation
       //{ goodmatches.push_back( matches12[i][0]); }
     /*}*/
  
-      cv::Mat image(_groundTruthMap.size(), _groundTruthMap.type());
+   cv::Mat image(_groundTruthMap.size(), _groundTruthMap.type());
+   cv::Mat image1(_slamMap.size(), _slamMap.type(), 127);
    cv::warpPerspective(_groundTruthMap, image, H, image.size(), cv::INTER_NEAREST, IPL_BORDER_CONSTANT, cv::Scalar::all(127));
    //cv::warpAffine(_groundTruthMap, image, H, image.size());
 
-  //// blend image1 onto the transformed image2
-  //addWeighted(image,.5, _slamMap, .5, 0.0, image);
-   
-   _omseMetric =  new OmseMetric(image, _slamMap, "Brushfire", _distNorm);
-
-
-  _omseMetric->calculateMetric();
-
-
-  cv::imshow("MergedImage", image);
+   for (int i = 0; i < image1.rows; i++)
+     for (int j = 0; j < image1.cols; j++)
+      if(image.at<unsigned char>(i, j) != 127)
+        image1.at<unsigned char>(i, j) = _slamMap.at<unsigned char>(i, j);
+ /*   else */
+        /*image1.at<unsigned char>(i, j) = 127;*/
+    cv::imshow("GroundTruthMap Transformed", image);
+    cv::imshow ("SLamMap Cropped", image1);
+    cv::waitKey(1000);
+    _omseMetric =  new OmseMetric(image, image1, "Brushfire", _distNorm);
+    _omseMetric->calculateMetric();
+ 
+    // blend image1 onto the transformed image2
+    addWeighted(image,.5, _slamMap, .5, 0.0, image);
+    cv::imshow("MergedImage", image);
 
   /*  for( int i = 0; i < (int)goodmatches.size(); i++ )*/
     //{
@@ -227,6 +233,7 @@ namespace ogm_evaluation
    //imshow("Keypoints 2", img_keypoints_2);
     cv::waitKey(1000);
     _result = _omseMetric->getResult();
+    //_result = 0;
   }
 }  // namespace ogm_evaluation
 
