@@ -126,7 +126,7 @@ namespace ogm_evaluation
 
     }
   }
- /*   ROS_INFO_STREAM("MATCHED KEYPOINTS=" << fil1.size() << " " << fil2.size());*/
+    ROS_INFO_STREAM("MATCHED KEYPOINTS=" << fil1.size() << " " << fil2.size());
 
       //H = cv::estimateRigidTransform(coord2, coord1, true);
         H =  cv::findHomography(coord2, coord1, CV_RANSAC, 5);

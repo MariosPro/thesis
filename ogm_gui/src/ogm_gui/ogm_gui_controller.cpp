@@ -239,8 +239,9 @@ namespace ogm_gui
     running_map_ = convertOccupancyGridToQImage(running_map_, maps_.groundTruthMap);
     slam_map_ = convertOccupancyGridToQImage(slam_map_, maps_.slamMap);
 
-    initial_map_ = running_map_;
-    initial_slam_map_ = slam_map_;
+    initial_map_ = running_map_.mirrored(false,true);
+;
+    initial_slam_map_ = slam_map_.mirrored(false,true);
 
     validation_connector_.updateMapInfo(maps_);
     validation_connector_.resetMapProperties();
@@ -311,14 +312,15 @@ namespace ogm_gui
     {
        initial_map_ = running_map_ = QImage(maps_.groundTruthMap.info.width, maps_.groundTruthMap.info.height, QImage::Format_RGB32);
        running_map_ = convertOccupancyGridToQImage(running_map_, maps_.groundTruthMap);
-       initial_map_ = running_map_;
+       initial_map_ = running_map_.mirrored(false,true);
+
       }
 
     else
     {
        initial_slam_map_ = running_map_ = QImage(maps_.slamMap.info.width, maps_.slamMap.info.height, QImage::Format_RGB32);
        running_map_ = convertOccupancyGridToQImage(running_map_, maps_.slamMap);
-      initial_slam_map_ = running_map_;
+      initial_slam_map_ = running_map_.mirrored(false,true);
     }
 
     validation_connector_.updateMapInfo(maps_);
@@ -348,9 +350,9 @@ namespace ogm_gui
     QPainter painter(&running_map);
     int d(0);
     QColor c;
-    for( unsigned int i = 0 ; i < map_msg.info.width ; i++ )
+    for( unsigned int j = 0 ; j < map_msg.info.height ; j++ )
     {
-      for( unsigned int j = 0 ; j < map_msg.info.height ; j++ )
+      for( unsigned int i = 0 ; i < map_msg.info.width ; i++ )
       {
         if( map_msg.data[j * map_msg.info.width + i] == -1 )
         {

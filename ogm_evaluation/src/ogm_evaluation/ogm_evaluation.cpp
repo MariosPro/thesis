@@ -79,7 +79,7 @@ namespace ogm_evaluation
         ROS_ERROR("Data size doesn't match width*height: width = %d, height = %d, data size = %zu", map.info.width, map.info.height, map.data.size());
     }
 
-    for (size_t i=0; i < map.info.height*map.info.width; i++)
+    for (size_t i = 0; i < map.info.height * map.info.width; i++)
     {
         if (map.data.at(i) == -1)
         {
@@ -87,11 +87,12 @@ namespace ogm_evaluation
         }
         else
         {
-          im.data[i] = (100.0 - map.data.at(i))/100.0 *255.0;
+          im.data[i] = (100.0 - map.data.at(i)) / 100.0 * 255.0;
         }
     }
-
-    return im;
+    cv::Mat flipped;
+    cv::flip(im, flipped, 0);
+    return flipped;
   }
 
   /**
