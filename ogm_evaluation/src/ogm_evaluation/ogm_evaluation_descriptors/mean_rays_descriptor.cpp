@@ -129,8 +129,8 @@ namespace ogm_evaluation
       /*cv::waitKey(0);*/
       }
     }
-      ROS_INFO_STREAM("DESC=" << desc.rows << " " << desc.cols);
-      std::cout << "Desc = "<< std::endl << " "  << desc << std::endl << std::endl;
+     /* ROS_INFO_STREAM("DESC=" << desc.rows << " " << desc.cols);*/
+      /*std::cout << "Desc = "<< std::endl << " "  << desc << std::endl << std::endl;*/
       desc.copyTo(*descriptors);
       cv::imshow("MeanRays Descriptors", img);
       cv::waitKey(1000);

@@ -97,10 +97,10 @@ namespace ogm_evaluation
       cv::Ptr<cv::DescriptorExtractor> _descriptorExtractor;
       
       //!< the instance of custom's DescriptorExtractor class to be used
-      cv::Ptr<ogm_evaluation::DescriptorExtractor>  _customDescriptorExtractor;
+      std::vector<cv::Ptr<ogm_evaluation::DescriptorExtractor> >  _customDescriptorExtractor;
 
       //!< the Descriptors Factory
-      DescriptorFactory _descriptorFactory;
+      std::vector<DescriptorFactory> _descriptorFactory;
 
       //!< the instance of opencv's DescriptorMatcher class to be used
       cv::Ptr<cv::DescriptorMatcher> _matcher;

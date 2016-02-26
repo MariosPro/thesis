@@ -507,6 +507,11 @@
               <string>MEAN RAYS</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>ALL CUSTOMS</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>

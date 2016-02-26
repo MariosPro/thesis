@@ -48,13 +48,26 @@ namespace ogm_evaluation
     if(_descriptor == "SIFT" || _descriptor == "SURF" || _descriptor == "BRIEF" ||
        _descriptor == "BRISK" || _descriptor == "FREAK" || _descriptor == "ORB")
     _descriptorExtractor = cv::DescriptorExtractor::create(_descriptor);
-    else
-    _customDescriptorExtractor = _descriptorFactory.create(_descriptor);
     
+    if(_descriptor == "ALL CUSTOMS")
+    {
+      _customDescriptorExtractor.reserve(3);
+      _customDescriptorExtractor.push_back(_descriptorFactory[0].create("RADIUS STATISTICS"));
+
+      _customDescriptorExtractor.push_back(_descriptorFactory[1].create("CIRCLE INTERSECTIONS"));
+
+      _customDescriptorExtractor.push_back(_descriptorFactory[2].create("MEAN RAYS"));
+    }
+
+    else
+    {
+     _customDescriptorExtractor.reserve(1);
+    _customDescriptorExtractor.push_back(_descriptorFactory[0].create(_descriptor));
+    }
+
     _matcher = cv::DescriptorMatcher::create(_matcherName);
     ROS_INFO_STREAM("Created FeatureMetrics Instance");
 
-    
   }
 
   /**
@@ -74,16 +87,31 @@ namespace ogm_evaluation
       _descriptorExtractor->compute(_groundTruthMap, _groundTruthKeypoints, _groundTruthDescriptors);
       _descriptorExtractor->compute(_slamMap, _slamKeypoints, _slamDescriptors);
     }
+
     else
     {
-      _customDescriptorExtractor->compute(_slamMap, _slamKeypoints, &_slamDescriptors);
-      _customDescriptorExtractor->compute(_groundTruthMap, _groundTruthKeypoints,  &_groundTruthDescriptors);
-    }
+      std::vector<cv::Mat> groundTruthDescriptors(_customDescriptorExtractor.size()),
+                           slamDescriptors(_customDescriptorExtractor.size());
+
+      for(int i = 0; i < _customDescriptorExtractor.size(); i++)
+      {
+        _customDescriptorExtractor[i]->compute(_slamMap, _slamKeypoints, &slamDescriptors[i]);
+        _customDescriptorExtractor[i]->compute(_groundTruthMap, _groundTruthKeypoints, &groundTruthDescriptors[i]);
+      ROS_INFO_STREAM("SLAM DESCRIPTORS[" <<i<<"]="<<slamDescriptors[i].size());
+      }
+
+
+      // Descriptors Concatenation
+      cv::hconcat(slamDescriptors, _slamDescriptors);
+      cv::hconcat(groundTruthDescriptors, _groundTruthDescriptors);
+   }
+ 
     std::vector<std::vector<cv::DMatch> > matches12, matches21;//, matches;
     std::vector<cv::DMatch> crossCheckedMatches;
     std::vector< cv::DMatch > goodmatches, matches;
     //!< Matching descriptor vectors using a matcher
     _matcher->match(_slamDescriptors, _groundTruthDescriptors, matches);
+
     ROS_INFO_STREAM("SLAM KEYPOINTS= " << _slamKeypoints.size());
     ROS_INFO_STREAM("SLAM DESCRIPTORS=" << _slamDescriptors.rows << " "  << _slamDescriptors.cols << " " << _slamDescriptors.type());
     ROS_INFO_STREAM("GROUND TRUTH KEYPOINTS= " << _groundTruthKeypoints.size());
@@ -101,7 +129,7 @@ namespace ogm_evaluation
       if (matches[i].distance > 30)
         continue;
 
-      for (size_t j = 0; j < matches.size(); j++) 
+      for (size_t j = i + 1; j < matches.size(); j++) 
       {
         cv::KeyPoint a2 = _slamKeypoints[matches[j].queryIdx],
                  b2 = _groundTruthKeypoints[matches[j].trainIdx];
@@ -109,8 +137,8 @@ namespace ogm_evaluation
         if (matches[j].distance > 30)
           continue;
 
-        if (fabs(cv::norm(a1.pt - a2.pt) - cv::norm(b1.pt - b2.pt)) > 5 ||
-            fabs(cv::norm(a1.pt - a2.pt) - cv::norm(b1.pt - b2.pt)) == 0)
+        if (fabs(cv::norm(a1.pt - a2.pt) - cv::norm(b1.pt - b2.pt)) > 5)// ||
+            //fabs(cv::norm(a1.pt - a2.pt) - cv::norm(b1.pt - b2.pt)) == 0)
           continue;
 
       coord1.push_back(a1.pt);
@@ -210,8 +238,7 @@ namespace ogm_evaluation
      for (int j = 0; j < image1.cols; j++)
       if(image.at<unsigned char>(i, j) != 127)
         image1.at<unsigned char>(i, j) = _slamMap.at<unsigned char>(i, j);
- /*   else */
-        /*image1.at<unsigned char>(i, j) = 127;*/
+
     cv::imshow("GroundTruthMap Transformed", image);
     cv::imshow ("SLamMap Cropped", image1);
     cv::waitKey(1000);
@@ -233,7 +260,6 @@ namespace ogm_evaluation
    //imshow("Keypoints 2", img_keypoints_2);
     cv::waitKey(1000);
     _result = _omseMetric->getResult();
-    //_result = 0;
   }
 }  // namespace ogm_evaluation
 
