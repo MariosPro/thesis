@@ -6,6 +6,8 @@ string closestPointMethod
 string distNorm
 float64 matchingRatio
 float64 ransacReprjError
+bool binary
+bool manualAlignment
 ogm_msgs/MapPose transform
 ---
 float64 result

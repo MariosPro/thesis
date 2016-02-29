@@ -164,6 +164,8 @@ namespace ogm_server
     srv.request.slamMap = _slamMap->getMap();
     srv.request.matchingRatio = req.matchingRatio;
     srv.request.ransacReprjError = req.ransacReprjError;
+    srv.request.binary = req.binary;
+    srv.request.manualAlignment = req.manualAlignment;
 
     if (client.call(srv)) 
     {

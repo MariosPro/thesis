@@ -468,6 +468,8 @@ namespace ogm_gui
       srv.request.matcher = validation_connector_.getMatcher();
       srv.request.matchingRatio = validation_connector_.getMatchingRatio();
       srv.request.ransacReprjError = validation_connector_.getRansacReprjError();
+      srv.request.binary = validation_connector_.thresholdMaps();
+      srv.request.manualAlignment = validation_connector_.manualAlignMaps();
     }
     if (metricMethod == "OMSE")
       srv.request.closestPointMethod = validation_connector_.getClosestObstacleMethod();
@@ -475,10 +477,12 @@ namespace ogm_gui
     srv.request.distNorm = validation_connector_.getDistanceMethod();
     srv.request.transform.pose.x = pos.x();
     srv.request.transform.pose.y = pos.y();
-    srv.request.transform.pose.theta =rot;
+    srv.request.transform.pose.theta = rot;
     srv.request.transform.scale = scale;
     srv.request.transform.slamOffsetScale = slamScale;
     srv.request.transform.groundTruthOffsetScale = groundTruthScale;
+    srv.request.manualAlignment = true; //validation_connector_.manualAlignMaps();
+
 
     if (client.call(srv)) 
     {

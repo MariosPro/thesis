@@ -89,6 +89,15 @@ namespace ogm_gui
    QObject::connect(
       loader.featuresPushButton, SIGNAL(clicked(bool)),
       this, SLOT(featureMatchingTriggered()));
+ 
+   QObject::connect(
+      loader.binaryCheckBox, SIGNAL(toggled(bool)),
+      this, SLOT(binaryMapsChecked()));
+ 
+   QObject::connect(
+      loader.manualAlignmentCheckBox, SIGNAL(toggled(bool)),
+      this, SLOT(manualAlignmentChecked()));
+
 
    _detector = "SIFT";
    _descriptor = "SIFT";
@@ -97,6 +106,8 @@ namespace ogm_gui
    _distMethod = "Manhattan";
    _matchingRatio = 0.7;
    _ransacReprjError = 5;
+   _binary = false;
+   _manual_alignment = false;
 
   }
 
@@ -265,6 +276,28 @@ namespace ogm_gui
     if (method == "FEATURES")
       loader.featuresLabel->setText(QString().setNum(result));
   }
+
+  void CValidationConnector::binaryMapsChecked()
+  {
+    _binary = !_binary;
+  }
+
+  void CValidationConnector::manualAlignmentChecked()
+  {
+    _manual_alignment = !_manual_alignment;
+  }
+
+
+  bool CValidationConnector::thresholdMaps()
+  {
+    return _binary;
+  }
+ 
+  bool CValidationConnector::manualAlignMaps()
+  {
+    return _manual_alignment;
+  }
+
 
   /**
   @brief Returns the CValidationLoader object

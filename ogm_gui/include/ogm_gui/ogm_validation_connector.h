@@ -64,6 +64,9 @@ namespace ogm_gui
 
       double _ransacReprjError;
 
+      bool _binary;
+
+      bool _manual_alignment;
     //------------------------------------------------------------------------//
     public:
 
@@ -111,6 +114,10 @@ namespace ogm_gui
 
       double getRansacReprjError();
 
+      bool thresholdMaps();
+
+      bool manualAlignMaps();
+
     //------------------------------------------------------------------------//
     public Q_SLOTS:
 
@@ -150,6 +157,10 @@ namespace ogm_gui
 
       void distanceComboBoxActivated(const QString& text);
 
+      void binaryMapsChecked();
+
+      void manualAlignmentChecked();
+
     //------------------------------------------------------------------------//
     Q_SIGNALS:
 
@@ -164,7 +175,6 @@ namespace ogm_gui
       void changeTransparency(double t);
 
       void MetricNeeded(QString metricMethod);
-
   };
 }
 #endif

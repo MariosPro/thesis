@@ -182,16 +182,31 @@
     <attribute name="title">
      <string>Maps Alignment</string>
     </attribute>
-    <widget class="QWidget" name="gridLayoutWidget_4">
+    <widget class="QWidget" name="">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>321</width>
-       <height>391</height>
+       <x>10</x>
+       <y>10</y>
+       <width>198</width>
+       <height>52</height>
       </rect>
      </property>
-     <layout class="QGridLayout" name="alignmentGridLayout"/>
+     <layout class="QVBoxLayout" name="verticalLayout_6">
+      <item>
+       <widget class="QCheckBox" name="binaryCheckBox">
+        <property name="text">
+         <string>Converts maps to binary</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="manualAlignmentCheckBox">
+        <property name="text">
+         <string>Manual alignment</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
    <widget class="QWidget" name="metricsTab">
@@ -202,9 +217,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>-20</y>
+       <y>10</y>
        <width>371</width>
-       <height>411</height>
+       <height>381</height>
       </rect>
      </property>
      <property name="currentIndex">
@@ -215,8 +230,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>100</width>
-        <height>30</height>
+        <width>371</width>
+        <height>319</height>
        </rect>
       </property>
       <attribute name="label">
@@ -355,7 +370,7 @@
         <x>0</x>
         <y>0</y>
         <width>371</width>
-        <height>349</height>
+        <height>319</height>
        </rect>
       </property>
       <attribute name="label">
@@ -364,9 +379,9 @@
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>-1</x>
-         <y>0</y>
-         <width>341</width>
+         <x>9</x>
+         <y>40</y>
+         <width>331</width>
          <height>227</height>
         </rect>
        </property>

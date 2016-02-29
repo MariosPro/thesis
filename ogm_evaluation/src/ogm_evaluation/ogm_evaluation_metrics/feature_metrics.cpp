@@ -273,15 +273,15 @@ namespace ogm_evaluation
     addWeighted(image,.5, _slamMap, .5, 0.0, image);
     cv::imshow("MergedImage", image);
 
-  /*  for( int i = 0; i < (int)goodmatches.size(); i++ )*/
-    //{
-      //ROS_INFO( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  --Distance %f  \n", i, goodmatches[i].queryIdx, goodmatches[i].trainIdx, goodmatches[i].distance );
-    //}
-    //cv::Mat img_keypoints_1, img_keypoints_2;
-    //cv::drawKeypoints( _groundTruthMap, _groundTruthKeypoints, img_keypoints_1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
-    //cv::drawKeypoints( _slamMap, _slamKeypoints, img_keypoints_2, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
-   //imshow("Keypoints 1", img_keypoints_1);
-   //imshow("Keypoints 2", img_keypoints_2);
+    for( int i = 0; i < (int)goodmatches.size(); i++ )
+    {
+     /* ROS_INFO( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  --Distance %f  \n", i, goodmatches[i].queryIdx, goodmatches[i].trainIdx, goodmatches[i].distance );*/
+    }
+    cv::Mat img_keypoints_1, img_keypoints_2;
+    cv::drawKeypoints( _groundTruthMap, _groundTruthKeypoints, img_keypoints_1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
+    cv::drawKeypoints( _slamMap, _slamKeypoints, img_keypoints_2, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
+   imshow("Keypoints 1", img_keypoints_1);
+   imshow("Keypoints 2", img_keypoints_2);
     cv::waitKey(1000);
     _result = _omseMetric->getResult();
   }

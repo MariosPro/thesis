@@ -45,10 +45,14 @@ namespace ogm_evaluation
       ROS_INFO_STREAM("SLAM MAP SIZE=" << _slamMap.size()<<  "type=" << _slamMap.type() << "channels=" <<_slamMap.channels());
       _transform = req.transform;
 
-    alignMaps();
-  /*  cv::threshold(_groundTruthMap, _groundTruthMap, 0, 255, cv::THRESH_BINARY);*/
-    /*cv::threshold(_slamMap, _slamMap, 0, 255, cv::THRESH_BINARY);*/
+    if (req.manualAlignment)
+      alignMaps();
 
+    if (req.binary)
+    {
+      cv::threshold(_groundTruthMap, _groundTruthMap, 0, 255, cv::THRESH_BINARY);
+      cv::threshold(_slamMap, _slamMap, 0, 255, cv::THRESH_BINARY);
+    }
   /*  cv::erode(_groundTruthMap, _groundTruthMap, cv::Mat(), cv::Point(-1, -1), 2, 1, 1);*/
     /*cv::erode(_slamMap, _slamMap, cv::Mat(), cv::Point(-1, -1), 2, 1, 1);*/
 
