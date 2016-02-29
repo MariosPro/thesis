@@ -162,6 +162,8 @@ namespace ogm_server
     srv.request.transform = req.transform;
     srv.request.groundTruthMap = _groundTruthMap->getMap();
     srv.request.slamMap = _slamMap->getMap();
+    srv.request.matchingRatio = req.matchingRatio;
+    srv.request.ransacReprjError = req.ransacReprjError;
 
     if (client.call(srv)) 
     {

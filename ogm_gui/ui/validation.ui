@@ -35,7 +35,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>10</y>
+     <y>20</y>
      <width>351</width>
      <height>461</height>
     </rect>
@@ -202,9 +202,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>0</y>
-       <width>351</width>
-       <height>271</height>
+       <y>-20</y>
+       <width>371</width>
+       <height>411</height>
       </rect>
      </property>
      <property name="currentIndex">
@@ -222,19 +222,6 @@
       <attribute name="label">
        <string>Obstacle Mean Square Error</string>
       </attribute>
-      <widget class="QLabel" name="label_3">
-       <property name="geometry">
-        <rect>
-         <x>13</x>
-         <y>214</y>
-         <width>47</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Result:</string>
-       </property>
-      </widget>
       <widget class="QWidget" name="layoutWidget_2">
        <property name="geometry">
         <rect>
@@ -367,8 +354,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>351</width>
-        <height>209</height>
+        <width>371</width>
+        <height>349</height>
        </rect>
       </property>
       <attribute name="label">
@@ -377,245 +364,257 @@
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>21</x>
-         <y>31</y>
-         <width>348</width>
-         <height>97</height>
+         <x>-1</x>
+         <y>0</y>
+         <width>341</width>
+         <height>227</height>
         </rect>
        </property>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QLabel" name="label_4">
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Feature Detector:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Descriptor Extractor:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>Descriptor Matcher:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <widget class="QComboBox" name="detectorComboBox">
+              <item>
+               <property name="text">
+                <string>SIFT</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>SURF</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>STAR</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>FAST</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>BRISK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>MSER</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>GFTT</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>HARRIS</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>ORB</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="descriptorComboBox">
+              <item>
+               <property name="text">
+                <string>SIFT</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>SURF</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>BRIEF</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>BRISK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>FREAK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>ORB</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>RADIUS STATISTICS</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>CIRCLE INTERSECTIONS</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>MEAN RAYS</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>ALL CUSTOMS</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="matcherComboBox">
+              <item>
+               <property name="text">
+                <string>BruteForce</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>BruteForce-L1</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>BruteForce-Hamming</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>BruteForce-Hamming(2)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>FlannBased</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="matchingRatioSpinBox"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="ransaclLabel">
             <property name="text">
-             <string>Feature Detector:</string>
+             <string>Ransac max reprojection error</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="matchingRatioLabel">
+            <property name="text">
+             <string>2-NN matching ratio</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="ransacSpinBox"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Compute MSE:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Descriptor Extractor:</string>
+           <widget class="QPushButton" name="featuresPushButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_6">
+            <property name="maximumSize">
+             <size>
+              <width>16777159</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
-             <string>Descriptor Matcher:</string>
+             <string/>
             </property>
            </widget>
           </item>
          </layout>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QComboBox" name="detectorComboBox">
-            <item>
-             <property name="text">
-              <string>SIFT</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>SURF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>STAR</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FAST</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BRISK</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>MSER</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>GFTT</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>HARRIS</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>ORB</string>
-             </property>
-            </item>
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Result:</string>
+            </property>
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="descriptorComboBox">
-            <item>
-             <property name="text">
-              <string>SIFT</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>SURF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BRIEF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BRISK</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FREAK</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>ORB</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RADIUS STATISTICS</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>CIRCLE INTERSECTIONS</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>MEAN RAYS</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>ALL CUSTOMS</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="matcherComboBox">
-            <item>
-             <property name="text">
-              <string>BruteForce</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BruteForce-L1</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BruteForce-Hamming</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BruteForce-Hamming(2)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FlannBased</string>
-             </property>
-            </item>
+           <widget class="QLabel" name="featuresLabel">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>0.0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
            </widget>
           </item>
          </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>140</y>
-         <width>261</width>
-         <height>29</height>
-        </rect>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QLabel" name="label_8">
-          <property name="text">
-           <string>Compute MSE:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="featuresPushButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777159</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>180</y>
-         <width>261</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>Result:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="featuresLabel">
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>0.0</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
         </item>
        </layout>
       </widget>

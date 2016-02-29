@@ -4,6 +4,8 @@ string descriptor
 string matcher
 string closestPointMethod
 string distNorm
+float64 matchingRatio
+float64 ransacReprjError
 ogm_msgs/MapPose transform
 nav_msgs/OccupancyGrid groundTruthMap
 nav_msgs/OccupancyGrid slamMap

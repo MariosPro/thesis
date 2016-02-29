@@ -50,6 +50,10 @@ namespace ogm_gui
     transSpinBox->setRange(0.00, 1.00);
     transSpinBox->setSingleStep(0.1);
     scaleSpinBox->setSingleStep(0.05);
+    matchingRatioSpinBox->setRange(0.5, 1);
+    matchingRatioSpinBox->setSingleStep(0.05);
+    ransacSpinBox->setRange(0, 10);
+    ransacSpinBox->setSingleStep(1);
 
   }
 
@@ -122,6 +126,8 @@ namespace ogm_gui
     rotationSpinBox->setValue(0);
     scaleSpinBox->setValue(1);
     transSpinBox->setValue(0.5);
+    matchingRatioSpinBox->setValue(0.7);
+    ransacSpinBox->setValue(3);
   }
 }
 

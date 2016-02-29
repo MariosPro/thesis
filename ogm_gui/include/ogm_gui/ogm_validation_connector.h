@@ -60,6 +60,10 @@ namespace ogm_gui
       //!< the distance  method to be used
       std::string _distMethod;
 
+      double _matchingRatio;
+
+      double _ransacReprjError;
+
     //------------------------------------------------------------------------//
     public:
 
@@ -103,6 +107,9 @@ namespace ogm_gui
 
       std::string getDistanceMethod();
 
+      double getMatchingRatio();
+
+      double getRansacReprjError();
 
     //------------------------------------------------------------------------//
     public Q_SLOTS:
@@ -116,6 +123,10 @@ namespace ogm_gui
       void scaleChanged(double s);
       
       void transparencyChanged(double t);
+
+      void matchingRatioChanged(double t);
+
+      void ransacChanged(double t);
 
       void showMapPosition(qreal x, qreal y);
 

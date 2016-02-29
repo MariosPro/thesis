@@ -42,7 +42,10 @@ namespace ogm_evaluation
        {
        };
 
-       Metric* createMetricInstance(std::string name, const cv::Mat& groundTruthMap, const cv::Mat& slamMap, std::string detector, std::string descriptor, std::string matcher, std::string closestPointMethod, std::string distNorm);
+       Metric* createMetricInstance(std::string name, const cv::Mat& groundTruthMap, const cv::Mat& slamMap,
+                                    std::string detector, std::string descriptor, std::string matcher,
+                                    std::string closestPointMethod, std::string distNorm,
+                                    double matchingRatio, double ransacReprjError);
    };
 }
 #endif

@@ -55,6 +55,14 @@ namespace ogm_gui
       this, SLOT(transparencyChanged(double)));
 
    QObject::connect(
+      loader.matchingRatioSpinBox, SIGNAL(valueChanged(double)),
+      this, SLOT(matchingRatioChanged(double)));
+
+   QObject::connect(
+      loader.ransacSpinBox, SIGNAL(valueChanged(double)),
+      this, SLOT(ransacChanged(double)));
+
+   QObject::connect(
       loader.obstaclePushButton, SIGNAL(clicked(bool)),
       this, SLOT(obstacleTriggered()));
 
@@ -87,6 +95,8 @@ namespace ogm_gui
    _matcher = "BruteForce";
    _closestObstacleMethod = "Brushfire";
    _distMethod = "Manhattan";
+   _matchingRatio = 0.7;
+   _ransacReprjError = 5;
 
   }
 
@@ -161,7 +171,26 @@ namespace ogm_gui
     Q_EMIT changeTransparency(t);
     loader.showMapTransparency(t);
   }
+ 
+  void CValidationConnector::matchingRatioChanged(double t)
+  {
+    _matchingRatio = t;
+  }
 
+  void CValidationConnector::ransacChanged(double t)
+  {
+    _ransacReprjError = t;
+  }
+
+  double CValidationConnector::getMatchingRatio()
+  {
+    return _matchingRatio;
+  }
+  
+  double CValidationConnector::getRansacReprjError()
+  {
+    return _ransacReprjError;
+  }
   void CValidationConnector::showMapPosition(qreal x, qreal y)
   {
     loader.showMapXposition(x);

@@ -36,13 +36,17 @@ namespace ogm_evaluation
                          std::string detector,
                          std::string descriptor,
                          std::string matcher,
-                         std::string distNorm)
+                         std::string distNorm,
+                         double matchingRatio,
+                         double ransacReprjError)
                 : Metric(groundTruthMap, slamMap)
   {
     _distNorm = distNorm;
     _detector = detector;
     _descriptor = descriptor;
     _matcherName = matcher;
+    _matchingRatio = matchingRatio;
+    _ransacReprjError = ransacReprjError;
     cv::initModule_nonfree();
     _featureDetector =  cv::FeatureDetector::create(_detector);
     if(_descriptor == "SIFT" || _descriptor == "SURF" || _descriptor == "BRIEF" ||
@@ -106,63 +110,83 @@ namespace ogm_evaluation
       cv::hconcat(groundTruthDescriptors, _groundTruthDescriptors);
    }
  
-    std::vector<std::vector<cv::DMatch> > matches12, matches21;//, matches;
+    std::vector<std::vector<cv::DMatch> > matches12, matches21, matches;
     std::vector<cv::DMatch> crossCheckedMatches;
-    std::vector< cv::DMatch > goodmatches, matches;
+    std::vector< cv::DMatch > goodmatches;//, matches;
     //!< Matching descriptor vectors using a matcher
-    _matcher->match(_slamDescriptors, _groundTruthDescriptors, matches);
+    //_matcher->match(_slamDescriptors, _groundTruthDescriptors, matches);
 
     ROS_INFO_STREAM("SLAM KEYPOINTS= " << _slamKeypoints.size());
     ROS_INFO_STREAM("SLAM DESCRIPTORS=" << _slamDescriptors.rows << " "  << _slamDescriptors.cols << " " << _slamDescriptors.type());
     ROS_INFO_STREAM("GROUND TRUTH KEYPOINTS= " << _groundTruthKeypoints.size());
     ROS_INFO_STREAM("GROUND TRUTH DESCRIPTORS=" << _groundTruthDescriptors.rows << " "  << _groundTruthDescriptors.cols << " " << _groundTruthDescriptors.type());
+    ROS_INFO_STREAM("MATCHING RATIO=" << _matchingRatio);
 
+    _matcher->knnMatch(_slamDescriptors, _groundTruthDescriptors, matches, 2);
+ 
+    cv::KeyPoint a1, a2, b1, b2;
+    goodmatches.clear();
 
-    //_matcher->knnMatch(_slamDescriptors, _groundTruthDescriptors, matches, 1);
-
-    // find matching point pairs with same distance in both images
-    for (size_t i = 0; i < matches.size(); i++) 
+    for (int i = 0; i < matches.size(); i++)
     {
-      cv::KeyPoint a1 = _slamKeypoints[matches[i].queryIdx],
-               b1 = _groundTruthKeypoints[matches[i].trainIdx];
-
-      if (matches[i].distance > 30)
-        continue;
-
-      for (size_t j = i + 1; j < matches.size(); j++) 
+      if (matches[i][0].distance < _matchingRatio * matches[i][1].distance)
       {
-        cv::KeyPoint a2 = _slamKeypoints[matches[j].queryIdx],
-                 b2 = _groundTruthKeypoints[matches[j].trainIdx];
-
-        if (matches[j].distance > 30)
-          continue;
-
-        if (fabs(cv::norm(a1.pt - a2.pt) - cv::norm(b1.pt - b2.pt)) > 5)// ||
-            //fabs(cv::norm(a1.pt - a2.pt) - cv::norm(b1.pt - b2.pt)) == 0)
-          continue;
-
-      coord1.push_back(a1.pt);
-      coord1.push_back(a2.pt);
-      coord2.push_back(b1.pt);
-      coord2.push_back(b2.pt);
-
-      fil1.push_back(a1);
-      fil1.push_back(a2);
-      fil2.push_back(b1);
-      fil2.push_back(b2);
-      goodmatches.push_back(matches[j]);
-
+        goodmatches.push_back(matches[i][0]);
+        a1 = _slamKeypoints[matches[i][0].queryIdx];
+        b1 = _groundTruthKeypoints[matches[i][0].trainIdx];
+        coord1.push_back(a1.pt);
+        coord2.push_back(b1.pt);
+        fil1.push_back(a1);
+        fil2.push_back(b1);
+      }
     }
-  }
-    ROS_INFO_STREAM("MATCHED KEYPOINTS=" << fil1.size() << " " << fil2.size());
 
+/*    // find matching point pairs with same distance in both images*/
+    //for (size_t i = 0; i < matches.size(); i++) 
+    //{
+      //a1 = _slamKeypoints[matches[i].queryIdx];
+      //b1 = _groundTruthKeypoints[matches[i].trainIdx];
+
+      ////if (matches[i].distance > 30)
+        //[>continue;<]
+
+      //for (size_t j = i + 1; j < matches.size(); j++) 
+      //{
+        //a2 = _slamKeypoints[matches[j].queryIdx];
+        //b2 = _groundTruthKeypoints[matches[j].trainIdx];
+
+//[>        if (matches[j].distance > 30)<]
+          ////continue;
+
+  //[>      if (fabs(cv::norm(a1.pt - a2.pt) - cv::norm(b1.pt - b2.pt)) > 5)// ||<]
+            //////fabs(cv::norm(a1.pt - a2.pt) - cv::norm(b1.pt - b2.pt)) == 0)
+          ////continue;
+
+      //coord1.push_back(a1.pt);
+      //coord2.push_back(b1.pt);
+      //fil1.push_back(a1);
+      //fil2.push_back(b1);
+      //goodmatches.push_back(matches[j]);
+    //}
+
+    //coord1.push_back(a2.pt);
+    //coord2.push_back(b2.pt);
+    //fil1.push_back(a2);
+    //fil2.push_back(b2);
+  /*}*/
+    ROS_INFO_STREAM("MATCHED KEYPOINTS=" << fil1.size() << " " << fil2.size() << " " << matches.size());
+    ROS_INFO_STREAM("MAX RANSAC REPROJECTION ERROR=" << _ransacReprjError);
+
+    std::vector <uchar> mask;
       //H = cv::estimateRigidTransform(coord2, coord1, true);
-        H =  cv::findHomography(coord2, coord1, CV_RANSAC, 5);
+     H =  cv::findHomography(coord2, coord1, CV_RANSAC, _ransacReprjError, mask);
      if(H.empty())
       {
           ROS_WARN("H contain no data, cannot find valid transformation");
           return;
       }
+
+    std::cout << "inliers = " << std::accumulate(mask.begin(), mask.end(), 0) << std::endl;
        /* for( size_t m = 0; m < matches12.size(); m++ )*/
     //{
         //bool findCrossCheck = false;

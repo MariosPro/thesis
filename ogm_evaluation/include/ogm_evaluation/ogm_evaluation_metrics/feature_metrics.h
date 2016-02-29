@@ -20,7 +20,7 @@
 #ifndef FEATURE_METRICS_H
 #define FEATURE_METRICS_H
 
-//#include <ros/ros.h>
+#include <numeric>
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/nonfree/nonfree.hpp>
 #include <opencv2/nonfree/features2d.hpp>
@@ -57,7 +57,10 @@ namespace ogm_evaluation
                  std::string detector,
                  std::string descriptor,
                  std::string matcher,
-                 std::string distNorm);
+                 std::string distNorm,
+                 double matchingRatio,
+                 double ransacReprjError);
+
 
       /**
       @brief Default destructor
@@ -89,7 +92,13 @@ namespace ogm_evaluation
 
       //!< the distance norm to be used
       std::string _distNorm;
-      
+
+      //!< the matchingRatio to be used for discarding matches
+      double _matchingRatio;
+
+      //!< the max ransac Reprojection error for validating inliers
+      double _ransacReprjError;
+
       //!< the instance of opencv's FeatureDetector class to be used
       cv::Ptr<cv::FeatureDetector> _featureDetector;
 
