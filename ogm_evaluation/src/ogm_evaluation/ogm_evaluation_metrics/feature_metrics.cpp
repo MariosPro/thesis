@@ -205,7 +205,7 @@ namespace ogm_evaluation
       return;
     }
     double best_error;
-    estimateTransform(slamMatchedCoords, groundTruthMatchedCoords,
+    estimateTransform(groundTruthMatchedCoords, slamMatchedCoords,
                        1000, _ransacReprjError, 3, mask, H, best_error);
 
 
@@ -268,7 +268,7 @@ namespace ogm_evaluation
    //[>std::cout << (int)mask1[i]<<std::endl;<]
 
    ////H = cv::findHomography(cv::Mat(slamMatchedCoords), cv::Mat(groundTruthMatchedCoords), CV_RANSAC, _ransacReprjError, mask);
-    H = cv::estimateRigidTransform(inliersCoords1, inliersCoords2, false);
+    H = cv::estimateRigidTransform(inliersCoords2, inliersCoords1, false);
 
    if(H.empty() || std::count( mask.begin(), mask.end(), 1) < 4)
    {
@@ -301,7 +301,7 @@ namespace ogm_evaluation
    cv::Mat image(_groundTruthMap.size(), _groundTruthMap.type());
    cv::Mat image1(_slamMap.size(), _slamMap.type(), 127);
    //cv::warpPerspective(_groundTruthMap, image, H, image.size(), cv::INTER_NEAREST, IPL_BORDER_CONSTANT, cv::Scalar::all(127));
-   cv::warpAffine(_groundTruthMap, image, H, image.size());
+   cv::warpAffine(_groundTruthMap, image, H, image.size(), cv::INTER_NEAREST, IPL_BORDER_CONSTANT, cv::Scalar::all(127));
 
    for (int i = 0; i < image1.rows; i++)
      for (int j = 0; j < image1.cols; j++)
@@ -411,7 +411,7 @@ void FeatureMetrics::estimateTransform(const std::vector<cv::Point2f>& coords1, 
     /*image1_points and image2_points - two arrays of the same size with points. Assumes that image1_points[x] is best mapped to image2_points[x] accodring to the computed features.*/
    
     std::vector<unsigned int> indices(coords1.size());
-    std::vector<cv::Point2f> points1(3), points2(3), coords2t;
+    std::vector<cv::Point2f> points1(3), points2(3), coords1t;
     std::vector<uchar> mask(coords1.size());
     std::cout <<"mask size=" << mask.size() << std::endl;
 
@@ -439,12 +439,12 @@ void FeatureMetrics::estimateTransform(const std::vector<cv::Point2f>& coords1, 
       model = cv::getAffineTransform(points1, points2);
       consensus_set = 0;
       total_error = 0;
-      cv::transform(coords2, coords2t, model);
+      cv::transform(coords1, coords1t, model);
 
       // find inliers (where err < ransacReprjError)
       for (int j = 0; j < coords1.size(); j++)
       {
-        error = cv::pow(cv::norm(coords1[j] - coords2t[j]), 2.0);
+        error = cv::pow(cv::norm(coords2[j] - coords1t[j]), 2.0);
         int f = error <= (thresh * thresh);
         mask[j] = f;
         if(f)
