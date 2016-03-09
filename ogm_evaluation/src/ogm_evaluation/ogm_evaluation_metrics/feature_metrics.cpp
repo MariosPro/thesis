@@ -47,6 +47,7 @@ namespace ogm_evaluation
     _matcherName = matcher;
     _matchingRatio = matchingRatio;
     _ransacReprjError = ransacReprjError;
+    _result = 0;
     cv::initModule_nonfree();
     _featureDetector =  cv::FeatureDetector::create(_detector);
     if(_descriptor == "SIFT" || _descriptor == "SURF" || _descriptor == "BRIEF" ||
@@ -113,13 +114,20 @@ namespace ogm_evaluation
     std::vector<cv::DMatch> crossCheckedMatches;
     std::vector< cv::DMatch > filteredMatches;//, matches;
     //!< Matching descriptor vectors using a matcher
-    //_matcher->match(_slamDescriptors, _groundTruthDescriptors, matches);
 
     ROS_INFO_STREAM("SLAM KEYPOINTS= " << _slamKeypoints.size());
     ROS_INFO_STREAM("SLAM DESCRIPTORS=" << _slamDescriptors.rows << " "  << _slamDescriptors.cols << " " << _slamDescriptors.type());
     ROS_INFO_STREAM("GROUND TRUTH KEYPOINTS= " << _groundTruthKeypoints.size());
     ROS_INFO_STREAM("GROUND TRUTH DESCRIPTORS=" << _groundTruthDescriptors.rows << " "  << _groundTruthDescriptors.cols << " " << _groundTruthDescriptors.type());
     ROS_INFO_STREAM("MATCHING RATIO=" << _matchingRatio);
+  
+   //!< draw Keypoints
+   cv::Mat img_keypoints_1, img_keypoints_2;
+   cv::drawKeypoints( _groundTruthMap, _groundTruthKeypoints, img_keypoints_1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
+   cv::drawKeypoints( _slamMap, _slamKeypoints, img_keypoints_2, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
+   imshow("Keypoints 1", img_keypoints_1);
+   imshow("Keypoints 2", img_keypoints_2);
+   cv::waitKey(1000);
 
     std::vector<cv::KeyPoint> slamMatchedKeyPoints, groundTruthMatchedKeyPoints;
     std::vector<cv::Point2f>  slamMatchedCoords, groundTruthMatchedCoords;
@@ -134,13 +142,16 @@ namespace ogm_evaluation
 
     //ratioTest(_slamDescriptors, _groundTruthDescriptors, filteredMatches);
 
-              //for (int i = 0; i < slamMatchedCoords.size(); i++){
-      //std::cout << "coords " << slamMatchedCoords[i] << " " << groundTruthMatchedCoords[i] << " ";
-      //std::cout << "keypoints " << slamMatchedKeyPoints[i].pt << " " << groundTruthMatchedKeyPoints[i].pt << " ";}
-        /*std::cout << std::endl;*/
-
    //crossCheckMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches, 1);
                     
+    //!< draw matches
+    cv::Mat imgmatches, imgmatches1, imgmatches2;
+    cv::drawMatches( _slamMap, _slamKeypoints, _groundTruthMap, _groundTruthKeypoints,
+                   filteredMatches, imgmatches1, cv::Scalar::all(-1), cv::Scalar::all(-1));
+   
+      ////-- Show detected matches
+      imshow("Initial Matches", imgmatches1);
+      cv::waitKey(1000);
 
     std::vector<int> queryIdxs( filteredMatches.size() ), trainIdxs( filteredMatches.size() );
     for( size_t i = 0; i < filteredMatches.size(); i++ )
@@ -198,10 +209,9 @@ namespace ogm_evaluation
         /*std::cout << std::endl;*/
 
     std::vector<uchar> mask;
-    std::vector<uchar> mask1( filteredMatches.size(), 0 );
-    if(slamMatchedCoords.size() < 4)
+    if(slamMatchedCoords.size() < 3)
     {
-      ROS_WARN("homography needs 4 points to be computed");
+      ROS_WARN("affine transform needs at least 3 points to be computed");
       return;
     }
     double best_error;
@@ -211,20 +221,7 @@ namespace ogm_evaluation
 
     std::cout << "H = "<< std::endl << " "  << H << std::endl << std::endl;
 
-      //H = cv::estimateRigidTransform(slamMatchedCoords, groundTruthMatchedCoords, false);
-    //H = cv::findHomography(cv::Mat(slamMatchedCoords), cv::Mat(groundTruthMatchedCoords), CV_RANSAC, _ransacReprjError, mask);
-    //H = cv::findHomography(slamMatchedCoords, groundTruthMatchedCoords, CV_RANSAC, _ransacReprjError, mask);
-     //H =  cv::findHomography(evalcoord2, evalcoord1, CV_RANSAC, _ransacReprjError, mask);
-  /*  for (int i = 0; i < mask.size(); i++)*/
-   /*std::cout << (int)mask[i]<<std::endl;*/
-
- /*  if(H.empty() || std::count( mask.begin(), mask.end(), 1) < 4)*/
-   //{
-     //ROS_WARN("H contain no data, cannot find valid transformation");
-     //return;
-   //}
-
-   if(H.empty() || std::count( mask.begin(), mask.end(), 1) < 4)
+   if(H.empty() || std::count( mask.begin(), mask.end(), 1) < 3)
    {
      ROS_WARN("H contain no data, cannot find valid transformation");
      return;
@@ -241,66 +238,29 @@ namespace ogm_evaluation
        inliersCoords2.push_back(groundTruthMatchedCoords[i]);
      }
    }
-  /* cv::Mat points1t; */
-   ////cv::perspectiveTransform(cv::Mat(slamMatchedCoords), points1t, H);
-   //H = cv::getAffineTransform(slamMatchedCoords, groundTruthMatchedCoords);
-   //cv::transform(cv::Mat(slamMatchedCoords), points1t, H);
-   //double maxInlierDist = _ransacReprjError;
+  
+   //!< draw matches
+   cv::drawMatches( _slamMap, _slamKeypoints, _groundTruthMap, _groundTruthKeypoints,
+                   filteredMatches, imgmatches, cv::Scalar::all(-1), cv::Scalar::all(-1),
+                   reinterpret_cast<const std::vector<char>&> (mask), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+   
+    ////-- Show detected matches
+    imshow("RANSAC Matches", imgmatches);
+    cv::waitKey(1000);
 
-   //for ( size_t i1 = 0; i1 < slamMatchedCoords.size(); i1++)
-   //{
+   H = cv::estimateRigidTransform(inliersCoords2, inliersCoords1, false);
 
-     //double a = cv::norm(groundTruthMatchedCoords[i1] - points1t.at<cv::Point2f>((int)i1, 0));
-     ////ROS_INFO_STREAM("ADF=" <<  a);
-     ////if(int(mask[i1]) == 1)
-      //if( cv::norm(groundTruthMatchedCoords[i1] - points1t.at<cv::Point2f>((int)i1, 0)) <= maxInlierDist ) // outlier
-      //{
-        //mask1[i1] = 1;
-      //[>  ROS_INFO_STREAM("inlier");<]
-        ////ROS_INFO( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  --Visual Distance: %f --Distance: %f \n", (int)i1, filteredMatches[i1].queryIdx, filteredMatches[i1].trainIdx, filteredMatches[i1].distance, a);
-
-      //}
-      //else
-        //mask1[i1] = 0;
-
-   //}
- //[>   for (int i = 0; i < mask1.size(); i++)<]
-   //[>std::cout << (int)mask1[i]<<std::endl;<]
-
-   ////H = cv::findHomography(cv::Mat(slamMatchedCoords), cv::Mat(groundTruthMatchedCoords), CV_RANSAC, _ransacReprjError, mask);
-    H = cv::estimateRigidTransform(inliersCoords2, inliersCoords1, false);
-
-   if(H.empty() || std::count( mask.begin(), mask.end(), 1) < 4)
+   if(H.empty())
    {
      ROS_WARN("H contain no data, cannot find valid transformation");
      return;
    }
-
-    //std::cout << "inliers = " << std::accumulate(mask1.begin(), mask1.end(), 0) << std::endl;
-    cv::Mat imgmatches, imgmatches1, imgmatches2;
-    cv::drawMatches( _slamMap, _slamKeypoints, _groundTruthMap, _groundTruthKeypoints,
-                   filteredMatches, imgmatches, cv::Scalar::all(-1), cv::Scalar::all(-1),
-                   reinterpret_cast<const std::vector<char>&> (mask), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
-   
-/*    cv::drawMatches( _slamMap, slamMatchedKeyPoints, _groundTruthMap, groundTruthMatchedKeyPoints,*/
-                   //filteredMatches, imgmatches2, cv::Scalar::all(-1), cv::Scalar::all(-1),
-                   //reinterpret_cast<const std::vector<char>&> (mask), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
-
-/*    cv::drawMatches( _slamMap, _slamKeypoints, _groundTruthMap, _groundTruthKeypoints,*/
-                   //filteredMatches, imgmatches1, cv::Scalar::all(-1), cv::Scalar::all(-1),
-                   /*reinterpret_cast<const std::vector<char>&> (mask1), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);*/
-
-     /*cv::drawMatches(_slamMap, evalfil1, _groundTruthMap, evalfil2, evalmatches, imgmatches, cv::Scalar::all(-1), cv::Scalar::all(-1), reinterpret_cast<const std::vector<char>&> (mask), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);*/
-      ////-- Show detected matches
-      imshow("RANSAC Matches", imgmatches);
-      //imshow("Matches", imgmatches1);
-      //imshow("filtered matches", imgmatches2);
-      cv::waitKey(1000);
+ 
+  
     //}
 
    cv::Mat image(_groundTruthMap.size(), _groundTruthMap.type());
    cv::Mat image1(_slamMap.size(), _slamMap.type(), 127);
-   //cv::warpPerspective(_groundTruthMap, image, H, image.size(), cv::INTER_NEAREST, IPL_BORDER_CONSTANT, cv::Scalar::all(127));
    cv::warpAffine(_groundTruthMap, image, H, image.size(), cv::INTER_NEAREST, IPL_BORDER_CONSTANT, cv::Scalar::all(127));
 
    for (int i = 0; i < image1.rows; i++)
@@ -330,15 +290,8 @@ namespace ogm_evaluation
       }
     }
 
-      //std::cout << counter << std::endl;
-    cv::Mat img_keypoints_1, img_keypoints_2;
-    cv::drawKeypoints( _groundTruthMap, _groundTruthKeypoints, img_keypoints_1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
-    cv::drawKeypoints( _slamMap, _slamKeypoints, img_keypoints_2, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
-   imshow("Keypoints 1", img_keypoints_1);
-   imshow("Keypoints 2", img_keypoints_2);
-    cv::waitKey(1000);
+    //std::cout << counter << std::endl;
     _result = _omseMetric->getResult();
-    //_result = 9;
 }
 
 void FeatureMetrics::crossCheckMatching(const cv::Mat& descriptors1,

@@ -46,7 +46,7 @@ namespace ogm_evaluation
   **/
   void OmseMetric::calculateMetric()
   {
-     //_result = 0;
+     _result = 0;
 /*    ROS_INFO_STREAM("GROUND POINTS= " << _groundTruthObstaclePoints.size());*/
     /*ROS_INFO_STREAM("SLAM POINTS= " << _slamObstaclePoints.size());*/
 
