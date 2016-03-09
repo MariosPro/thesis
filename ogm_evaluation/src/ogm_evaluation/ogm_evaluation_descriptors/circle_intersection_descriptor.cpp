@@ -63,7 +63,7 @@ namespace ogm_evaluation
             // check if circle points are inside image boundaries
             if(x >= 0 && x < image.cols && y >= 0 && y < image.rows )
             {
-              if(image.at<unsigned char>(y, x) == 0 && crosses == 0)
+              if( (image.at<unsigned char>(y, x) == 0 || image.at<unsigned char>(y, x) == 127) && crosses == 0)
               {
                  crosses ++;
               }
@@ -82,13 +82,13 @@ namespace ogm_evaluation
           for (int i = 0; i < rowFeatures.size(); i++)
           {
             desc.at<float>(k, i) = rowFeatures[i];
-            //std::cout << rowFeatures[i] << " ";
+            std::cout << rowFeatures[i] << " ";
           }
         //}
       }
       cv::imshow("Radius Descriptors", img);
       cv::waitKey(1000);
-      //ROS_INFO_STREAM("DESC=" <<desc.rows << " " << desc.cols);
+      ROS_INFO_STREAM("DESC=" <<desc.rows << " " << desc.cols);
       desc.copyTo(*descriptors);
     }
 } // namespace ogm_evaluation

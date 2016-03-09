@@ -47,11 +47,23 @@ namespace ogm_evaluation
 
     if (req.manualAlignment)
       alignMaps();
+    bool s = req.manualAlignment;
+    ROS_INFO_STREAM("manual alignment=" << s);
 
     if (req.binary)
     {
-      cv::threshold(_groundTruthMap, _groundTruthMap, 0, 255, cv::THRESH_BINARY);
-      cv::threshold(_slamMap, _slamMap, 0, 255, cv::THRESH_BINARY);
+      for (int i = 0; i < _groundTruthMap.rows; i++)
+        for (int j = 0; j < _groundTruthMap.cols; j++)
+          if(_groundTruthMap.at<uchar>(i, j) == 127)
+            _groundTruthMap.at<uchar>(i, j) = 255;
+
+      for (int i = 0; i < _slamMap.rows; i++)
+        for (int j = 0; j < _slamMap.cols; j++)
+          if(_slamMap.at<uchar>(i, j) == 127)
+            _slamMap.at<uchar>(i, j) = 255;
+
+/*      cv::threshold(_groundTruthMap, _groundTruthMap, 0, 255, cv::THRESH_BINARY);*/
+      /*cv::threshold(_slamMap, _slamMap, 0, 255, cv::THRESH_BINARY);*/
     }
   /*  cv::erode(_groundTruthMap, _groundTruthMap, cv::Mat(), cv::Point(-1, -1), 2, 1, 1);*/
     /*cv::erode(_slamMap, _slamMap, cv::Mat(), cv::Point(-1, -1), 2, 1, 1);*/

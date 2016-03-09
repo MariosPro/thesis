@@ -21,6 +21,7 @@
 #define FEATURE_METRICS_H
 
 #include <numeric>
+#include <algorithm>
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/nonfree/nonfree.hpp>
 #include <opencv2/nonfree/features2d.hpp>
@@ -76,6 +77,26 @@ namespace ogm_evaluation
       **/
       virtual void calculateMetric(void);
 
+      void crossCheckMatching(const cv::Mat& descriptors1,
+                              const cv::Mat& descriptors2,
+                              std::vector<cv::DMatch>& filteredMatches12,
+                              int knn);
+
+
+      void simpleMatching(const cv::Mat& descriptors1,
+                    const cv::Mat& descriptors2,
+                    std::vector<cv::DMatch>& matches12);
+                  
+      void ratioTest(const cv::Mat& descriptors1,
+                     const cv::Mat& descriptors2, 
+                     std::vector<cv::DMatch>& filteredMatches);
+      
+      void estimateTransform(const std::vector<cv::Point2f>& coords1,
+                            const std::vector<cv::Point2f>& coords2,
+                            int nIters, double thresh, int minNpoints,
+                            std::vector<uchar>& inliers,
+                            cv::Mat& best_model, double& best_error);
+
     private:
 
    /*   //!< the omse method to be used*/
@@ -106,7 +127,7 @@ namespace ogm_evaluation
       cv::Ptr<cv::DescriptorExtractor> _descriptorExtractor;
       
       //!< the instance of custom's DescriptorExtractor class to be used
-      std::vector<cv::Ptr<ogm_evaluation::DescriptorExtractor> >  _customDescriptorExtractor;
+      std::vector<cv::Ptr<ogm_evaluation::DescriptorExtractor> > _customDescriptorExtractor;
 
       //!< the Descriptors Factory
       std::vector<DescriptorFactory> _descriptorFactory;
