@@ -215,13 +215,17 @@ namespace ogm_evaluation
       return;
     }
     double best_error;
-    estimateTransform(groundTruthMatchedCoords, slamMatchedCoords,
-                       1000, _ransacReprjError, 3, mask, H, best_error);
+    cv::Mat T;
+   
+    /*estimateTransform(groundTruthMatchedCoords, slamMatchedCoords,*/
+                       //1000, _ransacReprjError, 3, mask, T, best_error);
+    
+    estimateAffine2D(groundTruthMatchedCoords, slamMatchedCoords, T, mask);
 
 
-    std::cout << "H = "<< std::endl << " "  << H << std::endl << std::endl;
+    std::cout << "H = "<< std::endl << " "  << T << std::endl << std::endl;
 
-   if(H.empty() || std::count( mask.begin(), mask.end(), 1) < 3)
+   if(T.empty() || std::count( mask.begin(), mask.end(), 1) < 3)
    {
      ROS_WARN("H contain no data, cannot find valid transformation");
      return;
@@ -229,15 +233,15 @@ namespace ogm_evaluation
 
 
    std::cout << " RANSAC inliers = " << std::accumulate(mask.begin(), mask.end(), 0) << std::endl;
-   std::vector<cv::Point2f> inliersCoords1, inliersCoords2;
-   for (int i = 0; i < mask.size(); i++)
-   {
-     if((int)mask[i] == 1)
-     {
-       inliersCoords1.push_back(slamMatchedCoords[i]);
-       inliersCoords2.push_back(groundTruthMatchedCoords[i]);
-     }
-   }
+ /*  std::vector<cv::Point2f> inliersCoords1, inliersCoords2;*/
+   //for (int i = 0; i < mask.size(); i++)
+   //{
+     //if((int)mask[i] == 1)
+     //{
+       //inliersCoords1.push_back(slamMatchedCoords[i]);
+       //inliersCoords2.push_back(groundTruthMatchedCoords[i]);
+     //}
+   /*}*/
   
    //!< draw matches
    cv::drawMatches( _slamMap, _slamKeypoints, _groundTruthMap, _groundTruthKeypoints,
@@ -248,20 +252,21 @@ namespace ogm_evaluation
     imshow("RANSAC Matches", imgmatches);
     cv::waitKey(1000);
 
-   H = cv::estimateRigidTransform(inliersCoords2, inliersCoords1, false);
+   /*H = cv::estimateRigidTransform(inliersCoords2, inliersCoords1, false);*/
 
-   if(H.empty())
-   {
-     ROS_WARN("H contain no data, cannot find valid transformation");
-     return;
-   }
+   //if(H.empty())
+   //{
+     //ROS_WARN("H contain no data, cannot find valid transformation");
+     //return;
+   /*}*/
  
   
     //}
 
    cv::Mat image(_groundTruthMap.size(), _groundTruthMap.type());
    cv::Mat image1(_slamMap.size(), _slamMap.type(), 127);
-   cv::warpAffine(_groundTruthMap, image, H, image.size(), cv::INTER_NEAREST, IPL_BORDER_CONSTANT, cv::Scalar::all(127));
+   std::cout << "H.type=" << T.type() << std::endl;
+   cv::warpAffine(_groundTruthMap, image, T, image.size(), cv::INTER_NEAREST, IPL_BORDER_CONSTANT, cv::Scalar::all(127));
 
    for (int i = 0; i < image1.rows; i++)
      for (int j = 0; j < image1.cols; j++)
@@ -277,6 +282,7 @@ namespace ogm_evaluation
     // blend image1 onto the transformed image2
     addWeighted(image, .5, _slamMap, .5, 0.0, image);
     cv::imshow("MergedImage", image);
+    cv::waitKey(1000);
 
     //std::cout << mask.size() << std::endl;
     int counter = 0;
@@ -357,74 +363,95 @@ void FeatureMetrics::estimateTransform(const std::vector<cv::Point2f>& coords1, 
                        cv::Mat& best_model, double& best_error)
 {
   /*  The input to the algorithm is:*/
-    //n - the number of random points to pick every iteration in order to create the transform. I chose n = 3 in my implementation.
-    //k - the number of iterations to run
-    //t - the threshold for the square distance for a point to be considered as a match
-    //d - the number of points that need to be matched for the transform to be valid
-    /*image1_points and image2_points - two arrays of the same size with points. Assumes that image1_points[x] is best mapped to image2_points[x] accodring to the computed features.*/
-   
-    std::vector<unsigned int> indices(coords1.size());
-    std::vector<cv::Point2f> points1(3), points2(3), coords1t;
-    std::vector<uchar> mask(coords1.size());
-    std::cout <<"mask size=" << mask.size() << std::endl;
+  //n - the number of random points to pick every iteration in order to create the transform. I chose n = 3 in my implementation.
+  //k - the number of iterations to run
+  //t - the threshold for the square distance for a point to be considered as a match
+  //d - the number of points that need to be matched for the transform to be valid
+  /*image1_points and image2_points - two arrays of the same size with points. Assumes that image1_points[x] is best mapped   to image2_points[x] accodring to the computed features.*/
 
-    //inliers.reserve(coords1.size());
-    cv::Mat model;
-    int consensus_set;
-    double error, total_error;
-    best_error = std::numeric_limits<double>::infinity();
-    
-    for (int i = 0; i < coords1.size(); i++)
-      indices[i] = i;
+  std::vector<unsigned int> indices(coords1.size());
+  std::vector<cv::Point2f> points1(3), points2(3), coords1t;
+  std::vector<uchar> mask(coords1.size());
+  std::cout <<"mask size=" << mask.size() << std::endl;
 
-    for (int i = 0; i < nIters; i++)
+  //inliers.reserve(coords1.size());
+  cv::Mat model;
+  int consensus_set;
+  double error, total_error;
+  best_error = std::numeric_limits<double>::infinity();
+
+  for (int i = 0; i < coords1.size(); i++)
+    indices[i] = i;
+
+  int counter = 0;
+  while(counter < nIters)
+  {
+    //ROS_INFO_STREAM("ITER=" << i);
+    // pick n=3 random points
+    std::random_shuffle(indices.begin(), indices.end());
+    for (int k = 0; k < 3; k++)
     {
-      //ROS_INFO_STREAM("ITER=" << i);
-      // pick n=3 random points
-      std::random_shuffle(indices.begin(), indices.end());
-      for (int k = 0; k < 3; k++)
-      {
-        points1[k] = coords1[indices[k]];
-        points2[k] = coords2[indices[k]];
-        //std::cout << "picked " << indices[k] << std::endl;
-      }
-      //find transform
-      model = cv::getAffineTransform(points1, points2);
-      consensus_set = 0;
-      total_error = 0;
-      cv::transform(coords1, coords1t, model);
+      points1[k] = coords1[indices[k]];
+      points2[k] = coords2[indices[k]];
+      //std::cout << "picked " << indices[k] << std::endl;
+    }
+    //find transform
+    model = cv::getAffineTransform(points1, points2);
+    consensus_set = 0;
+    total_error = 0;
+    cv::transform(coords1, coords1t, model);
 
-      // find inliers (where err < ransacReprjError)
-      for (int j = 0; j < coords1.size(); j++)
+    // find inliers (where err < ransacReprjError)
+    for (int j = 0; j < coords1.size(); j++)
+    {
+      error = cv::pow(cv::norm(coords2[j] - coords1t[j]), 2.0);
+      int f = error <= (thresh * thresh);
+      mask[j] = f;
+      if(f)
       {
-        error = cv::pow(cv::norm(coords2[j] - coords1t[j]), 2.0);
-        int f = error <= (thresh * thresh);
-        mask[j] = f;
-        if(f)
-        {
 
   /*        std::cout << "mask" << (int)mask[j] << std::endl;*/
-          /*ROS_INFO_STREAM("ERROR=" << error );*/
-          consensus_set++;
-          total_error += error;
-        }
-
+        /*ROS_INFO_STREAM("ERROR=" << error );*/
+        consensus_set++;
+        total_error += error;
       }
 
- /*     std::cout <<"mask size=" << mask.size() << std::endl;*/
-      //std::cout << " RANSAC inliers = " << std::accumulate(mask.begin(), mask.end(), 0) << std::endl;
-      /*ROS_INFO_STREAM("CONSENSUS_SET=" << consensus_set);*/
-      
-      if(consensus_set > std::max(minNpoints,std::accumulate(inliers.begin(), inliers.end(), 0)))//   && total_error < best_error)
-      {
-        best_model = model;
-        best_error = total_error;
-        inliers.clear();
-        inliers.insert(inliers.end(), mask.begin(), mask.end());
-        std::cout << "best_model = "<< std::endl << " "  << best_model << std::endl << std::endl;
-      }
     }
+
+  /*     std::cout <<"mask size=" << mask.size() << std::endl;*/
+    //std::cout << " RANSAC inliers = " << std::accumulate(mask.begin(), mask.end(), 0) << std::endl;
+    /*ROS_INFO_STREAM("CONSENSUS_SET=" << consensus_set);*/
+    
+    if(consensus_set > std::max(minNpoints,std::accumulate(inliers.begin(), inliers.end(), 0)))//   && total_error < best_error)
+    {
+      //best_model = model;
+      best_error = total_error;
+      inliers.clear();
+      inliers.insert(inliers.end(), mask.begin(), mask.end());
+      std::vector<cv::Point2f> inliersCoords1, inliersCoords2;
+      for (int l = 0; l < mask.size(); l++)
+       {
+         if((int)mask[l] == 1)
+         {
+           inliersCoords1.push_back(coords2[l]);
+           inliersCoords2.push_back(coords1[l]);
+         }
+       }
+
+      H = cv::estimateRigidTransform(inliersCoords2, inliersCoords1, false);
       
+      if(!H.empty())
+      {
+        best_model = H;
+      }
+      std::cout << "best_model = "<< std::endl << " "  << best_model << std::endl << std::endl;
+    }
+/*    if (best_model.empty())*/
+    //{
+      //nIters++;
+    /*}*/
+    counter++;
+  }
 
 }
 

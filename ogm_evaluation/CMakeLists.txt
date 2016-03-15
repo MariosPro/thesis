@@ -32,6 +32,11 @@ catkin_package(
 )
 
 ######################### Metrics ######################################
+add_library(ogm_evaluation_utils
+  src/ogm_evaluation/ogm_evaluation_utils/affine2DEstimator.cpp)
+target_link_libraries(ogm_evaluation_utils ${catkin_LIBRARIES})
+
+
 add_library(ogm_custom_descriptors 
             src/ogm_evaluation/ogm_evaluation_descriptors/radius_statistics_descriptor.cpp
             src/ogm_evaluation/ogm_evaluation_descriptors/circle_intersection_descriptor.cpp
@@ -55,7 +60,8 @@ target_link_libraries(ogm_feature_metrics
                       ${catkin_LIBRARIES}
                       ${OpenCV_LIBRARIES}
                       ogm_metric_base
-                      ogm_descriptor_factory)
+                      ogm_descriptor_factory
+                      ogm_evaluation_utils)
 
 
 add_library(ogm_metric_factory src/ogm_evaluation/ogm_metric_factory.cpp)
@@ -83,6 +89,7 @@ install(TARGETS
     ogm_descriptor_factory
     ogm_feature_metrics
     ogm_metric_factory
+    ogm_evaluation_utils
     ogm_evaluation
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

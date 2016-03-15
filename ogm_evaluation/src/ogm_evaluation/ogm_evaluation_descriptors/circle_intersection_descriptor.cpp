@@ -82,7 +82,7 @@ namespace ogm_evaluation
           for (int i = 0; i < rowFeatures.size(); i++)
           {
             desc.at<float>(k, i) = rowFeatures[i];
-            std::cout << rowFeatures[i] << " ";
+            //std::cout << rowFeatures[i] << " ";
           }
         //}
       }

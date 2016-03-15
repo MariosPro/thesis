@@ -98,7 +98,7 @@ namespace ogm_evaluation
                 outOfBounds = true;
               }
 
-              if(image.at<unsigned char>(y, x) == 0 )
+              if(image.at<unsigned char>(y, x) == 0 || image.at<unsigned char>(y, x) == 127 )
               {
                 sumOfRays += radius;
                 p.push_back(cv::Point(x, y));

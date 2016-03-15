@@ -29,6 +29,7 @@
 #include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_extractor.h"
 #include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_factory.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/omse.h"
+#include "ogm_evaluation/ogm_evaluation_utils/affine2DEstimator.h"
 /**
 @namespace ogm_evaluation
 @brief The main namespace for OGM Evaluation
