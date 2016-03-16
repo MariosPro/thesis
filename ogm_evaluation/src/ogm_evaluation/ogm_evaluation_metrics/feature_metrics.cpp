@@ -220,7 +220,7 @@ namespace ogm_evaluation
     /*estimateTransform(groundTruthMatchedCoords, slamMatchedCoords,*/
                        //1000, _ransacReprjError, 3, mask, T, best_error);
     
-    estimateAffine2D(groundTruthMatchedCoords, slamMatchedCoords, T, mask);
+    estimateAffine2D(groundTruthMatchedCoords, slamMatchedCoords, T, mask,_ransacReprjError);
 
 
     std::cout << "H = "<< std::endl << " "  << T << std::endl << std::endl;
