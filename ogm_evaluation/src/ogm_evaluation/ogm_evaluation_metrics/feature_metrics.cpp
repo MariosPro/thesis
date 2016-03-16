@@ -33,6 +33,7 @@ namespace ogm_evaluation
 
   FeatureMetrics::FeatureMetrics(const cv::Mat& groundTruthMap,
                          const cv::Mat& slamMap,
+                         const ogm_msgs::MapPose& transform,
                          std::string detector,
                          std::string descriptor,
                          std::string matcher,
@@ -41,6 +42,7 @@ namespace ogm_evaluation
                          double ransacReprjError)
                 : Metric(groundTruthMap, slamMap)
   {
+    _transform = transform;
     _distNorm = distNorm;
     _detector = detector;
     _descriptor = descriptor;
@@ -113,7 +115,6 @@ namespace ogm_evaluation
     std::vector<std::vector<cv::DMatch> > matches12, matches21, matches;
     std::vector<cv::DMatch> crossCheckedMatches;
     std::vector< cv::DMatch > filteredMatches;//, matches;
-    //!< Matching descriptor vectors using a matcher
 
     ROS_INFO_STREAM("SLAM KEYPOINTS= " << _slamKeypoints.size());
     ROS_INFO_STREAM("SLAM DESCRIPTORS=" << _slamDescriptors.rows << " "  << _slamDescriptors.cols << " " << _slamDescriptors.type());
@@ -137,21 +138,22 @@ namespace ogm_evaluation
     slamMatchedCoords.clear();
     groundTruthMatchedCoords.clear();
 
+    //!< Matching descriptor vectors using one of the following matching methods
+
     simpleMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches);
-                  
 
     //ratioTest(_slamDescriptors, _groundTruthDescriptors, filteredMatches);
 
    //crossCheckMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches, 1);
-                    
+
     //!< draw matches
     cv::Mat imgmatches, imgmatches1, imgmatches2;
     cv::drawMatches( _slamMap, _slamKeypoints, _groundTruthMap, _groundTruthKeypoints,
                    filteredMatches, imgmatches1, cv::Scalar::all(-1), cv::Scalar::all(-1));
-   
-      ////-- Show detected matches
-      imshow("Initial Matches", imgmatches1);
-      cv::waitKey(1000);
+
+    //!< Show detected matches
+    imshow("Initial Matches", imgmatches1);
+    cv::waitKey(1000);
 
     std::vector<int> queryIdxs( filteredMatches.size() ), trainIdxs( filteredMatches.size() );
     for( size_t i = 0; i < filteredMatches.size(); i++ )
@@ -162,6 +164,7 @@ namespace ogm_evaluation
 
     cv::KeyPoint::convert(_slamKeypoints, slamMatchedCoords, queryIdxs);
     cv::KeyPoint::convert(_groundTruthKeypoints, groundTruthMatchedCoords, trainIdxs);
+
     //!< evaluate matches through custom descriptors
 
    /* cv::Mat slamEvalDescriptors, groundTruthEvalDescriptors;*/
@@ -216,10 +219,10 @@ namespace ogm_evaluation
     }
     double best_error;
     cv::Mat T;
-   
-    /*estimateTransform(groundTruthMatchedCoords, slamMatchedCoords,*/
+
+/*    estimateTransform(groundTruthMatchedCoords, slamMatchedCoords,*/
                        //1000, _ransacReprjError, 3, mask, T, best_error);
-    
+
     estimateAffine2D(groundTruthMatchedCoords, slamMatchedCoords, T, mask,_ransacReprjError);
 
 
@@ -262,12 +265,13 @@ namespace ogm_evaluation
  
   
     //}
-
-   cv::Mat image(_groundTruthMap.size(), _groundTruthMap.type());
+    
+   cv::Mat image(_slamMap.size(), _slamMap.type());
    cv::Mat image1(_slamMap.size(), _slamMap.type(), 127);
+   
    std::cout << "H.type=" << T.type() << std::endl;
    cv::warpAffine(_groundTruthMap, image, T, image.size(), cv::INTER_NEAREST, IPL_BORDER_CONSTANT, cv::Scalar::all(127));
-
+  
    for (int i = 0; i < image1.rows; i++)
      for (int j = 0; j < image1.cols; j++)
       if(image.at<unsigned char>(i, j) != 127)
@@ -279,7 +283,10 @@ namespace ogm_evaluation
     _omseMetric =  new OmseMetric(image, image1, "Brushfire", _distNorm);
     _omseMetric->calculateMetric();
  
-    // blend image1 onto the transformed image2
+    std::cout << "image1 type " << image1.type() << " " << image1.channels() << std::endl;
+    std::cout << "image type " << image.type() << " " << image.channels() << std::endl;
+    
+    //!< blend slamMap onto the transformed groundTruthMap
     addWeighted(image, .5, _slamMap, .5, 0.0, image);
     cv::imshow("MergedImage", image);
     cv::waitKey(1000);
@@ -298,6 +305,7 @@ namespace ogm_evaluation
 
     //std::cout << counter << std::endl;
     _result = _omseMetric->getResult();
+    //_result = 0;
 }
 
 void FeatureMetrics::crossCheckMatching(const cv::Mat& descriptors1,

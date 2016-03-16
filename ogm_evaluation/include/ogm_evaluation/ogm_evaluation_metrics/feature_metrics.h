@@ -25,11 +25,13 @@
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/nonfree/nonfree.hpp>
 #include <opencv2/nonfree/features2d.hpp>
+#include "ogm_msgs/MapPose.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
 #include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_extractor.h"
 #include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_factory.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/omse.h"
 #include "ogm_evaluation/ogm_evaluation_utils/affine2DEstimator.h"
+#include "ogm_evaluation/ogm_evaluation_utils/maps_alignment.h"
 /**
 @namespace ogm_evaluation
 @brief The main namespace for OGM Evaluation
@@ -56,6 +58,7 @@ namespace ogm_evaluation
       **/
       FeatureMetrics(const cv::Mat& groundTruthMap,
                  const cv::Mat& slamMap,
+                 const ogm_msgs::MapPose& transform,
                  std::string detector,
                  std::string descriptor,
                  std::string matcher,
@@ -156,6 +159,10 @@ namespace ogm_evaluation
      std::vector<cv::Point2f>  coord1,coord2;
 
      Metric* _omseMetric;
+
+     Alignment _alignment;
+
+     ogm_msgs::MapPose _transform;
 
      cv::Mat H;
   };

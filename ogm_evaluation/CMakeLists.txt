@@ -33,7 +33,8 @@ catkin_package(
 
 ######################### Metrics ######################################
 add_library(ogm_evaluation_utils
-  src/ogm_evaluation/ogm_evaluation_utils/affine2DEstimator.cpp)
+            src/ogm_evaluation/ogm_evaluation_utils/affine2DEstimator.cpp
+            src/ogm_evaluation/ogm_evaluation_utils/maps_alignment.cpp)
 target_link_libraries(ogm_evaluation_utils ${catkin_LIBRARIES})
 
 
@@ -62,7 +63,6 @@ target_link_libraries(ogm_feature_metrics
                       ogm_metric_base
                       ogm_descriptor_factory
                       ogm_evaluation_utils)
-
 
 add_library(ogm_metric_factory src/ogm_evaluation/ogm_metric_factory.cpp)
 target_link_libraries(ogm_metric_factory

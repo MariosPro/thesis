@@ -32,13 +32,20 @@ namespace ogm_evaluation
    * @oaram slamMap [const cv::Mat&] the slam map
    * that will be used.
    */
-  Metric* MetricFactory::createMetricInstance(std::string name, const cv::Mat& groundTruthMap, const cv::Mat& slamMap,
-                                              std::string detector, std::string descriptor, std::string matcher,
-                                              std::string closestPointMethod, std::string distNorm,
-                                              double matchingRatio, double ransacReprjError)
+  Metric* MetricFactory::createMetricInstance(std::string name, 
+                                              const cv::Mat& groundTruthMap,
+                                              const cv::Mat& slamMap,
+                                              const ogm_msgs::MapPose& transform, 
+                                              std::string detector,
+                                              std::string descriptor, 
+                                              std::string matcher,
+                                              std::string closestPointMethod, 
+                                              std::string distNorm,
+                                              double matchingRatio,
+                                              double ransacReprjError)
   {
     if (name == "OMSE") return new OmseMetric(groundTruthMap, slamMap, closestPointMethod, distNorm);
-    else if (name == "FEATURES") return new FeatureMetrics(groundTruthMap, slamMap, detector, descriptor, matcher, distNorm, matchingRatio, ransacReprjError);
+    else if (name == "FEATURES") return new FeatureMetrics(groundTruthMap, slamMap,transform, detector, descriptor, matcher, distNorm, matchingRatio, ransacReprjError);
 
     else
       {

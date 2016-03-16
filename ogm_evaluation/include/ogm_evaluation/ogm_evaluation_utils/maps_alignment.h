@@ -16,43 +16,34 @@
    Authors :
    * Marios Protopapas, protopapasmarios@gmail.com
 ******************************************************************************/
-#ifndef OGM_METRIC_FACTORY_H
-#define OGM_METRIC_FACTORY_H
+#ifndef MAPS_ALIGNMENT_H
+#define MAPS_ALIGNMENT_H
 
-#include <string>
-#include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
+#include <opencv2/opencv.hpp>
+#include <ros/ros.h>
 #include "ogm_msgs/MapPose.h"
+
 /**
 @namespace ogm_evaluation
 @brief The main namespace for OGM Evaluation
 **/ 
 namespace ogm_evaluation
 {
-   /**
-   * @class MetricFactory
-   * @brief The class that is used to produce the metrics.
-   */
-   class MetricFactory
-   {
-       public:
-       /**
-       * @brief Default Constructor
-       */
-       MetricFactory()
-       {
-       };
+  class Alignment
+  {
+    public:
+      Alignment();
 
-       Metric* createMetricInstance(std::string name,
-                                    const cv::Mat& groundTruthMap,
-                                    const cv::Mat& slamMap,
-                                    const ogm_msgs::MapPose& transform,
-                                    std::string detector,
-                                    std::string descriptor,
-                                    std::string matcher,
-                                    std::string closestPointMethod,
-                                    std::string distNorm,
-                                    double matchingRatio,
-                                    double ransacReprjError);
-   };
+      void alignMaps(const ogm_msgs::MapPose& _transform,
+                     cv::Mat& _groundTruthMap,
+                     cv::Mat& _slamMap);
+    private:
+      //!<  the transform converting slamMap to groundTruthMap Coordinates System
+      ogm_msgs::MapPose _transform; 
+      
+      cv::Mat _groundTruthMap;
+
+      cv::Mat _slamMap;
+  };
 }
 #endif

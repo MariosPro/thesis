@@ -27,6 +27,7 @@
 #include "ogm_msgs/ServerRequestEvaluation.h"
 #include "ogm_msgs/MapPose.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
+#include "ogm_evaluation/ogm_evaluation_utils/maps_alignment.h"
 #include "ogm_evaluation/ogm_metric_factory.h"
 
 /**
@@ -67,12 +68,6 @@ namespace ogm_evaluation
       **/
       cv::Mat mapToMat(const nav_msgs::OccupancyGrid& map);
 
-      /**
-      @brief Method that aligns the two maps using the transform received from server
-      @return void
-      **/
-      void alignMaps();
-
     private:
 
         //!< The Ros node Handle
@@ -97,6 +92,9 @@ namespace ogm_evaluation
 
         //!< Pointer to the Metric used
         Metric* _metric;
+
+        //!< The maps Alignment instance
+        Alignment _alignment;
   };
 }
 #endif
