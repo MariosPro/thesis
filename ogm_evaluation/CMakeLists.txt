@@ -3,6 +3,7 @@ project(ogm_evaluation)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  roslib
   cv_bridge
   ogm_msgs
   geometry_msgs
@@ -25,6 +26,7 @@ catkin_package(
   ogm_evaluation
   CATKIN_DEPENDS
     roscpp
+    roslib
     cv_bridge
     ogm_msgs
     geometry_msgs
@@ -80,6 +82,8 @@ add_executable(ogm_evaluation_node src/ogm_evaluation/ogm_evaluation_node.cpp)
 add_dependencies(ogm_evaluation_node ogm_msgs_gencpp) # wait for ogm_msgs to be build
 target_link_libraries(ogm_evaluation_node ${catkin_LIBRARIES} ogm_evaluation)
 
+add_executable(map_saver src/ogm_evaluation/ogm_evaluation_utils/map_saver.cpp)
+target_link_libraries(map_saver ${catkin_LIBRARIES} )
 # Install libraries
 install(TARGETS
     ogm_metric_base
