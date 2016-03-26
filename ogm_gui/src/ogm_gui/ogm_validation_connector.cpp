@@ -77,7 +77,11 @@ namespace ogm_gui
    QObject::connect(
       loader.matcherComboBox, SIGNAL(currentIndexChanged(const QString&)),
       this, SLOT(matcherComboBoxActivated(const QString&)));
- 
+  
+   QObject::connect(
+      loader.matchingMethodComboBox, SIGNAL(currentIndexChanged(const QString&)),
+      this, SLOT(matchingMethodComboBoxActivated(const QString&)));
+
    QObject::connect(
       loader.closestObstacleComboBox, SIGNAL(currentIndexChanged(const QString&)),
       this, SLOT(closestObstacleComboBoxActivated(const QString&)));
@@ -102,6 +106,7 @@ namespace ogm_gui
    _detector = "SIFT";
    _descriptor = "SIFT";
    _matcher = "BruteForce";
+   _matchingMethod = "SIMPLE";
    _closestObstacleMethod = "Brushfire";
    _distMethod = "Manhattan";
    _matchingRatio = 0.7;
@@ -142,6 +147,12 @@ namespace ogm_gui
   {
     return _matcher;
   }
+ 
+  std::string CValidationConnector::getMatchingMethod()
+  {
+    return _matchingMethod;
+  }
+
 
   std::string CValidationConnector::getClosestObstacleMethod()
   {
@@ -255,6 +266,12 @@ namespace ogm_gui
   {
     _matcher = text.toStdString();
     ROS_INFO_STREAM("MATCHER:" << text.toStdString());
+  }
+ 
+  void CValidationConnector::matchingMethodComboBoxActivated(const QString& text)
+  {
+    _matchingMethod = text.toStdString();
+    ROS_INFO_STREAM("MATCHING METHOD:" << text.toStdString());
   }
 
   void CValidationConnector::closestObstacleComboBoxActivated(const QString& text)

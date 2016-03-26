@@ -28,6 +28,9 @@ namespace ogm_evaluation
   @param std::string [descriptor] the DescriptorExtractor to be used
   @param std::string [matcher] the FeatureMatcher to be used
   @param std::string [distNorm] the distance norm to be used
+  @param std::string [matchingMethod] the matching method to be used
+  @param double [matchingRatio] the matching ratio if ratioTest is gonna be used
+  @param double [ransacReprjError] the maximum allowed ransac reprojection error
   @return void
   **/
 
@@ -37,6 +40,7 @@ namespace ogm_evaluation
                          std::string detector,
                          std::string descriptor,
                          std::string matcher,
+                         std::string matchingMethod,
                          std::string distNorm,
                          double matchingRatio,
                          double ransacReprjError)
@@ -49,6 +53,7 @@ namespace ogm_evaluation
     _matcherName = matcher;
     _matchingRatio = matchingRatio;
     _ransacReprjError = ransacReprjError;
+    _matchingMethod = matchingMethod;
     _result = 0;
     cv::initModule_nonfree();
     _featureDetector =  cv::FeatureDetector::create(_detector);
@@ -126,9 +131,9 @@ namespace ogm_evaluation
    cv::Mat img_keypoints_1, img_keypoints_2;
    cv::drawKeypoints( _groundTruthMap, _groundTruthKeypoints, img_keypoints_1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
    cv::drawKeypoints( _slamMap, _slamKeypoints, img_keypoints_2, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
-   imshow("Keypoints 1", img_keypoints_1);
-   imshow("Keypoints 2", img_keypoints_2);
-   cv::waitKey(1000);
+/*   imshow("Keypoints 1", img_keypoints_1);*/
+   //imshow("Keypoints 2", img_keypoints_2);
+   /*cv::waitKey(1000);*/
 
     std::vector<cv::KeyPoint> slamMatchedKeyPoints, groundTruthMatchedKeyPoints;
     std::vector<cv::Point2f>  slamMatchedCoords, groundTruthMatchedCoords;
@@ -140,11 +145,14 @@ namespace ogm_evaluation
 
     //!< Matching descriptor vectors using one of the following matching methods
 
-    simpleMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches);
-
-    //ratioTest(_slamDescriptors, _groundTruthDescriptors, filteredMatches);
-
-   //crossCheckMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches, 1);
+    if (_matchingMethod == "SIMPLE") 
+      simpleMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches);
+    else if(_matchingMethod ==  "RATIO")
+      ratioTest(_slamDescriptors, _groundTruthDescriptors, filteredMatches);
+    else if(_matchingMethod == "CROSSCHECK")
+      crossCheckMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches, 1);
+    else    
+      ROS_ERROR("No such matching method");
 
     //!< draw matches
     cv::Mat imgmatches, imgmatches1, imgmatches2;
@@ -152,8 +160,8 @@ namespace ogm_evaluation
                    filteredMatches, imgmatches1, cv::Scalar::all(-1), cv::Scalar::all(-1));
 
     //!< Show detected matches
-    imshow("Initial Matches", imgmatches1);
-    cv::waitKey(1000);
+/*    imshow("Initial Matches", imgmatches1);*/
+    /*cv::waitKey(1000);*/
 
     std::vector<int> queryIdxs( filteredMatches.size() ), trainIdxs( filteredMatches.size() );
     for( size_t i = 0; i < filteredMatches.size(); i++ )

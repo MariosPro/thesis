@@ -54,6 +54,9 @@ namespace ogm_evaluation
       @param std::string [descriptor] the DescriptorExtractor to be used
       @param std::string [matcher] the FeatureMatcher to be used
       @param std::string [distNorm] the distance norm to be used
+      @param std::string [matchingMethod] the matching method to be used
+      @param double [matchingRatio] the matching ratio if ratioTest is gonna be used
+      @param double [ransacReprjError] the maximum allowed ransac reprojection error
       @return void
       **/
       FeatureMetrics(const cv::Mat& groundTruthMap,
@@ -62,6 +65,7 @@ namespace ogm_evaluation
                  std::string detector,
                  std::string descriptor,
                  std::string matcher,
+                 std::string matchingMethod,
                  std::string distNorm,
                  double matchingRatio,
                  double ransacReprjError);
@@ -103,9 +107,6 @@ namespace ogm_evaluation
 
     private:
 
-   /*   //!< the omse method to be used*/
-      /*int _omse_method;*/
-
       //!< the Detector name to be created
       std::string _detector;
 
@@ -117,6 +118,9 @@ namespace ogm_evaluation
 
       //!< the distance norm to be used
       std::string _distNorm;
+ 
+      //!< the matching method be used
+      std::string _matchingMethod;
 
       //!< the matchingRatio to be used for discarding matches
       double _matchingRatio;

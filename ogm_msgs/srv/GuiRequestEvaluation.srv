@@ -2,6 +2,7 @@ string method
 string detector
 string descriptor
 string matcher
+string matchingMethod
 string closestPointMethod
 string distNorm
 float64 matchingRatio

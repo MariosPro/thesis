@@ -39,13 +39,14 @@ namespace ogm_evaluation
                                               std::string detector,
                                               std::string descriptor, 
                                               std::string matcher,
+                                              std::string matchingMethod,
                                               std::string closestPointMethod, 
                                               std::string distNorm,
                                               double matchingRatio,
                                               double ransacReprjError)
   {
     if (name == "OMSE") return new OmseMetric(groundTruthMap, slamMap, closestPointMethod, distNorm);
-    else if (name == "FEATURES") return new FeatureMetrics(groundTruthMap, slamMap,transform, detector, descriptor, matcher, distNorm, matchingRatio, ransacReprjError);
+    else if (name == "FEATURES") return new FeatureMetrics(groundTruthMap, slamMap,transform, detector, descriptor, matcher, matchingMethod, distNorm, matchingRatio, ransacReprjError);
 
     else
       {

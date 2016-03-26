@@ -466,6 +466,7 @@ namespace ogm_gui
       srv.request.detector = validation_connector_.getDetector();
       srv.request.descriptor = validation_connector_.getDescriptor();
       srv.request.matcher = validation_connector_.getMatcher();
+      srv.request.matchingMethod = validation_connector_.getMatchingMethod();
       srv.request.matchingRatio = validation_connector_.getMatchingRatio();
       srv.request.ransacReprjError = validation_connector_.getRansacReprjError();
       srv.request.binary = validation_connector_.thresholdMaps();

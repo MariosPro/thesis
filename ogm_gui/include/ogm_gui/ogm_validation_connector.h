@@ -53,7 +53,10 @@ namespace ogm_gui
  
       //!< the Feature matcher to be implemented
       std::string _matcher;
-  
+   
+      //!< the Feature matching Method to be used
+      std::string _matchingMethod;
+
       //!< the closestObstacle method to be implemented
       std::string _closestObstacleMethod;
   
@@ -105,6 +108,8 @@ namespace ogm_gui
       std::string getDetector();
 
       std::string getMatcher();
+  
+      std::string getMatchingMethod();
  
       std::string getClosestObstacleMethod();
 
@@ -152,6 +157,8 @@ namespace ogm_gui
       void descriptorComboBoxActivated(const QString& text);
 
       void matcherComboBoxActivated(const QString& text);
+
+      void matchingMethodComboBoxActivated(const QString& text);
 
       void closestObstacleComboBoxActivated(const QString& text);
 

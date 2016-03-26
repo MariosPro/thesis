@@ -49,6 +49,7 @@ namespace ogm_evaluation
                                     std::string detector,
                                     std::string descriptor,
                                     std::string matcher,
+                                    std::string matchingMethod,
                                     std::string closestPointMethod,
                                     std::string distNorm,
                                     double matchingRatio,

@@ -157,6 +157,7 @@ namespace ogm_server
     srv.request.detector = req.detector;
     srv.request.descriptor = req.descriptor;
     srv.request.matcher = req.matcher;
+    srv.request.matchingMethod = req.matchingMethod;
     srv.request.closestPointMethod = req.closestPointMethod;
     srv.request.distNorm = req.distNorm;
     srv.request.transform = req.transform;
