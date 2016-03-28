@@ -99,6 +99,11 @@ namespace ogm_evaluation
                      const cv::Mat& descriptors2, 
                      std::vector<cv::DMatch>& filteredMatches);
       
+      void knnMatching(const cv::Mat& descriptors1,
+                       const cv::Mat& descriptors2,
+                       std::vector<cv::DMatch>& filteredMatches,
+                       int knn);
+
       void estimateTransform(const std::vector<cv::Point2f>& coords1,
                             const std::vector<cv::Point2f>& coords2,
                             int nIters, double thresh, int minNpoints,

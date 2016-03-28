@@ -151,7 +151,9 @@ namespace ogm_evaluation
       ratioTest(_slamDescriptors, _groundTruthDescriptors, filteredMatches);
     else if(_matchingMethod == "CROSSCHECK")
       crossCheckMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches, 1);
-    else    
+    else if(_matchingMethod == "K-NN")   
+      knnMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches, _groundTruthDescriptors.rows);
+    else
       ROS_ERROR("No such matching method");
 
     //!< draw matches
@@ -299,7 +301,7 @@ namespace ogm_evaluation
     cv::imshow("MergedImage", image);
     cv::waitKey(1000);
 
-    //std::cout << mask.size() << std::endl;
+    std::cout << mask.size() << std::endl;
     int counter = 0;
     for( int i = 0; i < filteredMatches.size(); i++ )
     {
@@ -372,6 +374,25 @@ void FeatureMetrics::simpleMatching(const cv::Mat& descriptors1,
       }
     }
 }
+
+void FeatureMetrics::knnMatching(const cv::Mat& descriptors1,
+                                    const cv::Mat& descriptors2,
+                                    std::vector<cv::DMatch>& filteredMatches,
+                                    int knn)
+{
+    std::vector<std::vector<cv::DMatch> > matches12;
+    _matcher->knnMatch( descriptors1, descriptors2, matches12, knn);
+    for( size_t m = 0; m < matches12.size(); m++ )
+    {
+        for( size_t fk = 0; fk < matches12[m].size(); fk++ )
+        {
+          cv::DMatch match = matches12[m][fk];
+          //if(match.distance < 30)
+          filteredMatches.push_back(match);
+        }
+    }
+}
+
 
 void FeatureMetrics::estimateTransform(const std::vector<cv::Point2f>& coords1, const std::vector<cv::Point2f>& coords2,
                        int nIters, double thresh, int minNpoints,
