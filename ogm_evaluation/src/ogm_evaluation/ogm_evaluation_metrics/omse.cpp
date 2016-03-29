@@ -15,6 +15,7 @@
 
    Authors :
    * Marios Protopapas, protopapasmarios@gmail.com
+   * Manos Tsardoulias, etsardou@gmail.com
 ******************************************************************************/
 
 #include "ogm_evaluation/ogm_evaluation_metrics/omse.h"
@@ -47,15 +48,21 @@ namespace ogm_evaluation
   void OmseMetric::calculateMetric()
   {
      _result = 0;
-/*    ROS_INFO_STREAM("GROUND POINTS= " << _groundTruthObstaclePoints.size());*/
-    /*ROS_INFO_STREAM("SLAM POINTS= " << _slamObstaclePoints.size());*/
-
     _groundTruthObstaclePoints = extractObstaclePoints(_groundTruthMap);
     _slamObstaclePoints = extractObstaclePoints(_slamMap);
     ROS_INFO_STREAM("GROUND POINTS= " << _groundTruthObstaclePoints.size());
     ROS_INFO_STREAM("SLAM POINTS= " << _slamObstaclePoints.size());
 
-    brushfireSearch();
+    if(_closestPointMethod == "Brushfire")
+    {
+      _brushfire = new int*[_groundTruthMap.rows];
+      for(int i = 0; i < _groundTruthMap.rows; i++)
+        _brushfire[i] = new int[_groundTruthMap.cols];
+      mapUtils.brushfireSearch(_groundTruthMap, _brushfire);
+      double dist = mapUtils.meanBrushfireDistance(_groundTruthMap, _brushfire);
+      ROS_INFO_STREAM("MEAN GROUND TRUTH BRUSHFIRE DIST=" << dist); 
+    }
+
     for (int i = 0; i < _slamObstaclePoints.size(); i++)
     {
       if(_closestPointMethod == "NearestNeighbor")
@@ -74,10 +81,13 @@ namespace ogm_evaluation
       }
     }
     _result = _result / _slamObstaclePoints.size();
-
-    for (int i = 0; i < _groundTruthMap.rows; i++)
-      delete[] _brushfire[i];
-    delete[] _brushfire;
+ 
+    if(_closestPointMethod == "Brushfire")
+    {
+      for (int i = 0; i < _groundTruthMap.rows; i++)
+        delete[] _brushfire[i];
+      delete[] _brushfire;
+    }
   }
 
   /**
@@ -93,8 +103,6 @@ namespace ogm_evaluation
       {
         if(mapMat.ptr<uchar>(i)[j] == 0)
           p.push_back(cv::Point(i, j));
-/*        if(mapMat.at<uchar>(i, j) == 0)*/
-          /*p.push_back(cv::Point(i,j));*/
       }
     return p;
   }
@@ -116,57 +124,6 @@ namespace ogm_evaluation
         minDst = dst;
     }
     return minDst;
-  }
-
-  /**
-  @brief Calculates the minimum distance of all free and unknown cells from the closest occupied cells
-  @return void
-  **/
-  void OmseMetric::brushfireSearch()
-  {
-    _brushfire = new int*[_groundTruthMap.rows];
-    for(int i = 0 ; i < _groundTruthMap.rows ; i++)
-    {
-      _brushfire[i] = new int[_groundTruthMap.cols];
-      for(int j = 0 ; j < _groundTruthMap.cols; j++)
-      {
-        if(_groundTruthMap.at<uchar>(i, j) >= 127) // the wave can be spread in free and unknown space
-          _brushfire[i][j] = -1;
-        else
-          _brushfire[i][j] = 0;
-
-      }
-    }
-
-    // Create brushfire (Manhattan distance transformation)
-    bool foundWave = true;
-    int currentWave = 0; //initial wave is Obstacles (0)
-
-    while(foundWave)
-    {
-      foundWave = false;
-      for (int i = 0; i < _groundTruthMap.rows; i++)
-        for(int j = 0; j < _groundTruthMap.cols; j++)
-          if(_brushfire[i][j] == currentWave)
-          {
-            foundWave = true;
-            if(i > 0 ) //This code checks the array bounds heading WEST
-              if(_brushfire[i - 1][j] == -1)//This code checks the WEST direction
-                _brushfire[i - 1][j] = currentWave + 1;
-
-            if(i < (_groundTruthMap.rows -1)) //This code checks the array bounds heading EAST
-              if(_brushfire[i + 1][j] == -1)//This code checks the EAST direction
-                _brushfire[i + 1][j] = currentWave + 1;
-
-            if(j > 0) //This code checks the array bounds heading SOUTH
-              if(_brushfire[i][j - 1] == -1)//This code checks the SOUTH direction
-                _brushfire[i][j - 1] = currentWave + 1;
-            if(j < (_groundTruthMap.cols - 1)) //This code checks the array bounds heading NORTH
-              if(_brushfire[i][j + 1] == -1)//This code checks the NORTH direction
-                _brushfire[i][j + 1] = currentWave + 1;
-          }
-      currentWave++;
-    }
   }
 
   /**

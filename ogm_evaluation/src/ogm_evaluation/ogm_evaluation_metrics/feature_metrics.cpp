@@ -152,7 +152,7 @@ namespace ogm_evaluation
     else if(_matchingMethod == "CROSSCHECK")
       crossCheckMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches, 1);
     else if(_matchingMethod == "K-NN")   
-      knnMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches, _groundTruthDescriptors.rows);
+      knnMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches, 5);// _groundTruthDescriptors.rows);
     else
       ROS_ERROR("No such matching method");
 
@@ -308,7 +308,7 @@ namespace ogm_evaluation
       //std::cout << (int)mask[i]<<std::endl;
       if( int(mask[i]) == 1)
       {
-      //ROS_INFO( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  --Distance %f  \n", i, filteredMatches[i].queryIdx, filteredMatches[i].trainIdx, filteredMatches[i].distance );
+      ROS_INFO( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  --Distance %f  \n", i, filteredMatches[i].queryIdx, filteredMatches[i].trainIdx, filteredMatches[i].distance );
       counter++;
       }
     }
@@ -369,8 +369,8 @@ void FeatureMetrics::simpleMatching(const cv::Mat& descriptors1,
       if (matches[i][0].distance < _matchingRatio * matches[i][1].distance)
       {
         filteredMatches.push_back(matches[i][0]);
-        ROS_INFO_STREAM("FILTERED MATCHES idx " << matches[i][0].queryIdx << " " << matches[i][0].trainIdx);
-        ROS_INFO_STREAM("s " << _slamKeypoints[matches[i][0].queryIdx].pt << " " << _groundTruthKeypoints[matches[i][0].trainIdx].pt);
+     /*   ROS_INFO_STREAM("FILTERED MATCHES idx " << matches[i][0].queryIdx << " " << matches[i][0].trainIdx);*/
+        /*ROS_INFO_STREAM("s " << _slamKeypoints[matches[i][0].queryIdx].pt << " " << _groundTruthKeypoints[matches[i][0].trainIdx].pt);*/
       }
     }
 }
@@ -387,7 +387,7 @@ void FeatureMetrics::knnMatching(const cv::Mat& descriptors1,
         for( size_t fk = 0; fk < matches12[m].size(); fk++ )
         {
           cv::DMatch match = matches12[m][fk];
-          //if(match.distance < 30)
+          if(match.distance < 250)
           filteredMatches.push_back(match);
         }
     }

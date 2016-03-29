@@ -20,9 +20,8 @@
 #ifndef OMSE_H
 #define OMSE_H
 
-/*#include <ros/ros.h>*/
-/*#include <opencv2/opencv.hpp>*/
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
+#include "ogm_evaluation/ogm_evaluation_utils/map_utils.h"
 
 /**
 @namespace ogm_evaluation
@@ -83,12 +82,6 @@ namespace ogm_evaluation
       double bruteForceNearestNeighbor(cv::Point sp, std::string distNorm);
 
       /**
-      @brief Calculates the minimum distance of all free and unknown cells from the closest occupied cells
-      @return void
-      **/
-      void brushfireSearch();
-
-      /**
       @brief Calculates the distance of points given
       @param p1 [cv::Point] the first point
       @param p2 [cv::Point] the second point
@@ -99,15 +92,6 @@ namespace ogm_evaluation
 
 
     private:
-
-/*      //!< the ground Truth Map*/
-      //cv::Mat _groundTruthMap;
-
-      ////!< the slam produced Map
-      //cv::Mat _slamMap;
-
-      ////!< The OMSE metric result
-      /*double result;*/
 
       //!< the vector of ground Truth map obstacle points
       std::vector<cv::Point> _groundTruthObstaclePoints;
@@ -124,6 +108,10 @@ namespace ogm_evaluation
       //!< the brushFire array holds the min Manhattan distance from nearest
       //obstacle
       int **_brushfire;
+
+      //!< the MapUtils instance
+      
+      MapUtils mapUtils;
   };
 }
 #endif
