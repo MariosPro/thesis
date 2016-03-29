@@ -60,7 +60,6 @@ namespace ogm_evaluation
         _brushfire[i] = new int[_groundTruthMap.cols];
       mapUtils.brushfireSearch(_groundTruthMap, _brushfire);
       double dist = mapUtils.meanBrushfireDistance(_groundTruthMap, _brushfire);
-      ROS_INFO_STREAM("MEAN GROUND TRUTH BRUSHFIRE DIST=" << dist); 
     }
 
     for (int i = 0; i < _slamObstaclePoints.size(); i++)

@@ -88,6 +88,31 @@ namespace ogm_evaluation
   **/
   void FeatureMetrics::calculateMetric()
   {
+    //!< scale the two Maps
+    double slamMeanDist, groundTruthMeanDist;
+  
+    int** brushfire = new int*[_groundTruthMap.rows];
+      for(int i = 0; i < _groundTruthMap.rows; i++)
+        brushfire[i] = new int[_groundTruthMap.cols];
+ 
+    int** brushfire1 = new int*[_slamMap.rows];
+      for(int i = 0; i < _slamMap.rows; i++)
+        brushfire1[i] = new int[_slamMap.cols];
+
+    _mapUtils.brushfireSearch(_groundTruthMap, brushfire);
+    groundTruthMeanDist = _mapUtils.meanBrushfireDistance(_groundTruthMap, brushfire);
+    _mapUtils.brushfireSearch(_slamMap, brushfire1);
+    slamMeanDist = _mapUtils.meanBrushfireDistance(_slamMap, brushfire1);
+
+    double scalingFactor = groundTruthMeanDist / slamMeanDist;
+ 
+    // resize slam produced map to offset scale
+    cv::resize(_slamMap, _slamMap, cv::Size(), scalingFactor, scalingFactor, cv::INTER_NEAREST);
+
+    ROS_INFO_STREAM("SCALING FACTOR=" << scalingFactor);
+    std::cout << "SLAM AFTER RESIZE=" << _slamMap.size() << std::endl;
+
+    
     //!< detect _slamKeypoints
     _featureDetector->detect(_groundTruthMap, _groundTruthKeypoints);
     _featureDetector->detect(_slamMap, _slamKeypoints);
@@ -308,8 +333,8 @@ namespace ogm_evaluation
       //std::cout << (int)mask[i]<<std::endl;
       if( int(mask[i]) == 1)
       {
-      ROS_INFO( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  --Distance %f  \n", i, filteredMatches[i].queryIdx, filteredMatches[i].trainIdx, filteredMatches[i].distance );
-      counter++;
+      /*ROS_INFO( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  --Distance %f  \n", i, filteredMatches[i].queryIdx, filteredMatches[i].trainIdx, filteredMatches[i].distance );*/
+      /*counter++;*/
       }
     }
 

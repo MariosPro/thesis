@@ -32,6 +32,8 @@
 #include "ogm_evaluation/ogm_evaluation_metrics/omse.h"
 #include "ogm_evaluation/ogm_evaluation_utils/affine2DEstimator.h"
 #include "ogm_evaluation/ogm_evaluation_utils/maps_alignment.h"
+#include "ogm_evaluation/ogm_evaluation_utils/map_utils.h"
+
 /**
 @namespace ogm_evaluation
 @brief The main namespace for OGM Evaluation
@@ -170,6 +172,8 @@ namespace ogm_evaluation
      Metric* _omseMetric;
 
      Alignment _alignment;
+
+     MapUtils _mapUtils;
 
      ogm_msgs::MapPose _transform;
 
