@@ -460,7 +460,7 @@ namespace ogm_gui
     qreal slamScale = map_connector_.getSlamMapScale();
     qreal groundTruthScale = map_connector_.getGroundTruthMapScale();
     srv.request.method = metricMethod.toStdString();
-    // TO DO get the arguments for detector/descriptor/matcher from gui
+
     if (metricMethod == "FEATURES")
     {
       srv.request.detector = validation_connector_.getDetector();
@@ -471,6 +471,7 @@ namespace ogm_gui
       srv.request.ransacReprjError = validation_connector_.getRansacReprjError();
       srv.request.binary = validation_connector_.thresholdMaps();
       srv.request.manualAlignment = validation_connector_.manualAlignMaps();
+      srv.request.scaleMapsBrushfire = validation_connector_.scaleMapsBrushfire();
     }
     if (metricMethod == "OMSE")
     {

@@ -43,7 +43,8 @@ namespace ogm_evaluation
                          std::string matchingMethod,
                          std::string distNorm,
                          double matchingRatio,
-                         double ransacReprjError)
+                         double ransacReprjError,
+                         bool scaleMapsBrushfire)
                 : Metric(groundTruthMap, slamMap)
   {
     _transform = transform;
@@ -54,6 +55,7 @@ namespace ogm_evaluation
     _matchingRatio = matchingRatio;
     _ransacReprjError = ransacReprjError;
     _matchingMethod = matchingMethod;
+    _scaleMapsBrushfire = scaleMapsBrushfire;
     _result = 0;
     cv::initModule_nonfree();
     _featureDetector =  cv::FeatureDetector::create(_detector);
@@ -99,19 +101,21 @@ namespace ogm_evaluation
       for(int i = 0; i < _slamMap.rows; i++)
         brushfire1[i] = new int[_slamMap.cols];
 
-    _mapUtils.brushfireSearch(_groundTruthMap, brushfire);
-    groundTruthMeanDist = _mapUtils.meanBrushfireDistance(_groundTruthMap, brushfire);
-    _mapUtils.brushfireSearch(_slamMap, brushfire1);
-    slamMeanDist = _mapUtils.meanBrushfireDistance(_slamMap, brushfire1);
+    if(_scaleMapsBrushfire)  
+    {
+      _mapUtils.brushfireSearch(_groundTruthMap, brushfire);
+      groundTruthMeanDist = _mapUtils.meanBrushfireDistance(_groundTruthMap, brushfire);
+      _mapUtils.brushfireSearch(_slamMap, brushfire1);
+      slamMeanDist = _mapUtils.meanBrushfireDistance(_slamMap, brushfire1);
 
-    double scalingFactor = groundTruthMeanDist / slamMeanDist;
- 
-    // resize slam produced map to offset scale
-    cv::resize(_slamMap, _slamMap, cv::Size(), scalingFactor, scalingFactor, cv::INTER_NEAREST);
+      double scalingFactor = groundTruthMeanDist / slamMeanDist;
+   
+      // resize slam produced map using meanBrushfireDistance
+      cv::resize(_slamMap, _slamMap, cv::Size(), scalingFactor, scalingFactor, cv::INTER_NEAREST);
 
-    ROS_INFO_STREAM("SCALING FACTOR=" << scalingFactor);
-    std::cout << "SLAM AFTER RESIZE=" << _slamMap.size() << std::endl;
-
+      ROS_INFO_STREAM("SCALING FACTOR=" << scalingFactor);
+      std::cout << "SLAM AFTER RESIZE=" << _slamMap.size() << std::endl;
+    }
     
     //!< detect _slamKeypoints
     _featureDetector->detect(_groundTruthMap, _groundTruthKeypoints);

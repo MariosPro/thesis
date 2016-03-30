@@ -216,8 +216,8 @@
     <widget class="QToolBox" name="metricToolBox">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>10</y>
+       <x>10</x>
+       <y>20</y>
        <width>371</width>
        <height>381</height>
       </rect>
@@ -230,8 +230,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>100</width>
-        <height>30</height>
+        <width>371</width>
+        <height>319</height>
        </rect>
       </property>
       <attribute name="label">
@@ -376,20 +376,27 @@
       <attribute name="label">
        <string>Feature Matching MSE</string>
       </attribute>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="">
        <property name="geometry">
         <rect>
-         <x>8</x>
-         <y>19</y>
-         <width>350</width>
-         <height>281</height>
+         <x>0</x>
+         <y>0</y>
+         <width>331</width>
+         <height>290</height>
         </rect>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
+       <layout class="QVBoxLayout" name="verticalLayout_7">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <widget class="QCheckBox" name="scaleBrushfireCheckBox">
+          <property name="text">
+           <string>Scale Maps (Mean Brushfire Distance)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_2">
+           <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
              <widget class="QLabel" name="label_4">
               <property name="text">
@@ -418,10 +425,24 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QLabel" name="matchingRatioLabel">
+              <property name="text">
+               <string>2-NN matching ratio</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="ransaclLabel">
+              <property name="text">
+               <string>Ransac max reprojection error</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
+           <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
              <widget class="QComboBox" name="detectorComboBox">
               <item>
@@ -436,12 +457,7 @@
               </item>
               <item>
                <property name="text">
-                <string>STAR</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>FAST</string>
+                <string>BRIEF</string>
                </property>
               </item>
               <item>
@@ -451,22 +467,32 @@
               </item>
               <item>
                <property name="text">
-                <string>MSER</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>GFTT</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>HARRIS</string>
+                <string>FREAK</string>
                </property>
               </item>
               <item>
                <property name="text">
                 <string>ORB</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>RADIUS STATISTICS</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>CIRCLE INTERSECTIONS</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>MEAN RAYS</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>ALL CUSTOMS</string>
                </property>
               </item>
              </widget>
@@ -578,87 +604,78 @@
               </item>
              </widget>
             </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="matchingRatioSpinBox"/>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="ransacSpinBox"/>
+            </item>
            </layout>
           </item>
          </layout>
         </item>
         <item>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="matchingRatioSpinBox"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="ransaclLabel">
-            <property name="text">
-             <string>Ransac max reprojection error</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="matchingRatioLabel">
-            <property name="text">
-             <string>2-NN matching ratio</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="ransacSpinBox"/>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Compute MSE:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="featuresPushButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777159</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Result:</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Compute MSE:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="featuresPushButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777159</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
-           <widget class="QLabel" name="featuresLabel">
-            <property name="font">
-             <font>
-              <pointsize>11</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>0.0</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Result:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="featuresLabel">
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="autoFillBackground">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>0.0</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>

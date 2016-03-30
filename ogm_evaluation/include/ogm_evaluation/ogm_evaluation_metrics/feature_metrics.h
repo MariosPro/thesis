@@ -48,6 +48,7 @@ namespace ogm_evaluation
   class FeatureMetrics : public Metric
   {
     public:
+
       /**
       @brief Default Constructor
       @param groundTruthMap [const cv::Mat& ] the ground truth map
@@ -70,8 +71,8 @@ namespace ogm_evaluation
                  std::string matchingMethod,
                  std::string distNorm,
                  double matchingRatio,
-                 double ransacReprjError);
-
+                 double ransacReprjError,
+                 bool scaleMapsBrushfire);
 
       /**
       @brief Default destructor
@@ -134,6 +135,10 @@ namespace ogm_evaluation
 
       //!< the max ransac Reprojection error for validating inliers
       double _ransacReprjError;
+
+      //!< flag indicating if scaling to be performed (using
+      //meanBrushfireDistance)
+      bool _scaleMapsBrushfire;
 
       //!< the instance of opencv's FeatureDetector class to be used
       cv::Ptr<cv::FeatureDetector> _featureDetector;

@@ -102,6 +102,10 @@ namespace ogm_gui
       loader.manualAlignmentCheckBox, SIGNAL(toggled(bool)),
       this, SLOT(manualAlignmentChecked()));
 
+   QObject::connect(
+      loader.scaleBrushfireCheckBox, SIGNAL(toggled(bool)),
+      this, SLOT(scaleMapsBrushfireChecked()));
+ 
 
    _detector = "SIFT";
    _descriptor = "SIFT";
@@ -113,6 +117,7 @@ namespace ogm_gui
    _ransacReprjError = 5;
    _binary = false;
    _manual_alignment = false;
+   _scaleMapsBrushfire = false;
 
   }
 
@@ -304,6 +309,10 @@ namespace ogm_gui
     _manual_alignment = !_manual_alignment;
   }
 
+  void CValidationConnector::scaleMapsBrushfireChecked()
+  {
+    _scaleMapsBrushfire = !_scaleMapsBrushfire;
+  }
 
   bool CValidationConnector::thresholdMaps()
   {
@@ -313,6 +322,11 @@ namespace ogm_gui
   bool CValidationConnector::manualAlignMaps()
   {
     return _manual_alignment;
+  }
+
+  bool CValidationConnector::scaleMapsBrushfire()
+  {
+    return _scaleMapsBrushfire;
   }
 
 

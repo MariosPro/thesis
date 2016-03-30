@@ -70,6 +70,8 @@ namespace ogm_gui
       bool _binary;
 
       bool _manual_alignment;
+
+      bool _scaleMapsBrushfire;
     //------------------------------------------------------------------------//
     public:
 
@@ -123,6 +125,8 @@ namespace ogm_gui
 
       bool manualAlignMaps();
 
+      bool scaleMapsBrushfire();
+
     //------------------------------------------------------------------------//
     public Q_SLOTS:
 
@@ -167,6 +171,8 @@ namespace ogm_gui
       void binaryMapsChecked();
 
       void manualAlignmentChecked();
+
+      void scaleMapsBrushfireChecked();
 
     //------------------------------------------------------------------------//
     Q_SIGNALS:

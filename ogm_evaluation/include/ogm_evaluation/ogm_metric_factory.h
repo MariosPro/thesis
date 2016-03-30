@@ -53,7 +53,8 @@ namespace ogm_evaluation
                                     std::string closestPointMethod,
                                     std::string distNorm,
                                     double matchingRatio,
-                                    double ransacReprjError);
+                                    double ransacReprjError,
+                                    bool scaleMapsBrushfire);
    };
 }
 #endif
