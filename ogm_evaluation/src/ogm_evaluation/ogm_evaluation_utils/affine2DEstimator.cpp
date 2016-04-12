@@ -29,23 +29,23 @@ namespace ogm_evaluation
     const float* err = _err->data.fl;
     uchar* mask = _mask->data.ptr;
 
-    computeReprojError( m1, m2, model, _err );
+    computeReprojError(m1, m2, model, _err);
     threshold *= threshold;
-    for( i = 0; i < count; i++ )
+    for(i = 0; i < count; i++)
             goodCount += mask[i] = err[i] <= threshold;
     return goodCount;
   }
 
 
-  void Affine2DEstimator::computeReprojError( const CvMat* m1, const CvMat* m2, const CvMat* model, CvMat* error )
+  void Affine2DEstimator::computeReprojError(const CvMat* m1, const CvMat* m2, const CvMat* model, CvMat* error)
   {
     int count = m1->rows * m1->cols;
     const CvPoint2D64f* from = reinterpret_cast<const CvPoint2D64f*>(m1->data.ptr);
-    const CvPoint2D64f* to   = reinterpret_cast<const CvPoint2D64f*>(m2->data.ptr);    
+    const CvPoint2D64f* to   = reinterpret_cast<const CvPoint2D64f*>(m2->data.ptr);
     const double* F = model->data.db;
     float* err = error->data.fl;
 
-    for(int i = 0; i < count; i++ )
+    for(int i = 0; i < count; i++)
     {
       const CvPoint2D64f& f = from[i];
       const CvPoint2D64f& t = to[i];
@@ -53,13 +53,13 @@ namespace ogm_evaluation
       double a = F[0]*f.x + F[1]*f.y + F[2] - t.x;
       double b = F[3]*f.x + F[4]*f.y + F[5] - t.y;
 
-      err[i] = (float)sqrt(a*a + b*b);       
+      err[i] = (float)sqrt(a*a + b*b);
     }
   }
 
-  bool Affine2DEstimator::runRANSAC( const CvMat* m1, const CvMat* m2, CvMat* model,
+  bool Affine2DEstimator::runRANSAC(const CvMat* m1, const CvMat* m2, CvMat* model,
           CvMat* mask0, double reprojThreshold,
-          double confidence, int maxIters )
+          double confidence, int maxIters)
   {
     bool result = false;
     cv::Ptr<CvMat> mask = cvCloneMat(mask0);
@@ -68,19 +68,19 @@ namespace ogm_evaluation
 
     int iter, niters = maxIters;
     int count = m1->rows*m1->cols, maxGoodCount = 0;
-    CV_Assert( CV_ARE_SIZES_EQ(m1, m2) && CV_ARE_SIZES_EQ(m1, mask) );
+    CV_Assert(CV_ARE_SIZES_EQ(m1, m2) && CV_ARE_SIZES_EQ(m1, mask));
 
-    if( count < modelPoints )
+    if(count < modelPoints)
       return false;
 
-    models = cvCreateMat( modelSize.height*maxBasicSolutions, modelSize.width, CV_64FC1 );
-    err = cvCreateMat( 1, count, CV_32FC1 );
-    tmask = cvCreateMat( 1, count, CV_8UC1 );
+    models = cvCreateMat(modelSize.height*maxBasicSolutions, modelSize.width, CV_64FC1);
+    err = cvCreateMat(1, count, CV_32FC1);
+    tmask = cvCreateMat(1, count, CV_8UC1);
 
-    if( count > modelPoints )
+    if(count > modelPoints)
     {
-      ms1 = cvCreateMat( 1, modelPoints, m1->type );
-      ms2 = cvCreateMat( 1, modelPoints, m2->type );
+      ms1 = cvCreateMat(1, modelPoints, m1->type);
+      ms2 = cvCreateMat(1, modelPoints, m2->type);
     }
     else
     {
@@ -89,57 +89,57 @@ namespace ogm_evaluation
       ms2 = cvCloneMat(m2);
     }
 
-    for( iter = 0; iter < niters; iter++ )
+    for(iter = 0; iter < niters; iter++)
     {
       int i, goodCount, nmodels;
-      if( count > modelPoints )
+      if(count > modelPoints)
       {
-        bool found = getSubset( m1, m2, ms1, ms2, 300 );
-        if( !found )
+        bool found = getSubset(m1, m2, ms1, ms2, 300);
+        if(!found)
         {
-                if( iter == 0 )
+                if(iter == 0)
                         return false;
                 break;
         }
       }
 
-      nmodels = runKernel( ms1, ms2, models );
-      if( nmodels <= 0 )
+      nmodels = runKernel(ms1, ms2, models);
+      if(nmodels <= 0)
               continue;
-      for( i = 0; i < nmodels; i++ )
+      for(i = 0; i < nmodels; i++)
       {
         CvMat model_i;
-        cvGetRows( models, &model_i, i*modelSize.height, (i+1)*modelSize.height );
-        goodCount = findInliers( m1, m2, &model_i, err, tmask, reprojThreshold );
+        cvGetRows(models, &model_i, i*modelSize.height, (i+1)*modelSize.height);
+        goodCount = findInliers(m1, m2, &model_i, err, tmask, reprojThreshold);
 
-        if( goodCount > MAX(maxGoodCount, modelPoints-1) )
+        if(goodCount > MAX(maxGoodCount, modelPoints-1))
         {
           std::swap(tmask, mask);
-          cvCopy( &model_i, model );
+          cvCopy(&model_i, model);
           maxGoodCount = goodCount;
-          niters = cvRANSACUpdateNumIters( confidence,
-                  (double)(count - goodCount)/count, modelPoints, niters );
+          niters = cvRANSACUpdateNumIters(confidence,
+                  (double)(count - goodCount)/count, modelPoints, niters);
         }
       }
     }
 
-    if( maxGoodCount > 0 )
+    if(maxGoodCount > 0)
     {
-      if( mask != mask0 )
-              cvCopy( mask, mask0 );
+      if(mask != mask0)
+              cvCopy(mask, mask0);
       result = true;
     }
 
     return result;
   }
 
-  cv::Mat getAffineTransform64f( const cv::Point2d src[], const cv::Point2d dst[] )
+  cv::Mat getAffineTransform64f(const cv::Point2d src[], const cv::Point2d dst[])
   {
     cv::Mat M(2, 3, CV_64F), X(6, 1, CV_64F, M.data);
     double a[6*6], b[6];
     cv::Mat A(6, 6, CV_64F, a), B(6, 1, CV_64F, b);
 
-    for( int i = 0; i < 3; i++ )
+    for(int i = 0; i < 3; i++)
     {
       int j = i*12;
       int k = i*12+6;
@@ -152,7 +152,7 @@ namespace ogm_evaluation
       b[i*2+1] = dst[i].y;
     }
 
-    solve( A, B, X );
+    solve(A, B, X);
     return M;
   }
 
@@ -175,7 +175,7 @@ namespace ogm_evaluation
     cv::Mat from = _from.getMat(), to = _to.getMat();
     int count = from.checkVector(2, CV_32F);
 
-    CV_Assert( count >= 0 && to.checkVector(2, CV_32F) == count );
+    CV_Assert(count >= 0 && to.checkVector(2, CV_32F) == count);
 
     _out.create(2, 3, CV_64F);
     cv::Mat out = _out.getMat();
@@ -193,15 +193,15 @@ namespace ogm_evaluation
     CvMat m1 = dFrom;
     CvMat m2 = dTo;
 
-    const double epsilon = std::numeric_limits<double>::epsilon();        
+    const double epsilon = std::numeric_limits<double>::epsilon();
     param1 = param1 <= 0 ? 3 : param1;
     param2 = (param2 < epsilon) ? 0.99 : (param2 > 1 - epsilon) ? 0.99 : param2;
 
-    return Affine2DEstimator().runRANSAC(&m1, &m2, &F2x3, &mask, param1, param2 );    
+    return Affine2DEstimator().runRANSAC(&m1, &m2, &F2x3, &mask, param1, param2);
   }
 
-  bool Affine2DEstimator::getSubset( const CvMat* m1, const CvMat* m2,
-                                    CvMat* ms1, CvMat* ms2, int maxAttempts )
+  bool Affine2DEstimator::getSubset(const CvMat* m1, const CvMat* m2,
+                                    CvMat* ms1, CvMat* ms2, int maxAttempts)
     {
     cv::AutoBuffer<int> _idx(modelPoints);
     int* idx = _idx;
@@ -211,33 +211,33 @@ namespace ogm_evaluation
     int *ms1ptr = ms1->data.i, *ms2ptr = ms2->data.i;
     int count = m1->cols*m1->rows;
 
-    assert( CV_IS_MAT_CONT(m1->type & m2->type) && (elemSize % sizeof(int) == 0) );
+    assert(CV_IS_MAT_CONT(m1->type & m2->type) && (elemSize % sizeof(int) == 0));
     elemSize /= sizeof(int);
 
     for(; iters < maxAttempts; iters++)
     {
-      for( i = 0; i < modelPoints && iters < maxAttempts; )
+      for(i = 0; i < modelPoints && iters < maxAttempts;)
       {
         idx[i] = idx_i = cvRandInt(&rng) % count;
         for( j = 0; j < i; j++ )
           if( idx_i == idx[j] )
             break;
-        if( j < i )
+        if(j < i)
           continue;
-        for( k = 0; k < elemSize; k++ )
+        for(k = 0; k < elemSize; k++)
         {
           ms1ptr[i*elemSize + k] = m1ptr[idx_i*elemSize + k];
           ms2ptr[i*elemSize + k] = m2ptr[idx_i*elemSize + k];
         }
-        if( checkPartialSubsets && (!checkSubset( ms1, i+1 ) || !checkSubset( ms2, i+1 )))
+        if(checkPartialSubsets && (!checkSubset(ms1, i+1) || !checkSubset(ms2, i+1)))
         {
           iters++;
           continue;
         }
         i++;
       }
-      if( !checkPartialSubsets && i == modelPoints &&
-              (!checkSubset( ms1, i ) || !checkSubset( ms2, i )))
+      if(!checkPartialSubsets && i == modelPoints &&
+              (!checkSubset(ms1, i) || !checkSubset(ms2, i)))
               continue;
       break;
     }
@@ -246,37 +246,37 @@ namespace ogm_evaluation
   }
 
 
-  bool Affine2DEstimator::checkSubset( const CvMat* ms1, int count )
+  bool Affine2DEstimator::checkSubset(const CvMat* ms1, int count)
   {
     int j, k, i, i0, i1;
     CvPoint2D64f* ptr = (CvPoint2D64f*)ms1->data.ptr;
 
-    assert( CV_MAT_TYPE(ms1->type) == CV_64FC2 );
+    assert(CV_MAT_TYPE(ms1->type) == CV_64FC2);
 
-    if( checkPartialSubsets )
+    if(checkPartialSubsets)
       i0 = i1 = count - 1;
     else
       i0 = 0, i1 = count - 1;
 
-    for( i = i0; i <= i1; i++ )
+    for(i = i0; i <= i1; i++)
     {
       // check that the i-th selected point does not belong
       // to a line connecting some previously selected points
-      for( j = 0; j < i; j++ )
+      for(j = 0; j < i; j++)
       {
         double dx1 = ptr[j].x - ptr[i].x;
         double dy1 = ptr[j].y - ptr[i].y;
-        for( k = 0; k < j; k++ )
+        for(k = 0; k < j; k++)
         {
           double dx2 = ptr[k].x - ptr[i].x;
           double dy2 = ptr[k].y - ptr[i].y;
-          if( fabs(dx2*dy1 - dy2*dx1) <= FLT_EPSILON*(fabs(dx1) + fabs(dy1) + fabs(dx2) + fabs(dy2)))
+          if(fabs(dx2*dy1 - dy2*dx1) <= FLT_EPSILON*(fabs(dx1) + fabs(dy1) + fabs(dx2) + fabs(dy2)))
             break;
         }
-        if( k < j )
+        if(k < j)
           break;
       }
-      if( j < i )
+      if(j < i)
         break;
     }
 

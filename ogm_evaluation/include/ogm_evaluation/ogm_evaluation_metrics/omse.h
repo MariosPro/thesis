@@ -22,6 +22,7 @@
 
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
 #include "ogm_evaluation/ogm_evaluation_utils/map_utils.h"
+#include "ogm_evaluation/ogm_evaluation_utils/maps_alignment.h"
 
 /**
 @namespace ogm_evaluation
@@ -110,8 +111,12 @@ namespace ogm_evaluation
       int **_brushfire;
 
       //!< the MapUtils instance
+      MapUtils _mapUtils;
       
-      MapUtils mapUtils;
+      //!< the Alignment instance
+      Alignment _alignment;
+
+
   };
 }
 #endif

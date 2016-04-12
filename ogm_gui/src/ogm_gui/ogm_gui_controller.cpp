@@ -473,11 +473,13 @@ namespace ogm_gui
       srv.request.manualAlignment = validation_connector_.manualAlignMaps();
       srv.request.scaleMapsBrushfire = validation_connector_.scaleMapsBrushfire();
     }
+
     if (metricMethod == "OMSE")
     {
       srv.request.closestPointMethod = validation_connector_.getClosestObstacleMethod();
       srv.request.manualAlignment = true;
     }
+
     srv.request.distNorm = validation_connector_.getDistanceMethod();
     srv.request.transform.pose.x = pos.x();
     srv.request.transform.pose.y = pos.y();
@@ -485,7 +487,7 @@ namespace ogm_gui
     srv.request.transform.scale = scale;
     srv.request.transform.slamOffsetScale = slamScale;
     srv.request.transform.groundTruthOffsetScale = groundTruthScale;
-   
+
     if (client.call(srv)) 
     {
       metricResult_ = srv.response.result;

@@ -48,6 +48,17 @@ namespace ogm_evaluation
   void OmseMetric::calculateMetric()
   {
      _result = 0;
+   /*  cv::Mat map1 = cv::Mat::zeros(10,10, CV_8UC1);*/
+     //cv::Mat map2 = cv::Mat::zeros(10,10, CV_8UC1);
+     //for(int i =0; i < map1.rows; i++)
+       //for(int j = 0; j < map1.cols; j++)
+         //if((i < 4 || j < 4) || (i > 7 || j > 7))
+         //{
+           //map1.at<uchar>(i,j)=255;
+           //map2.at<uchar>(i,j)=255;
+         /*}*/
+     //_alignment.ICP(map1, map2, 5);
+     _alignment.ICP(_groundTruthMap, _slamMap, 5);
     _groundTruthObstaclePoints = extractObstaclePoints(_groundTruthMap);
     _slamObstaclePoints = extractObstaclePoints(_slamMap);
     ROS_INFO_STREAM("GROUND POINTS= " << _groundTruthObstaclePoints.size());
@@ -58,16 +69,16 @@ namespace ogm_evaluation
       _brushfire = new int*[_groundTruthMap.rows];
       for(int i = 0; i < _groundTruthMap.rows; i++)
         _brushfire[i] = new int[_groundTruthMap.cols];
-      mapUtils.brushfireSearch(_groundTruthMap, _brushfire);
-      double dist = mapUtils.meanBrushfireDistance(_groundTruthMap, _brushfire);
+      _mapUtils.brushfireSearch(_groundTruthMap, _brushfire);
+      double dist = _mapUtils.meanBrushfireDistance(_groundTruthMap, _brushfire);
     }
 
     for (int i = 0; i < _slamObstaclePoints.size(); i++)
     {
       if(_closestPointMethod == "NearestNeighbor")
       {
-        _result += bruteForceNearestNeighbor(_slamObstaclePoints[i], _distNorm) *
-                 bruteForceNearestNeighbor(_slamObstaclePoints[i], _distNorm);
+        double dist = bruteForceNearestNeighbor(_slamObstaclePoints[i], _distNorm);
+        _result += dist * dist;
       }
       else if(_closestPointMethod == "Brushfire")
       {

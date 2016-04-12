@@ -64,11 +64,7 @@ namespace ogm_evaluation
           if(_slamMap.at<uchar>(i, j) == 127)
             _slamMap.at<uchar>(i, j) = 255;
 
-/*      cv::threshold(_groundTruthMap, _groundTruthMap, 0, 255, cv::THRESH_BINARY);*/
-      /*cv::threshold(_slamMap, _slamMap, 0, 255, cv::THRESH_BINARY);*/
     }
-  /*  cv::erode(_groundTruthMap, _groundTruthMap, cv::Mat(), cv::Point(-1, -1), 2, 1, 1);*/
-    /*cv::erode(_slamMap, _slamMap, cv::Mat(), cv::Point(-1, -1), 2, 1, 1);*/
 
     _metric =  _metric_factory.createMetricInstance(req.method, _groundTruthMap, _slamMap, _transform, req.detector, req.descriptor, req.matcher, req.matchingMethod, req.closestPointMethod, req.distNorm, req.matchingRatio, req.ransacReprjError, req.scaleMapsBrushfire);
     _metric->calculateMetric();

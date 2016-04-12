@@ -22,6 +22,7 @@
 #include <opencv2/opencv.hpp>
 #include <ros/ros.h>
 #include "ogm_msgs/MapPose.h"
+#include "ogm_evaluation/ogm_evaluation_utils/map_utils.h"
 
 /**
 @namespace ogm_evaluation
@@ -37,13 +38,20 @@ namespace ogm_evaluation
       void alignMaps(const ogm_msgs::MapPose& _transform,
                      cv::Mat& _groundTruthMap,
                      cv::Mat& _slamMap);
-    private:
-      //!<  the transform converting slamMap to groundTruthMap Coordinates System
-      ogm_msgs::MapPose _transform; 
-      
-      cv::Mat _groundTruthMap;
 
-      cv::Mat _slamMap;
+      void ICP(const cv::Mat& target, const cv::Mat& reference, int iterations);
+
+    private:
+      MapUtils _mapUtils;
+      
+      void match(const cv::Mat& targetPointsMat, const cv::Mat& refPointsMat, cv::Mat& closestPointsMat);
+      void findTransform(cv::Mat targetPointsMat, cv::Mat& closestPointsMat, cv::Mat& transform);
+
+      void displayMap(cv::Mat refPointsMat, cv::Size size);
+      
+      void applyTransformation(const cv::Mat& refPointsMat, cv::Mat& newRefPointsMat, const cv::Mat& transform);
+
+      double RMSE(const cv::Mat& targetPointsMat, const cv::Mat& refPointsMat);
   };
 }
 #endif
