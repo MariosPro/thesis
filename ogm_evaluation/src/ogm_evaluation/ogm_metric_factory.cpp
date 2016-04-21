@@ -20,7 +20,6 @@
 #include <string>
 #include "ogm_evaluation/ogm_metric_factory.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/omse.h"
-#include "ogm_evaluation/ogm_evaluation_metrics/cmse.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/feature_metrics.h"
 
 namespace ogm_evaluation
