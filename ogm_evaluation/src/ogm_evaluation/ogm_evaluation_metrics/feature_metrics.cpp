@@ -35,35 +35,28 @@ namespace ogm_evaluation
   **/
 
   FeatureMetrics::FeatureMetrics(const cv::Mat& groundTruthMap,
-                         const cv::Mat& slamMap,
-                         const ogm_msgs::MapPose& transform,
-                         std::string detector,
-                         std::string descriptor,
-                         std::string matcher,
-                         std::string matchingMethod,
-                         std::string distNorm,
-                         double matchingRatio,
-                         double ransacReprjError,
-                         bool scaleMapsBrushfire)
-                : Metric(groundTruthMap, slamMap)
+                         const cv::Mat& slamMap)
+                  : Metric(groundTruthMap, slamMap)
   {
-    _transform = transform;
-    _distNorm = distNorm;
-    _detector = detector;
-    _descriptor = descriptor;
-    _matcherName = matcher;
-    _matchingRatio = matchingRatio;
-    _ransacReprjError = ransacReprjError;
-    _matchingMethod = matchingMethod;
-    _scaleMapsBrushfire = scaleMapsBrushfire;
-    _result = 0;
-    cv::initModule_nonfree();
-    _featureDetector =  cv::FeatureDetector::create(_detector);
-    if(_descriptor == "SIFT" || _descriptor == "SURF" || _descriptor == "BRIEF" ||
-       _descriptor == "BRISK" || _descriptor == "FREAK" || _descriptor == "ORB")
-    _descriptorExtractor = cv::DescriptorExtractor::create(_descriptor);
+      ROS_INFO_STREAM("Created FeatureMetrics Instance");
 
-    if(_descriptor == "ALL CUSTOMS")
+  }
+
+  /**
+  @brief calculate the feature metric.
+  @return void
+  **/
+  void FeatureMetrics::calculateMetric(Parameters params)
+  {
+     _result = 0;
+     cv::initModule_nonfree();
+    _featureDetector =  cv::FeatureDetector::create(params.detector);
+   
+    if(params.descriptor == "SIFT" || params.descriptor == "SURF" || params.descriptor == "BRIEF" ||
+       params.descriptor == "BRISK" || params.descriptor == "FREAK" || params.descriptor == "ORB")
+    _descriptorExtractor = cv::DescriptorExtractor::create(params.descriptor);
+
+    if(params.descriptor == "ALL CUSTOMS")
     {
       _customDescriptorExtractor.reserve(3);
       _customDescriptorExtractor.push_back(_descriptorFactory[0].create("RADIUS STATISTICS"));
@@ -76,20 +69,11 @@ namespace ogm_evaluation
     else
     {
       _customDescriptorExtractor.reserve(1);
-      _customDescriptorExtractor.push_back(_descriptorFactory[0].create(_descriptor));
+      _customDescriptorExtractor.push_back(_descriptorFactory[0].create(params.descriptor));
     }
 
-    _matcher = cv::DescriptorMatcher::create(_matcherName);
-    ROS_INFO_STREAM("Created FeatureMetrics Instance");
+    _matcher = cv::DescriptorMatcher::create(params.matcher);
 
-  }
-
-  /**
-  @brief calculate the feature metric.
-  @return void
-  **/
-  void FeatureMetrics::calculateMetric()
-  {
     //!< scale the two Maps
     double slamMeanDist, groundTruthMeanDist;
   
@@ -101,7 +85,7 @@ namespace ogm_evaluation
       for(int i = 0; i < _slamMap.rows; i++)
         brushfire1[i] = new int[_slamMap.cols];
 
-    if(_scaleMapsBrushfire)  
+    if(params.scaleMapsBrushfire)  
     {
       _mapUtils.brushfireSearch(_groundTruthMap, brushfire);
       groundTruthMeanDist = _mapUtils.meanBrushfireDistance(_groundTruthMap, brushfire);
@@ -122,8 +106,8 @@ namespace ogm_evaluation
     _featureDetector->detect(_slamMap, _slamKeypoints);
 
     //!< extract Descriptors for each detected keypoint
-    if(_descriptor == "SIFT" || _descriptor == "SURF" || _descriptor == "BRIEF" ||
-       _descriptor == "BRISK" || _descriptor == "FREAK" || _descriptor == "ORB")
+    if(params.descriptor == "SIFT" || params.descriptor == "SURF" || params.descriptor == "BRIEF" ||
+       params.descriptor == "BRISK" || params.descriptor == "FREAK" || params.descriptor == "ORB")
     {
       _descriptorExtractor->compute(_groundTruthMap, _groundTruthKeypoints, _groundTruthDescriptors);
       _descriptorExtractor->compute(_slamMap, _slamKeypoints, _slamDescriptors);
@@ -174,13 +158,13 @@ namespace ogm_evaluation
 
     //!< Matching descriptor vectors using one of the following matching methods
 
-    if (_matchingMethod == "SIMPLE") 
+    if (params.matchingMethod == "SIMPLE") 
       simpleMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches);
-    else if(_matchingMethod ==  "RATIO")
+    else if(params.matchingMethod ==  "RATIO")
       ratioTest(_slamDescriptors, _groundTruthDescriptors, filteredMatches);
-    else if(_matchingMethod == "CROSSCHECK")
+    else if(params.matchingMethod == "CROSSCHECK")
       crossCheckMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches, 1);
-    else if(_matchingMethod == "K-NN")   
+    else if(params.matchingMethod == "K-NN")   
       knnMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches, 5);// _groundTruthDescriptors.rows);
     else
       ROS_ERROR("No such matching method");
@@ -244,7 +228,7 @@ namespace ogm_evaluation
     ROS_INFO_STREAM("MATCHED COORDS=" << slamMatchedCoords.size() << " " << groundTruthMatchedCoords.size());
        //ROS_INFO_STREAM("MATCHED EVALUATED KEYPOINTS=" << evalfil1.size() << " " << evalfil2.size() << " " << evalmatches.size());
 
-    ROS_INFO_STREAM("MAX RANSAC REPROJECTION ERROR=" << _ransacReprjError);
+    ROS_INFO_STREAM("MAX RANSAC REPROJECTION ERROR=" << params.ransacReprjError);
 /*for (int i = 0; i < slamMatchedCoords.size(); i++){*/
       //std::cout << "coords " << slamMatchedCoords[i] << " " << groundTruthMatchedCoords[i] << " ";
       //std::cout << "keypoints " << slamMatchedKeyPoints[i].pt << " " << groundTruthMatchedKeyPoints[i].pt << " ";}
@@ -262,7 +246,7 @@ namespace ogm_evaluation
 /*    estimateTransform(groundTruthMatchedCoords, slamMatchedCoords,*/
                        //1000, _ransacReprjError, 3, mask, T, best_error);
 
-    estimateAffine2D(groundTruthMatchedCoords, slamMatchedCoords, T, mask,_ransacReprjError);
+    estimateAffine2D(groundTruthMatchedCoords, slamMatchedCoords, T, mask, params.ransacReprjError);
 
 
     std::cout << "H = "<< std::endl << " "  << T << std::endl << std::endl;
@@ -319,8 +303,9 @@ namespace ogm_evaluation
     cv::imshow("GroundTruthMap Transformed", image);
     cv::imshow ("SLamMap Cropped", image1);
     cv::waitKey(1000);
-    _omseMetric =  new OmseMetric(image, image1, "Brushfire", _distNorm);
-    _omseMetric->calculateMetric();
+    _omseMetric =  new OmseMetric(image, image1);
+    params.closestPointMethod = "Brushfire";
+    _omseMetric->calculateMetric(params);
  
     std::cout << "image1 type " << image1.type() << " " << image1.channels() << std::endl;
     std::cout << "image type " << image.type() << " " << image.channels() << std::endl;

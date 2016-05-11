@@ -63,16 +63,7 @@ namespace ogm_evaluation
       @return void
       **/
       FeatureMetrics(const cv::Mat& groundTruthMap,
-                 const cv::Mat& slamMap,
-                 const ogm_msgs::MapPose& transform,
-                 std::string detector,
-                 std::string descriptor,
-                 std::string matcher,
-                 std::string matchingMethod,
-                 std::string distNorm,
-                 double matchingRatio,
-                 double ransacReprjError,
-                 bool scaleMapsBrushfire);
+                 const cv::Mat& slamMap);
 
       /**
       @brief Default destructor
@@ -86,7 +77,7 @@ namespace ogm_evaluation
       @brief calculate the obstacle metric.
       @return void
       **/
-      virtual void calculateMetric(void);
+      virtual void calculateMetric(Parameters params);
 
       void crossCheckMatching(const cv::Mat& descriptors1,
                               const cv::Mat& descriptors2,

@@ -22,6 +22,7 @@
 
 #include <ros/ros.h>
 #include <opencv2/opencv.hpp>
+#include "ogm_evaluation/ogm_evaluation_metrics/parameters.h"
 
 /**
 @namespace ogm_evaluation
@@ -42,7 +43,7 @@ namespace ogm_evaluation
       on derived class to calculate the individual metrics.
       @return void
       **/ 
-      virtual void calculateMetric(void) = 0;
+      virtual void calculateMetric(Parameters Params) = 0;
 
       /**
       @brief Default destructor

@@ -44,17 +44,7 @@ namespace ogm_evaluation
 
        Metric* createMetricInstance(std::string name,
                                     const cv::Mat& groundTruthMap,
-                                    const cv::Mat& slamMap,
-                                    const ogm_msgs::MapPose& transform,
-                                    std::string detector,
-                                    std::string descriptor,
-                                    std::string matcher,
-                                    std::string matchingMethod,
-                                    std::string closestPointMethod,
-                                    std::string distNorm,
-                                    double matchingRatio,
-                                    double ransacReprjError,
-                                    bool scaleMapsBrushfire);
+                                    const cv::Mat& slamMap);
    };
 }
 #endif

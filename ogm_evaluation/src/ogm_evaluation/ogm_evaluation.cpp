@@ -65,9 +65,19 @@ namespace ogm_evaluation
             _slamMap.at<uchar>(i, j) = 255;
 
     }
-
-    _metric =  _metric_factory.createMetricInstance(req.method, _groundTruthMap, _slamMap, _transform, req.detector, req.descriptor, req.matcher, req.matchingMethod, req.closestPointMethod, req.distNorm, req.matchingRatio, req.ransacReprjError, req.scaleMapsBrushfire);
-    _metric->calculateMetric();
+    _params.detector = req.detector;
+    _params.descriptor = req.descriptor;
+    _params.matcher = req.matcher;
+    _params.matchingMethod = req.matchingMethod;
+    _params.closestPointMethod = req.closestPointMethod;
+    _params.distNorm = req.distNorm;
+    _params.matchingRatio = req.matchingRatio;
+    _params.ransacReprjError = req.ransacReprjError;
+    _params.scaleMapsBrushfire = req.scaleMapsBrushfire;
+    _params.binary = req.binary;
+    _params.manualAlignment = req.manualAlignment;
+    _metric =  _metric_factory.createMetricInstance(req.method, _groundTruthMap, _slamMap);
+    _metric->calculateMetric(_params);
     res.result = _metric->getResult();
    /* cv::imshow("groundTruthMap", _groundTruthMap );*/
     //cv::waitKey(30);

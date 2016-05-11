@@ -27,7 +27,7 @@
 /**
 @namespace ogm_evaluation
 @brief The main namespace for OGM Evaluation
-**/ 
+**/
 namespace ogm_evaluation
 {
   class Alignment

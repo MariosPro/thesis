@@ -36,11 +36,16 @@ catkin_package(
 ######################### Metrics ######################################
 add_library(ogm_evaluation_utils
             src/ogm_evaluation/ogm_evaluation_utils/affine2DEstimator.cpp
-            src/ogm_evaluation/ogm_evaluation_utils/maps_alignment.cpp
             src/ogm_evaluation/ogm_evaluation_utils/map_utils.cpp)
 add_dependencies(ogm_evaluation_utils ogm_msgs_gencpp) #wait for ogm_msgs to be build
 target_link_libraries(ogm_evaluation_utils ${catkin_LIBRARIES})
 
+add_library(ogm_evaluation_alignment
+            src/ogm_evaluation/ogm_evaluation_utils/maps_alignment.cpp)
+add_dependencies(ogm_evaluation_alignment ogm_msgs_gencpp) #wait for ogm_msgs to be build
+target_link_libraries(ogm_evaluation_alignment
+                      ${catkin_LIBRARIES}
+                      ogm_evaluation_utils)
 add_library(ogm_custom_descriptors 
             src/ogm_evaluation/ogm_evaluation_descriptors/radius_statistics_descriptor.cpp
             src/ogm_evaluation/ogm_evaluation_descriptors/circle_intersection_descriptor.cpp
@@ -54,7 +59,8 @@ add_library(ogm_omse_metric src/ogm_evaluation/ogm_evaluation_metrics/omse.cpp)
 target_link_libraries(ogm_omse_metric 
                       ${catkin_LIBRARIES}
                       ogm_metric_base
-                      ogm_evaluation_utils)
+                      ogm_evaluation_utils
+                      ogm_evaluation_alignment)
 
 add_library(ogm_descriptor_factory src/ogm_evaluation/ogm_evaluation_descriptors/descriptor_factory.cpp)
 target_link_libraries(ogm_descriptor_factory ${catkin_LIBRARIES} ogm_custom_descriptors)
@@ -66,7 +72,8 @@ target_link_libraries(ogm_feature_metrics
                       ${OpenCV_LIBRARIES}
                       ogm_metric_base
                       ogm_descriptor_factory
-                      ogm_evaluation_utils)
+                      ogm_evaluation_utils
+                      ogm_evaluation_alignment)
 
 add_library(ogm_metric_factory src/ogm_evaluation/ogm_metric_factory.cpp)
 target_link_libraries(ogm_metric_factory

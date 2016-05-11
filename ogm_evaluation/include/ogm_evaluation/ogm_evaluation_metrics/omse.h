@@ -49,9 +49,7 @@ namespace ogm_evaluation
       **/
 
       OmseMetric(const cv::Mat& groundTruthMap,
-                 const cv::Mat& slamMap,
-                 std::string closestPointMethod,
-                 std::string distNorm);
+                 const cv::Mat& slamMap);
 
       /**
       @brief Default destructor
@@ -65,7 +63,7 @@ namespace ogm_evaluation
       @brief calculate the obstacle metric.
       @return void
       **/
-      virtual void calculateMetric(void);
+      virtual void calculateMetric(Parameters params);
 
       /**
       @brief extracts the obstacle points from cv::Mat

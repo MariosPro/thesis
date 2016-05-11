@@ -32,20 +32,15 @@ namespace ogm_evaluation
   **/
 
   OmseMetric::OmseMetric(const cv::Mat& groundTruthMap,
-                         const cv::Mat& slamMap,
-                         std::string closestPointMethod,
-                         std::string distNorm)
-                : Metric(groundTruthMap, slamMap)
+                         const cv::Mat& slamMap): Metric(groundTruthMap, slamMap)
   {
-    _closestPointMethod = closestPointMethod;
-    _distNorm = distNorm;
   }
 
   /**
   @brief calculate the obstacle metric.
   @return void
   **/
-  void OmseMetric::calculateMetric()
+  void OmseMetric::calculateMetric(Parameters params)
   {
      _result = 0;
    /*  cv::Mat map1 = cv::Mat::zeros(10,10, CV_8UC1);*/
@@ -58,13 +53,13 @@ namespace ogm_evaluation
            //map2.at<uchar>(i,j)=255;
          /*}*/
      //_alignment.ICP(map1, map2, 5);
-     _alignment.ICP(_groundTruthMap, _slamMap, 5);
+     //_alignment.ICP(_groundTruthMap, _slamMap, 5);
     _groundTruthObstaclePoints = extractObstaclePoints(_groundTruthMap);
     _slamObstaclePoints = extractObstaclePoints(_slamMap);
     ROS_INFO_STREAM("GROUND POINTS= " << _groundTruthObstaclePoints.size());
     ROS_INFO_STREAM("SLAM POINTS= " << _slamObstaclePoints.size());
 
-    if(_closestPointMethod == "Brushfire")
+    if(params.closestPointMethod == "Brushfire")
     {
       _brushfire = new int*[_groundTruthMap.rows];
       for(int i = 0; i < _groundTruthMap.rows; i++)
@@ -75,12 +70,12 @@ namespace ogm_evaluation
 
     for (int i = 0; i < _slamObstaclePoints.size(); i++)
     {
-      if(_closestPointMethod == "NearestNeighbor")
+      if(params.closestPointMethod == "NearestNeighbor")
       {
-        double dist = bruteForceNearestNeighbor(_slamObstaclePoints[i], _distNorm);
+        double dist = bruteForceNearestNeighbor(_slamObstaclePoints[i], params.distNorm);
         _result += dist * dist;
       }
-      else if(_closestPointMethod == "Brushfire")
+      else if(params.closestPointMethod == "Brushfire")
       {
         _result += _brushfire[_slamObstaclePoints[i].x][_slamObstaclePoints[i].y] *
                  _brushfire[_slamObstaclePoints[i].x][_slamObstaclePoints[i].y];
@@ -92,7 +87,7 @@ namespace ogm_evaluation
     }
     _result = _result / _slamObstaclePoints.size();
  
-    if(_closestPointMethod == "Brushfire")
+    if(params.closestPointMethod == "Brushfire")
     {
       for (int i = 0; i < _groundTruthMap.rows; i++)
         delete[] _brushfire[i];

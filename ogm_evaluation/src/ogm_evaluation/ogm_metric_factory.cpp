@@ -33,20 +33,10 @@ namespace ogm_evaluation
    */
   Metric* MetricFactory::createMetricInstance(std::string name, 
                                               const cv::Mat& groundTruthMap,
-                                              const cv::Mat& slamMap,
-                                              const ogm_msgs::MapPose& transform, 
-                                              std::string detector,
-                                              std::string descriptor, 
-                                              std::string matcher,
-                                              std::string matchingMethod,
-                                              std::string closestPointMethod, 
-                                              std::string distNorm,
-                                              double matchingRatio,
-                                              double ransacReprjError,
-                                              bool scaleMapsBrushfire)
+                                              const cv::Mat& slamMap)
   {
-    if (name == "OMSE") return new OmseMetric(groundTruthMap, slamMap, closestPointMethod, distNorm);
-    else if (name == "FEATURES") return new FeatureMetrics(groundTruthMap, slamMap,transform, detector, descriptor, matcher, matchingMethod, distNorm, matchingRatio, ransacReprjError, scaleMapsBrushfire);
+    if (name == "OMSE") return new OmseMetric(groundTruthMap, slamMap);
+    else if (name == "FEATURES") return new FeatureMetrics(groundTruthMap, slamMap);
 
     else
       {
