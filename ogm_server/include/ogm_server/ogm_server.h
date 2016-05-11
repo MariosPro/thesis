@@ -25,8 +25,6 @@
 #define USAGE "\nUSAGE ogm_server <groundTruthMap.yaml> <slamMap.yaml>\n" \
               "  groundTruthMap.yaml: map description file\n"\
               "  slamMap.yaml: map description file"
-/*#include <stdio.h>*/
-/*#include <stdlib.h>*/
 #include <vector>
 #include <ros/ros.h>
 #include "tf/tf.h"
@@ -38,6 +36,7 @@
 #include <ogm_msgs/LoadMap.h>
 #include <ogm_msgs/LoadMaps.h>
 #include <ogm_msgs/LoadExternalMap.h>
+#include <ogm_msgs/LoadExternalMaps.h>
 #include <ogm_msgs/GuiRequestEvaluation.h>
 #include <ogm_msgs/ServerRequestEvaluation.h>
 /**
@@ -64,19 +63,6 @@ namespace ogm_server {
       @return void
       **/
       Server(int argc, char** argv);
-
-      /**
-      @brief Publishes the map data and metadata
-      @return void
-      **/
-      void publishData();
-
-      /**
-      @brief Publishes the map to map_static transform
-      @param ev [const ros::TimerEvent&] A ROS timer event
-      @return void
-      **/
-      void publishTransform(const ros::TimerEvent& ev);
 
 
       //!< Services --------------------------
@@ -107,6 +93,15 @@ namespace ogm_server {
       **/
       bool loadExternalMapCallback(ogm_msgs::LoadExternalMap::Request& req,
         ogm_msgs::LoadExternalMap::Response& res);
+ 
+      /**
+      @brief Service callback for loading external both Maps to server
+      @param req [ogm_msgs::LoadExternalMap::Request&] The service request
+      @param res [ogm_msgs::LoadExternalMap::Response&] The service response
+      @return bool
+      **/
+      bool loadExternalMapsCallback(ogm_msgs::LoadExternalMaps::Request& req,
+        ogm_msgs::LoadExternalMaps::Response& res);
 
       /**
       @brief Service callback for map Evaluation request form GUI
@@ -121,26 +116,40 @@ namespace ogm_server {
 
       //!< THe ROS node handle
       ros::NodeHandle _nh;
+
       //!< A pointer to a groundTruth Map object
       MapServerPtr _groundTruthMap;
+
       //!< A pointer to a  slam Map object
       MapServerPtr _slamMap;
-      //!< Service server for loading maps from files
+
+      //!< Service server for loading maps from files 
       ros::ServiceServer _loadMapService;
+      
       //!< Service server for loading maps from files
       ros::ServiceServer _loadMapsService;
+      
       //!< Service server for loading maps from GUI
       ros::ServiceServer _loadExternalMapService;
+      
+      //!< Service server for loading external both maps 
+      ros::ServiceServer _loadExternalMapsService;
+      
       //!< Service server for mapEvaluation
       ros::ServiceServer _guiRequestEvaluationService;
+      
       //!< ROS publisher for posting the map
       ros::Publisher map_pub;
+      
       //!< ROS publisher for posting the map metadata
       ros::Publisher metadata_pub;
+      
       //!< ROS timer for tf posting
       ros::Timer tfTimer;
+      
       //!< ROS tf broadcaster
       tf::TransformBroadcaster tfBroadcaster;
+      
       //!< The Maps Msg
       ogm_msgs::MapsMsg _maps;
   };

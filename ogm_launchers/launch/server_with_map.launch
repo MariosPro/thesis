@@ -1,3 +1,0 @@
-<launch>
-  <node type="ogm_server_node" pkg="ogm_server" name="ogm_server" output="screen" args="$(find ogm_resources)/maps/sparse_obstacles.yaml"/>
-</launch>

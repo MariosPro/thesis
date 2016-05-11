@@ -44,14 +44,14 @@ namespace ogm_server
 
     _maps.groundTruthMap = _groundTruthMap->getMap();
     _maps.slamMap =  _slamMap->getMap();
-    //publishData();
-
-   /* _loadMapService = _nh.advertiseService(*/
-      /*"/ogm_server/load_static_map", &Server::loadMapCallback, this);*/
 
     _loadExternalMapService = _nh.advertiseService(
       "/ogm_server/load_static_map_external", 
         &Server::loadExternalMapCallback, this);
+ 
+    _loadExternalMapsService = _nh.advertiseService(
+      "/ogm_server/load_static_maps_external", 
+        &Server::loadExternalMapsCallback, this);
 
     _loadMapsService = _nh.advertiseService(
      "/ogm_server/load_maps", &Server::loadMapsCallback, this);
@@ -60,32 +60,6 @@ namespace ogm_server
      "/ogm_server/map_evaluation", &Server::guiRequestEvaluationCallback, this);
 
   }
-
-  /**
-  @brief Service callback for loading the map
-  @param req [ogm_msgs::LoadMap::Request&] The service request
-  @param res [ogm_msgs::LoadMap::Response&] The service response
-  @return bool
-  **/
- /* bool Server::loadMapCallback(*/
-    //ogm_msgs::LoadMap::Request& req,
-    //ogm_msgs::LoadMap::Response& res) 
-  //{
-    //if(req.groundTruth)
-    //{
-      //_groundTruthMap.reset(new MapServer(req.mapFile));
-      //res.map = _groundTruthMap.getMap();
-    //}
-    //else
-    //{
-      //_slamMap.reset(new MapServer(req.mapFile));
-      //res.map = _slamMap.getMap();
-    //}
-    
-    //ROS_INFO("Sending Map to GUI");
-
-    //return true;
-  /*}*/
 
   /**
   @brief Service callback for loading both default maps
@@ -130,7 +104,25 @@ namespace ogm_server
   }
 
   /**
-  @brief Service callback for map Evaluation request form GUI
+  @brief Service callback for loading external both maps to server
+  @param req [ogm_msgs::LoadExternalMaps::Request&] The service request
+  @param res [ogm_msgs::LoadExternalMaps::Response&] The service response
+  @return bool
+  **/
+  bool Server::loadExternalMapsCallback(
+    ogm_msgs::LoadExternalMaps::Request& req,
+    ogm_msgs::LoadExternalMaps::Response& res)
+  {
+    _groundTruthMap.reset(new MapServer(req.groundTruthMapFile));
+    _slamMap.reset(new MapServer(req.slamMapFile));
+    _maps.groundTruthMap = _groundTruthMap->getMap();
+    _maps.slamMap =  _slamMap->getMap();
+
+    return true;
+  }
+
+  /**
+  @brief Service callback for map Evaluation request from GUI
   @param req [ogm_msgs::GuiRequestEvaluation::Request&] The service request
   @param res [ogm_msgs::GuiRequestEvaluation::Response&] The service response
   @return bool
@@ -183,57 +175,4 @@ namespace ogm_server
     return true;
 
   }
-
-
-  /**
-  @brief Publishes the map data and metadata
-  @return void
-  **/
-  void Server::publishData(void) 
-  {
-    /*ROS_INFO_STREAM("PUB");*/
-    //ROS_INFO_STREAM(" "<< map_.ground_truth <<" " 
-                        //<<map_.map.info.width << " " <<
-                    //map_.map.info.height << " " <<
-                    //map_.map.info.resolution << " " << 
-                    //map_.map.info.origin.position.x << " " <<
-                    //map_.map.info.origin.position.y 
-                    /*);*/
-
-
-    tfTimer = _nh.createTimer(ros::Duration(0.1), 
-      &Server::publishTransform, this);
-
-    //!< Latched publisher for metadata
-    /*metadata_pub= _nh.advertise<nav_msgs::MapMetaData>("map_metadata", 1, true);*/
-    /*metadata_pub.publish( meta_data_message_ );*/
-
-    //!< Latched publisher for data
-    map_pub = _nh.advertise<ogm_msgs::MapsMsg>("map", 1, true);
-    map_pub.publish( _maps );
-  }
-
-  /**
-  @brief Publishes the map to map_static transform
-  @param ev [const ros::TimerEvent&] A ROS timer event
-  @return void
-  **/
-  void Server::publishTransform(const ros::TimerEvent&) {
-
-    /*tf::Vector3 translation(*/
-      //map_.info.origin.position.x, 
-      //map_.info.origin.position.y, 
-      //0);
-
-    //tf::Quaternion rotation;
-
-    //rotation.setRPY(0, 0, tf::getYaw(map_.info.origin.orientation));
-
-    //tf::Transform worldTomap(rotation, translation);
-
-    //tfBroadcaster.sendTransform(
-      /*tf::StampedTransform(worldTomap, ros::Time::now(), "map", "map_static"));*/
-
-  }
-
 } // end of namespace ogm_server
