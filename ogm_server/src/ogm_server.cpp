@@ -92,6 +92,7 @@ namespace ogm_server
     {
       _groundTruthMap.reset(new MapServer(req.mapFile));
       res.map = _groundTruthMap->getMap();
+      std::cout << req.mapFile << std::endl;
     }
     else
     {
@@ -117,6 +118,9 @@ namespace ogm_server
     _slamMap.reset(new MapServer(req.slamMapFile));
     _maps.groundTruthMap = _groundTruthMap->getMap();
     _maps.slamMap =  _slamMap->getMap();
+    
+    ROS_INFO("Loading both Maps to server");
+
 
     return true;
   }

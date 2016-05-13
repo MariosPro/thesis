@@ -44,7 +44,6 @@ namespace ogm_evaluation
       ROS_INFO_STREAM("GROUND TRUTH MAP SIZE=" << _groundTruthMap.size() << "type=" << _groundTruthMap.type() << "channels="<< _groundTruthMap.channels());
       ROS_INFO_STREAM("SLAM MAP SIZE=" << _slamMap.size()<<  "type=" << _slamMap.type() << "channels=" <<_slamMap.channels());
       _transform = req.transform;
-
     if (req.manualAlignment)
     {
       _alignment.alignMaps(_transform, _groundTruthMap, _slamMap);

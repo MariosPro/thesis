@@ -36,9 +36,6 @@ namespace ogm_evaluation
   **/
   struct Parameters
   {
-    //!< the metric method to be used
-    std::string method;
-
     //!< the Feature Detector to be used
     std::string detector;
 
