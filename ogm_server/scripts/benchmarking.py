@@ -38,7 +38,7 @@ def callServerRequestEvaluationService(service_dict):
                 int(service_dict['binary']),
                 int(service_dict['manualAlignment']),
                 transform)
-        print resp
+        return resp.result
     except rospy.ServiceException, e:
         print "Service ServerRequestEvaluation call failed: %s"%e
 
@@ -49,24 +49,26 @@ if __name__ == "__main__":
         'x', 'y','theta','scale','slamOffsetScale', 'groundTruthOffsetscale', 'scaleMapsBrushfire', 'binary', 'manualAlignment']
     maps_path = rospkg.RosPack().get_path("ogm_resources") + '/maps/'
     maps_yaml_path = rospkg.RosPack().get_path("ogm_server") +'/scripts/maps.yaml'
-    parameters_yaml_path = rospkg.RosPack().get_path("ogm_server") + '/scripts/parameters.yaml'
+    results_yaml_path = rospkg.RosPack().get_path("ogm_server")+'/scripts/results.yaml'
+    parameters_yaml_path = rospkg.RosPack().get_path("ogm_server")+'/scripts/parameters.yaml'
+    resultsFile = open(results_yaml_path, 'w')
     with open(maps_yaml_path, 'r') as f:
         maps_dict = yaml.load(f)
     with open(parameters_yaml_path, 'r') as p:
         parameters_dict = yaml.load(p)
+
     for maps, pair in maps_dict.iteritems():
         for item in pair:
-            print pair[item]
+            print "Find feature matching for this pair of maps: %s " % pair[item]
             groundTruthMapFile, slamMapFile = pair[item].split()
             groundTruthMapFile = maps_path + groundTruthMapFile + '.yaml'
             slamMapFile = maps_path + slamMapFile + '.yaml'
             callLoadExternalMapsService(groundTruthMapFile, slamMapFile)
             for parameters, comb in parameters_dict.iteritems():
-                for par in comb:
-                    print comb[par]
-                    service_params_values = comb[par].split()
-                    service_dict = dict(zip(service_params_keys,
-                        service_params_values))
-                    callServerRequestEvaluationService(service_dict)
-
+                service_params_values = comb
+                service_dict = dict(zip(service_params_keys,
+                    service_params_values))
+                result = callServerRequestEvaluationService(service_dict)
+                resultsFile.write(str(result))
+                resultsFile.write('\n')
 
