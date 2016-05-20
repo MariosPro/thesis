@@ -75,9 +75,15 @@ namespace ogm_evaluation
     _params.scaleMapsBrushfire = req.scaleMapsBrushfire;
     _params.binary = req.binary;
     _params.manualAlignment = req.manualAlignment;
+    _params.benchmarking = true;
     _metric =  _metric_factory.createMetricInstance(req.method, _groundTruthMap, _slamMap);
     _metric->calculateMetric(_params);
     res.result = _metric->getResult();
+    if(req.method == "FEATURES")
+    {
+      res.matchedImage = _metric->getMatchedImage();
+      res.mergedImage = _metric->getMergedImage();
+    }
    /* cv::imshow("groundTruthMap", _groundTruthMap );*/
     //cv::waitKey(30);
     //cv::imshow("slamMap", _slamMap);

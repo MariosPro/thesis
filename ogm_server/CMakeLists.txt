@@ -5,6 +5,7 @@ find_package(catkin REQUIRED COMPONENTS
     roscpp
     tf
     nav_msgs
+    sensor_msgs
     ogm_msgs
     map_server
 )

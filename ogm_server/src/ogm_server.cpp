@@ -168,7 +168,9 @@ namespace ogm_server
     if (client.call(srv)) 
     {
       ROS_INFO("[ogm_server] Map Evaluation metric succesfully completed");
-      res.result =  srv.response.result ;
+      res.result =  srv.response.result;
+      res.matchedImage = srv.response.matchedImage;
+      res.mergedImage = srv.response.mergedImage;
     }
     else
     {

@@ -20,6 +20,8 @@
 #ifndef OMSE_H
 #define OMSE_H
 
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
 #include "ogm_evaluation/ogm_evaluation_utils/map_utils.h"
 #include "ogm_evaluation/ogm_evaluation_utils/maps_alignment.h"
@@ -88,6 +90,10 @@ namespace ogm_evaluation
       @return double the distance
       **/
       double calculateDistance(cv::Point p1, cv::Point p2, std::string distNorm);
+
+      sensor_msgs::Image getMatchedImage();
+
+      sensor_msgs::Image getMergedImage();
 
 
     private:

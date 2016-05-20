@@ -4,6 +4,7 @@ project(ogm_msgs)
 find_package(catkin REQUIRED COMPONENTS
   message_generation
   std_msgs
+  sensor_msgs
   geometry_msgs
   nav_msgs
 )
@@ -29,6 +30,7 @@ add_service_files(
 generate_messages(
   DEPENDENCIES
     std_msgs
+    sensor_msgs
     geometry_msgs
     nav_msgs
 )
@@ -40,6 +42,7 @@ catkin_package(
  CATKIN_DEPENDS
     message_runtime
     std_msgs
+    sensor_msgs
     geometry_msgs
     nav_msgs
 #  DEPENDS system_lib

@@ -50,7 +50,14 @@ namespace ogm_evaluation
   {
      _result = 0;
      cv::initModule_nonfree();
-    _featureDetector =  cv::FeatureDetector::create(params.detector);
+    
+     if(params.benchmarking)
+     {
+       _package_path = ros::package::getPath("ogm_server");
+       _results_dir = _package_path + "/benchmarking_results/";
+     }
+    
+     _featureDetector =  cv::FeatureDetector::create(params.detector);
    
     if(params.descriptor == "SIFT" || params.descriptor == "SURF" || params.descriptor == "BRIEF" ||
        params.descriptor == "BRISK" || params.descriptor == "FREAK" || params.descriptor == "ORB")
@@ -168,7 +175,11 @@ namespace ogm_evaluation
       knnMatching(_slamDescriptors, _groundTruthDescriptors, filteredMatches, 5);// _groundTruthDescriptors.rows);
     else
       ROS_ERROR("No such matching method");
-
+    if(filteredMatches.size() == 0)
+    {
+      ROS_WARN("No matches found using this method");
+      return;
+    }
     //!< draw matches
     cv::Mat imgmatches, imgmatches1, imgmatches2;
     cv::drawMatches( _slamMap, _slamKeypoints, _groundTruthMap, _groundTruthKeypoints,
@@ -274,9 +285,13 @@ namespace ogm_evaluation
                    filteredMatches, imgmatches, cv::Scalar::all(-1), cv::Scalar::all(-1),
                    reinterpret_cast<const std::vector<char>&> (mask), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
    
+   _matchedImage = imgmatches.clone();
     ////-- Show detected matches
-    imshow("RANSAC Matches", imgmatches);
-    cv::waitKey(1000);
+    if(!params.benchmarking)
+    {
+      imshow("RANSAC Matches", imgmatches);
+      cv::waitKey(1000);
+    }
 
    /*H = cv::estimateRigidTransform(inliersCoords2, inliersCoords1, false);*/
 
@@ -299,10 +314,12 @@ namespace ogm_evaluation
      for (int j = 0; j < image1.cols; j++)
       if(image.at<unsigned char>(i, j) != 127)
         image1.at<unsigned char>(i, j) = _slamMap.at<unsigned char>(i, j);
-
+  if(!params.benchmarking)
+  {
     cv::imshow("GroundTruthMap Transformed", image);
     cv::imshow ("SLamMap Cropped", image1);
     cv::waitKey(1000);
+  }
     _omseMetric =  new OmseMetric(image, image1);
     params.closestPointMethod = "Brushfire";
     _omseMetric->calculateMetric(params);
@@ -312,8 +329,14 @@ namespace ogm_evaluation
     
     //!< blend slamMap onto the transformed groundTruthMap
     addWeighted(image, .5, _slamMap, .5, 0.0, image);
-    cv::imshow("MergedImage", image);
-    cv::waitKey(1000);
+     std::cout << "image type " << image.type() << " " << image.channels() << std::endl;
+
+    _mergedImage = image.clone();
+    if(!params.benchmarking)
+    {
+      cv::imshow("MergedImage", image);
+      cv::waitKey(1000);
+    }
 
     std::cout << mask.size() << std::endl;
     int counter = 0;
@@ -383,7 +406,7 @@ void FeatureMetrics::simpleMatching(const cv::Mat& descriptors1,
       if (matches[i][0].distance < _matchingRatio * matches[i][1].distance)
       {
         filteredMatches.push_back(matches[i][0]);
-     /*   ROS_INFO_STREAM("FILTERED MATCHES idx " << matches[i][0].queryIdx << " " << matches[i][0].trainIdx);*/
+      /*  ROS_INFO_STREAM("FILTERED MATCHES idx " << matches[i][0].queryIdx << " " << matches[i][0].trainIdx);*/
         /*ROS_INFO_STREAM("s " << _slamKeypoints[matches[i][0].queryIdx].pt << " " << _groundTruthKeypoints[matches[i][0].trainIdx].pt);*/
       }
     }
@@ -506,4 +529,23 @@ void FeatureMetrics::estimateTransform(const std::vector<cv::Point2f>& coords1, 
 
 }
 
+  sensor_msgs::Image FeatureMetrics::getMatchedImage()
+  {
+    cv_bridge::CvImage out_msg;
+    sensor_msgs::Image temp;
+    out_msg.image = _matchedImage;
+    std::cout << _matchedImage.type() << " " << _matchedImage.channels() << std::endl;
+    out_msg.toImageMsg(temp);
+    return temp;
+  }
+
+  sensor_msgs::Image FeatureMetrics::getMergedImage()
+  {
+    cv_bridge::CvImage out_msg;
+    sensor_msgs::Image temp;
+    out_msg.image = _mergedImage;
+    std::cout << _mergedImage.type() << " " << _mergedImage.channels() << std::endl;
+    out_msg.toImageMsg(temp);
+    return temp;
+  }
 }

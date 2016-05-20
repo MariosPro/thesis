@@ -54,6 +54,8 @@ Thumbs.db
 ###########
 .*.swp
 .*.swo
+.*.swn
+.*.swm
 *.log
 core*
 *~

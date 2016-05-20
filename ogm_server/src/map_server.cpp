@@ -29,6 +29,7 @@ namespace ogm_server {
   **/
   MapServer::MapServer(const std::string& fname)
   {
+    mapName_ = fname;
 
     map_ = map_loader::loadMap(fname);
  
@@ -55,6 +56,11 @@ namespace ogm_server {
   nav_msgs::OccupancyGrid MapServer::getMap()
   {
     return map_;
+  }
+  
+  std::string MapServer::getName()
+  {
+    return mapName_;
   }
   /**
   @brief Publishes the map data and metadata

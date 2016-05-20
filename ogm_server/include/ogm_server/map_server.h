@@ -55,6 +55,8 @@ namespace ogm_server {
       explicit MapServer(const nav_msgs::OccupancyGrid& map);
 
       nav_msgs::OccupancyGrid getMap();
+
+      std::string getName();
       
     private:
       
@@ -87,6 +89,8 @@ namespace ogm_server {
       nav_msgs::MapMetaData meta_data_message_;
       //!< ROS occupancy grid message
       nav_msgs::OccupancyGrid map_;
+      //!< the map name
+      std::string mapName_;
 
   };
 }

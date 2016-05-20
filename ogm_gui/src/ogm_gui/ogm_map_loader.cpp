@@ -33,7 +33,9 @@ namespace ogm_gui
     argv_(argv)
   {
     setupUi(this);
+    
     scene = new QGraphicsScene(mapGraphicsView);
+    //stackedWidget->addWidget(mapGraphicsView);
     ground_truth_map = new CMapItem();
     slam_map = new CMapItem();
     scene->addItem(slam_map);
@@ -48,6 +50,7 @@ namespace ogm_gui
     mapGraphicsView->setScene(scene);
     mapGraphicsView->setInteractive(true);
     transparency = 0.5;
+
     //mapGraphicsView->show();
   }
 
@@ -92,6 +95,21 @@ namespace ogm_gui
   void CMapLoader::setMapTransparency(double t)
   {
     transparency = t;
+  }
+
+  void CMapLoader::displayMatchingImage(QImage* img)
+  {
+    std::cout << newDims.first << " " << newDims.second << std::endl;
+    matchingLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
+                Qt::KeepAspectRatio,
+                Qt::SmoothTransformation));
+  }
+ 
+  void CMapLoader::displayMergedImage(QImage* img)
+  {
+    mergedLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
+                Qt::KeepAspectRatio,
+                Qt::SmoothTransformation));
   }
 
   /**
@@ -141,7 +159,7 @@ namespace ogm_gui
   **/
   void CMapLoader::updateImage(QImage *img, bool groundTruth)
   {
-    std::pair<int,int> newDims;
+    //std::pair<int,int> newDims;
 
     if(!groundTruth)
     {

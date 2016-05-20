@@ -13,3 +13,5 @@ bool manualAlignment
 ogm_msgs/MapPose transform
 ---
 float64 result
+sensor_msgs/Image matchedImage
+sensor_msgs/Image mergedImage

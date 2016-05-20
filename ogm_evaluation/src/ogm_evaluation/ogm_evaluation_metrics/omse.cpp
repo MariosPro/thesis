@@ -153,4 +153,15 @@ namespace ogm_evaluation
     }
     return dst;
   }
+
+  sensor_msgs::Image OmseMetric::getMatchedImage()
+  {
+
+  }
+
+  sensor_msgs::Image OmseMetric::getMergedImage()
+  {
+
+  }
+
 }  // namespace ogm_evaluation

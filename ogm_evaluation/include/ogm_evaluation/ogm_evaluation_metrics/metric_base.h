@@ -21,6 +21,8 @@
 #define METRIC_H
 
 #include <ros/ros.h>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
 #include <opencv2/opencv.hpp>
 #include "ogm_evaluation/ogm_evaluation_metrics/parameters.h"
 
@@ -54,6 +56,10 @@ namespace ogm_evaluation
       }
       
       double getResult();
+
+      virtual sensor_msgs::Image getMatchedImage() = 0;
+
+      virtual sensor_msgs::Image getMergedImage() = 0;
 
     protected:
 

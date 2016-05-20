@@ -22,9 +22,12 @@
 
 #include <numeric>
 #include <algorithm>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/nonfree/nonfree.hpp>
 #include <opencv2/nonfree/features2d.hpp>
+#include <ros/package.h>
 #include "ogm_msgs/MapPose.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
 #include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_extractor.h"
@@ -104,6 +107,10 @@ namespace ogm_evaluation
                             std::vector<uchar>& inliers,
                             cv::Mat& best_model, double& best_error);
 
+      sensor_msgs::Image getMatchedImage();
+
+      sensor_msgs::Image getMergedImage();
+
     private:
 
       //!< the Detector name to be created
@@ -174,6 +181,14 @@ namespace ogm_evaluation
      ogm_msgs::MapPose _transform;
 
      cv::Mat H;
+
+     std::string _package_path;
+
+     std::string _results_dir;
+
+     cv::Mat _matchedImage;
+     
+     cv::Mat _mergedImage;
   };
 }
 #endif

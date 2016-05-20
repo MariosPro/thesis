@@ -50,6 +50,10 @@ namespace ogm_gui{
       loader_.ground_truth_map, SIGNAL(scaleChanged(qreal)),
       this, SIGNAL(mapScaleChanged(qreal)));
 
+    QObject::connect(
+        loader_.displayComboBox, SIGNAL(currentIndexChanged(int)),
+        loader_.stackedWidget, SLOT(setCurrentIndex(int)));
+
 
     QPixmap p((
       ogm_gui_tools::getRosPackagePath("ogm_gui") +
@@ -108,6 +112,17 @@ namespace ogm_gui{
     loader_.setMapTransparency(t);
     Q_EMIT mapTransparencyChanged(t);
   }
+
+  void CMapConnector::displayMatchingImage(QImage* img)
+  {
+    loader_.displayMatchingImage(img);
+  }
+ 
+  void CMapConnector::displayMergedImage(QImage* img)
+  {
+    loader_.displayMergedImage(img);
+  }
+
 
   /**
   @brief Returns the pos of the object to the scene

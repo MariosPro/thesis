@@ -104,6 +104,9 @@ namespace ogm_gui
 
       void setMapTransparency(double t);
 
+      void displayMatchingImage(QImage* img);
+
+      void displayMergedImage(QImage* img);
       /**
       @brief Returns the pos of the object to the scene
       @return QPointF : The pos to the scene

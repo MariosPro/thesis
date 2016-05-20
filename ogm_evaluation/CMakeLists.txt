@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   ogm_msgs
   geometry_msgs
   nav_msgs
+  sensor_msgs
 )
 find_package(OpenCV REQUIRED nonfree)
 
@@ -31,6 +32,7 @@ catkin_package(
     ogm_msgs
     geometry_msgs
     nav_msgs
+    sensor_msgs
 )
 
 ######################### Metrics ######################################

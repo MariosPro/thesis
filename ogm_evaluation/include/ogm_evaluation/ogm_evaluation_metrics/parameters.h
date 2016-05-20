@@ -69,6 +69,9 @@ namespace ogm_evaluation
     //!< indicates if manual alignment has been performed
     bool manualAlignment;
 
+    //!< indicates if on benchmarking mode
+    bool benchmarking;
+
   };
 }
 #endif

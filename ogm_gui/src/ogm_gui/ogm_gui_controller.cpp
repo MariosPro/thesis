@@ -100,11 +100,7 @@ namespace ogm_gui
         &validation_connector_, SIGNAL(MetricNeeded(QString)),
         this, SLOT(requestMetric(QString)));
 
- /*   QObject::connect(*/
-        //&validation_connector_, SIGNAL(cmseMetricNeeded()),
-        /*this, SLOT(requestCmseMetric()));*/
-
-    QObject::connect(
+     QObject::connect(
         &map_connector_, SIGNAL(mapPosChanged(qreal, qreal)),
         &validation_connector_, SLOT(showMapPosition(qreal, qreal)));
 
@@ -172,7 +168,7 @@ namespace ogm_gui
       gui_connector_.addToGrid(map_connector_.getLoader(), 0, 1, 0, 0);
 
       gui_connector_.setGridColumnStretch(1, 5);
-      gui_connector_.setGridColumnStretch(0, 2);
+      gui_connector_.setGridColumnStretch(0, 3);
 
   }
 
@@ -493,6 +489,18 @@ namespace ogm_gui
       metricResult_ = srv.response.result;
       ROS_INFO_STREAM("[ogm_gui] " << metricMethod.toStdString() << " metric successfully calculated Result=" << metricResult_);
       validation_connector_.displayMetricResult(metricMethod, metricResult_);
+
+      if(metricMethod == "FEATURES")
+      {
+        QImage matchingImage( &srv.response.matchedImage.data[0], srv.response.matchedImage.width,
+            srv.response.matchedImage.height, srv.response.matchedImage.step, QImage::Format_RGB888);
+        QImage temp = matchingImage;
+        QImage mergedImage( &srv.response.mergedImage.data[0], srv.response.mergedImage.width,
+            srv.response.mergedImage.height, srv.response.mergedImage.step, QImage::Format_Indexed8);
+        QImage temp1 = mergedImage;
+        map_connector_.displayMatchingImage(&temp);
+        map_connector_.displayMergedImage(&temp1);
+      }
     }
     else
     {

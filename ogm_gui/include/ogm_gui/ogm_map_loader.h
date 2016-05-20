@@ -59,6 +59,8 @@ namespace ogm_gui
 
       float groundTruthOffsetScale;
 
+      std::pair<int,int> newDims;
+
       /**
       @brief Return the dimensions according to the container size
       @param w [int] Image width
@@ -71,10 +73,10 @@ namespace ogm_gui
                                          int containerWidth,
                                          int containerHeight,
                                          bool groundTruth);
-      
+
     //------------------------------------------------------------------------//  
     public:
-      
+
       //!< the pixmap that is used to display the ground thuth map
       CMapItem* ground_truth_map;
 
@@ -88,7 +90,7 @@ namespace ogm_gui
       @return void
       **/
       CMapLoader(int argc, char **argv);
-      
+
       /**
       @brief Resets the map's position
       @return void
@@ -101,7 +103,7 @@ namespace ogm_gui
       @return void
       **/
       void updateImage(QImage *img, bool groundTruth);
-      
+
       /**
       @brief Draws a grid in an image
       @param img [QImage*] The image for the grid to be drawn on
@@ -109,7 +111,7 @@ namespace ogm_gui
       @return void
       **/
       void drawGrid(QImage *img,float resolution);
-      
+
       void setMapXposition(double x);
 
       void setMapYposition(double y);
@@ -119,6 +121,10 @@ namespace ogm_gui
       void setMapScale(double s);
 
       void setMapTransparency(double t);
+
+      void displayMatchingImage(QImage* img);
+
+      void displayMergedImage(QImage* img);
 
       /**
       @brief Returns the pos of the object to the scene
