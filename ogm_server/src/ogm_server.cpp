@@ -164,6 +164,14 @@ namespace ogm_server
     srv.request.scaleMapsBrushfire = req.scaleMapsBrushfire;
     srv.request.binary = req.binary;
     srv.request.manualAlignment = req.manualAlignment;
+    srv.request.gaussianBlur1 = req.gaussianBlur1;
+    srv.request.gaussianBlur2 = req.gaussianBlur2;
+    srv.request.medianBlur1 = req.medianBlur1;
+    srv.request.medianBlur2 = req.medianBlur2;
+    srv.request.gaussianKernel1 = req.gaussianKernel1;
+    srv.request.gaussianKernel2 = req.gaussianKernel2;
+    srv.request.medianKernel1 = req.medianKernel1;
+    srv.request.medianKernel2 = req.medianKernel2;
 
     if (client.call(srv)) 
     {

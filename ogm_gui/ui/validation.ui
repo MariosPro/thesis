@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>501</height>
+    <height>636</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -34,11 +34,17 @@
   <widget class="QTabWidget" name="validationTabWidget">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>10</x>
      <y>20</y>
-     <width>351</width>
-     <height>461</height>
+     <width>371</width>
+     <height>631</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="maximumSize">
     <size>
@@ -53,7 +59,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="informationTab">
     <attribute name="title">
@@ -172,43 +178,6 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="alignmentTab">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <attribute name="title">
-     <string>Maps Alignment</string>
-    </attribute>
-    <widget class="QWidget" name="layoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>198</width>
-       <height>52</height>
-      </rect>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_6">
-      <item>
-       <widget class="QCheckBox" name="binaryCheckBox">
-        <property name="text">
-         <string>Converts maps to binary</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="manualAlignmentCheckBox">
-        <property name="text">
-         <string>Manual alignment</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </widget>
    <widget class="QWidget" name="metricsTab">
     <attribute name="title">
      <string>Validation Metrics</string>
@@ -218,8 +187,8 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>371</width>
-       <height>381</height>
+       <width>351</width>
+       <height>551</height>
       </rect>
      </property>
      <property name="currentIndex">
@@ -230,8 +199,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>371</width>
-        <height>319</height>
+        <width>100</width>
+        <height>30</height>
        </rect>
       </property>
       <attribute name="label">
@@ -369,9 +338,15 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>371</width>
-        <height>319</height>
+        <width>351</width>
+        <height>489</height>
        </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
       <attribute name="label">
        <string>Feature Matching MSE</string>
@@ -379,241 +354,315 @@
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>10</x>
          <y>0</y>
          <width>321</width>
-         <height>290</height>
+         <height>478</height>
         </rect>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_7">
+       <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
-         <widget class="QCheckBox" name="scaleBrushfireCheckBox">
-          <property name="text">
-           <string>Scale Maps (Mean Brushfire Distance)</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Map #1 PreProcessing</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
-             <widget class="QLabel" name="label_4">
+             <widget class="QCheckBox" name="gaussianBlurCheckBox1">
               <property name="text">
-               <string>Feature Detector:</string>
+               <string>GaussianBlur (kernel size)</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_5">
-              <property name="text">
-               <string>Descriptor Extractor:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>Descriptor Matcher:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>Matching Method:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="matchingRatioLabel">
-              <property name="text">
-               <string>2-NN matching ratio</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="ransaclLabel">
-              <property name="text">
-               <string>Ransac max reprojection error</string>
-              </property>
-             </widget>
+             <widget class="QDoubleSpinBox" name="gaussianBlurSpinBox1"/>
             </item>
            </layout>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_5">
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
-             <widget class="QComboBox" name="detectorComboBox">
-              <item>
-               <property name="text">
-                <string>SIFT</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>SURF</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>FAST</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>STAR</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>ORB</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>BRISK</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>MSER</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>GFTT</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>HARRIS</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Dense</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>SimpleBlob</string>
-               </property>
-              </item>
+             <widget class="QCheckBox" name="medianBlurCheckBox1">
+              <property name="text">
+               <string>MedianBlur (kernel size)</string>
+              </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="descriptorComboBox">
-              <item>
-               <property name="text">
-                <string>SIFT</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>SURF</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>BRIEF</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>BRISK</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>FREAK</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>ORB</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>RADIUS STATISTICS</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>CIRCLE INTERSECTIONS</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>MEAN RAYS</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>ALL CUSTOMS</string>
-               </property>
-              </item>
+             <widget class="QDoubleSpinBox" name="medianBlurSpinBox1"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Map #2 PreProcessing</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QCheckBox" name="gaussianBlurCheckBox2">
+              <property name="text">
+               <string>GaussianBlur (kernel size)</string>
+              </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="matcherComboBox">
-              <item>
-               <property name="text">
-                <string>BruteForce</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>BruteForce-L1</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>BruteForce-Hamming</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>BruteForce-Hamming(2)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>FlannBased</string>
-               </property>
-              </item>
+             <widget class="QDoubleSpinBox" name="gaussianBlurSpinBox2"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QCheckBox" name="medianBlurCheckBox2">
+              <property name="text">
+               <string>MedianBlur (kernel size)</string>
+              </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="matchingMethodComboBox">
-              <item>
-               <property name="text">
-                <string>SIMPLE</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>RATIO</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>CROSSCHECK</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>K-NN</string>
-               </property>
-              </item>
-             </widget>
+             <widget class="QDoubleSpinBox" name="medianBlurSpinBox2"/>
             </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="matchingRatioSpinBox"/>
+           </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="scaleBrushfireCheckBox">
+            <property name="text">
+             <string>Scale Maps (Mean Brushfire Distance)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_3">
+            <item row="0" column="0">
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <item>
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Feature Detector:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Descriptor Extractor:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>Descriptor Matcher:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>Matching Method:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="matchingRatioLabel">
+                <property name="text">
+                 <string>2-NN matching ratio</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="ransaclLabel">
+                <property name="text">
+                 <string>Ransac max reprojection error</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="ransacSpinBox"/>
+            <item row="0" column="1">
+             <layout class="QVBoxLayout" name="verticalLayout_7">
+              <item>
+               <widget class="QComboBox" name="detectorComboBox">
+                <item>
+                 <property name="text">
+                  <string>SIFT</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>SURF</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>FAST</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>STAR</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>ORB</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>BRISK</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>MSER</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>GFTT</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>HARRIS</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Dense</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>SimpleBlob</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="descriptorComboBox">
+                <item>
+                 <property name="text">
+                  <string>SIFT</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>SURF</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>BRIEF</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>BRISK</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>FREAK</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>ORB</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>RADIUS STATISTICS</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>CIRCLE INTERSECTIONS</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>MEAN RAYS</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>ALL CUSTOMS</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="matcherComboBox">
+                <item>
+                 <property name="text">
+                  <string>BruteForce</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>BruteForce-L1</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>BruteForce-Hamming</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>BruteForce-Hamming(2)</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>FlannBased</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="matchingMethodComboBox">
+                <item>
+                 <property name="text">
+                  <string>SIMPLE</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>RATIO</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>CROSSCHECK</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>K-NN</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="matchingRatioSpinBox"/>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="ransacSpinBox"/>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -687,6 +736,43 @@
        </layout>
       </widget>
      </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="alignmentTab">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <attribute name="title">
+     <string>Maps Alignment</string>
+    </attribute>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>198</width>
+       <height>52</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_6">
+      <item>
+       <widget class="QCheckBox" name="binaryCheckBox">
+        <property name="text">
+         <string>Converts maps to binary</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="manualAlignmentCheckBox">
+        <property name="text">
+         <string>Manual alignment</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
    <widget class="QWidget" name="pathTab">

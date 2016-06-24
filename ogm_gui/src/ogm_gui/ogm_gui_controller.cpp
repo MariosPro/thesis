@@ -468,6 +468,14 @@ namespace ogm_gui
       srv.request.binary = validation_connector_.thresholdMaps();
       srv.request.manualAlignment = validation_connector_.manualAlignMaps();
       srv.request.scaleMapsBrushfire = validation_connector_.scaleMapsBrushfire();
+      srv.request.gaussianBlur1 = validation_connector_.gaussianBlur1();
+      srv.request.gaussianBlur2 = validation_connector_.gaussianBlur2();
+      srv.request.medianBlur1 = validation_connector_.medianBlur1();
+      srv.request.medianBlur2 = validation_connector_.medianBlur2();
+      srv.request.medianKernel1 = validation_connector_.getMedianKernel1();
+      srv.request.medianKernel2 = validation_connector_.getMedianKernel2();
+      srv.request.gaussianKernel1 = validation_connector_.getGaussianKernel1();
+      srv.request.gaussianKernel2 = validation_connector_.getGaussianKernel2();
     }
 
     if (metricMethod == "OMSE")

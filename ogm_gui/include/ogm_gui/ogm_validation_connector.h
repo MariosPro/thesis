@@ -67,11 +67,28 @@ namespace ogm_gui
 
       double _ransacReprjError;
 
+      double _medianKernel1;
+
+      double _medianKernel2;
+
+      double _gaussianKernel1;
+
+      double _gaussianKernel2;
+
       bool _binary;
 
       bool _manual_alignment;
 
       bool _scaleMapsBrushfire;
+
+      bool _gaussianBlur1;
+
+      bool _gaussianBlur2;
+
+      bool _medianBlur1;
+      
+      bool _medianBlur2;
+
     //------------------------------------------------------------------------//
     public:
 
@@ -121,12 +138,27 @@ namespace ogm_gui
 
       double getRansacReprjError();
 
+      double getGaussianKernel1();
+
+      double getGaussianKernel2();
+
+      double getMedianKernel1();
+
+      double getMedianKernel2();
+
       bool thresholdMaps();
 
       bool manualAlignMaps();
 
       bool scaleMapsBrushfire();
 
+      bool gaussianBlur1();
+
+      bool gaussianBlur2();
+
+      bool medianBlur1();
+
+      bool medianBlur2();
     //------------------------------------------------------------------------//
     public Q_SLOTS:
 
@@ -143,6 +175,14 @@ namespace ogm_gui
       void matchingRatioChanged(double t);
 
       void ransacChanged(double t);
+
+      void gaussianBlurSpinBox1Changed(double t);
+
+      void gaussianBlurSpinBox2Changed(double t);
+
+      void medianBlurSpinBox1Changed(double t);
+
+      void medianBlurSpinBox2Changed(double t);
 
       void showMapPosition(qreal x, qreal y);
 
@@ -174,6 +214,13 @@ namespace ogm_gui
 
       void scaleMapsBrushfireChecked();
 
+      void gaussianBlurCheckBox1Checked();
+
+      void gaussianBlurCheckBox2Checked();
+
+      void medianBlurCheckBox1Checked();
+
+      void medianBlurCheckBox2Checked();
     //------------------------------------------------------------------------//
     Q_SIGNALS:
 

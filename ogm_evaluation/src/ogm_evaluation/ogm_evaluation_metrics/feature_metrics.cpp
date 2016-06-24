@@ -50,15 +50,29 @@ namespace ogm_evaluation
   {
      _result = 0;
      cv::initModule_nonfree();
-    
+
+     cv::Mat slamMap, groundTruthMap;
+
+     _slamMap.copyTo(slamMap);
+     _groundTruthMap.copyTo(groundTruthMap);
+
+    if(params.gaussianBlur2)
+      cv::GaussianBlur(slamMap, slamMap, cv::Size(params.gaussianKernel2, params.gaussianKernel2), 0, 0);
+    if(params.medianBlur2)
+      cv::medianBlur(slamMap, slamMap, params.medianBlur2);
+    if(params.gaussianBlur1)
+      cv::GaussianBlur(groundTruthMap, groundTruthMap, cv::Size(params.gaussianKernel1, params.gaussianKernel1), 0, 0 );
+    if(params.medianBlur1)
+      cv::medianBlur(groundTruthMap, groundTruthMap, params.medianBlur1);
+
      if(params.benchmarking)
      {
        _package_path = ros::package::getPath("ogm_server");
        _results_dir = _package_path + "/benchmarking_results/";
      }
-    
+
      _featureDetector =  cv::FeatureDetector::create(params.detector);
-   
+
     if(params.descriptor == "SIFT" || params.descriptor == "SURF" || params.descriptor == "BRIEF" ||
        params.descriptor == "BRISK" || params.descriptor == "FREAK" || params.descriptor == "ORB")
     _descriptorExtractor = cv::DescriptorExtractor::create(params.descriptor);
@@ -83,14 +97,14 @@ namespace ogm_evaluation
 
     //!< scale the two Maps
     double slamMeanDist, groundTruthMeanDist;
-  
-    int** brushfire = new int*[_groundTruthMap.rows];
-      for(int i = 0; i < _groundTruthMap.rows; i++)
-        brushfire[i] = new int[_groundTruthMap.cols];
- 
-    int** brushfire1 = new int*[_slamMap.rows];
-      for(int i = 0; i < _slamMap.rows; i++)
-        brushfire1[i] = new int[_slamMap.cols];
+
+    int** brushfire = new int*[groundTruthMap.rows];
+      for(int i = 0; i < groundTruthMap.rows; i++)
+        brushfire[i] = new int[groundTruthMap.cols];
+
+    int** brushfire1 = new int*[slamMap.rows];
+      for(int i = 0; i < slamMap.rows; i++)
+        brushfire1[i] = new int[slamMap.cols];
 
     if(params.scaleMapsBrushfire)  
     {
@@ -100,24 +114,25 @@ namespace ogm_evaluation
       slamMeanDist = _mapUtils.meanBrushfireDistance(_slamMap, brushfire1);
 
       double scalingFactor = groundTruthMeanDist / slamMeanDist;
-   
+
       // resize slam produced map using meanBrushfireDistance
       cv::resize(_slamMap, _slamMap, cv::Size(), scalingFactor, scalingFactor, cv::INTER_NEAREST);
+      cv::resize(slamMap, slamMap, cv::Size(), scalingFactor, scalingFactor, cv::INTER_NEAREST);
 
       ROS_INFO_STREAM("SCALING FACTOR=" << scalingFactor);
-      std::cout << "SLAM AFTER RESIZE=" << _slamMap.size() << std::endl;
+      std::cout << "SLAM AFTER RESIZE=" << slamMap.size() << std::endl;
     }
-    
+
     //!< detect _slamKeypoints
-    _featureDetector->detect(_groundTruthMap, _groundTruthKeypoints);
-    _featureDetector->detect(_slamMap, _slamKeypoints);
+    _featureDetector->detect(groundTruthMap, _groundTruthKeypoints);
+    _featureDetector->detect(slamMap, _slamKeypoints);
 
     //!< extract Descriptors for each detected keypoint
     if(params.descriptor == "SIFT" || params.descriptor == "SURF" || params.descriptor == "BRIEF" ||
        params.descriptor == "BRISK" || params.descriptor == "FREAK" || params.descriptor == "ORB")
     {
-      _descriptorExtractor->compute(_groundTruthMap, _groundTruthKeypoints, _groundTruthDescriptors);
-      _descriptorExtractor->compute(_slamMap, _slamKeypoints, _slamDescriptors);
+      _descriptorExtractor->compute(groundTruthMap, _groundTruthKeypoints, _groundTruthDescriptors);
+      _descriptorExtractor->compute(slamMap, _slamKeypoints, _slamDescriptors);
     }
 
     else
@@ -127,8 +142,8 @@ namespace ogm_evaluation
 
       for(int i = 0; i < _customDescriptorExtractor.size(); i++)
       {
-        _customDescriptorExtractor[i]->compute(_slamMap, _slamKeypoints, &slamDescriptors[i]);
-        _customDescriptorExtractor[i]->compute(_groundTruthMap, _groundTruthKeypoints, &groundTruthDescriptors[i]);
+        _customDescriptorExtractor[i]->compute(slamMap, _slamKeypoints, &slamDescriptors[i]);
+        _customDescriptorExtractor[i]->compute(groundTruthMap, _groundTruthKeypoints, &groundTruthDescriptors[i]);
         ROS_INFO_STREAM("SLAM DESCRIPTORS[" <<i<<"]="<<slamDescriptors[i].size());
       }
 
@@ -149,8 +164,8 @@ namespace ogm_evaluation
   
    //!< draw Keypoints
    cv::Mat img_keypoints_1, img_keypoints_2;
-   cv::drawKeypoints( _groundTruthMap, _groundTruthKeypoints, img_keypoints_1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
-   cv::drawKeypoints( _slamMap, _slamKeypoints, img_keypoints_2, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
+   cv::drawKeypoints( groundTruthMap, _groundTruthKeypoints, img_keypoints_1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
+   cv::drawKeypoints( slamMap, _slamKeypoints, img_keypoints_2, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
 /*   imshow("Keypoints 1", img_keypoints_1);*/
    //imshow("Keypoints 2", img_keypoints_2);
    /*cv::waitKey(1000);*/
@@ -182,7 +197,7 @@ namespace ogm_evaluation
     }
     //!< draw matches
     cv::Mat imgmatches, imgmatches1, imgmatches2;
-    cv::drawMatches( _slamMap, _slamKeypoints, _groundTruthMap, _groundTruthKeypoints,
+    cv::drawMatches( slamMap, _slamKeypoints, groundTruthMap, _groundTruthKeypoints,
                    filteredMatches, imgmatches1, cv::Scalar::all(-1), cv::Scalar::all(-1));
 
     //!< Show detected matches
@@ -205,8 +220,8 @@ namespace ogm_evaluation
     //cv::Ptr<ogm_evaluation::DescriptorExtractor> customDescriptorEvaluator;
 
     //customDescriptorEvaluator = _descriptorFactory[1].create("CIRCLE INTERSECTIONS");
-    //customDescriptorEvaluator->compute(_groundTruthMap, groundTruthMatchedKeyPoints, &groundTruthEvalDescriptors);
-    //customDescriptorEvaluator->compute(_slamMap, slamMatchedKeyPoints, &slamEvalDescriptors);
+    //customDescriptorEvaluator->compute(groundTruthMap, groundTruthMatchedKeyPoints, &groundTruthEvalDescriptors);
+    //customDescriptorEvaluator->compute(slamMap, slamMatchedKeyPoints, &slamEvalDescriptors);
 
     //std::vector<cv::Point2f>  evalcoord1, evalcoord2;
     //std::vector<cv::KeyPoint> evalfil1, evalfil2;
@@ -281,7 +296,7 @@ namespace ogm_evaluation
    /*}*/
   
    //!< draw matches
-   cv::drawMatches( _slamMap, _slamKeypoints, _groundTruthMap, _groundTruthKeypoints,
+   cv::drawMatches( slamMap, _slamKeypoints, groundTruthMap, _groundTruthKeypoints,
                    filteredMatches, imgmatches, cv::Scalar::all(-1), cv::Scalar::all(-1),
                    reinterpret_cast<const std::vector<char>&> (mask), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
    
@@ -328,7 +343,7 @@ namespace ogm_evaluation
     std::cout << "image type " << image.type() << " " << image.channels() << std::endl;
     
     //!< blend slamMap onto the transformed groundTruthMap
-    addWeighted(image, .5, _slamMap, .5, 0.0, image);
+    addWeighted(image, .5, slamMap, .5, 0.0, image);
      std::cout << "image type " << image.type() << " " << image.channels() << std::endl;
 
     _mergedImage = image.clone();

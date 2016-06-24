@@ -64,6 +64,7 @@ namespace ogm_evaluation
             _slamMap.at<uchar>(i, j) = 255;
 
     }
+
     _params.detector = req.detector;
     _params.descriptor = req.descriptor;
     _params.matcher = req.matcher;
@@ -76,6 +77,13 @@ namespace ogm_evaluation
     _params.binary = req.binary;
     _params.manualAlignment = req.manualAlignment;
     _params.benchmarking = true;
+    _params.gaussianBlur1 = req.gaussianBlur1;
+    _params.gaussianBlur2 = req.gaussianBlur2;
+    _params.medianBlur1 = req.medianBlur1;
+    _params.gaussianKernel1 = req.gaussianKernel1;
+    _params.gaussianKernel2 = req.gaussianKernel2;
+    _params.medianKernel1 = req.medianKernel1;
+    _params.medianKernel2 = req.medianKernel2;
     _metric =  _metric_factory.createMetricInstance(req.method, _groundTruthMap, _slamMap);
     _metric->calculateMetric(_params);
     res.result = _metric->getResult();
@@ -84,13 +92,6 @@ namespace ogm_evaluation
       res.matchedImage = _metric->getMatchedImage();
       res.mergedImage = _metric->getMergedImage();
     }
-   /* cv::imshow("groundTruthMap", _groundTruthMap );*/
-    //cv::waitKey(30);
-    //cv::imshow("slamMap", _slamMap);
-    /*cv::waitKey(30);*/
- /*   cv::imshow("diff", diff);*/
-    /*cv::waitKey(30);*/
-
     return true;
   }
 

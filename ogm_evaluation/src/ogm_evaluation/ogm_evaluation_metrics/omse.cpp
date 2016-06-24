@@ -59,6 +59,11 @@ namespace ogm_evaluation
     ROS_INFO_STREAM("GROUND POINTS= " << _groundTruthObstaclePoints.size());
     ROS_INFO_STREAM("SLAM POINTS= " << _slamObstaclePoints.size());
 
+    if(_groundTruthObstaclePoints.size() == 0 || _slamObstaclePoints.size() == 0)
+    {
+      ROS_ERROR("No Obstacle Points detected in one or neither maps");
+      exit(0);
+    }
     if(params.closestPointMethod == "Brushfire")
     {
       _brushfire = new int*[_groundTruthMap.rows];

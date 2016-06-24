@@ -72,6 +72,30 @@ namespace ogm_evaluation
     //!< indicates if on benchmarking mode
     bool benchmarking;
 
+    //!< indicates if gaussianBlur to be aplly in map1
+    bool gaussianBlur1;
+    
+    //!< indicates if gaussianBlur to be aplly in map2
+    bool gaussianBlur2;
+    
+    //!< indicates if medianBlur to be aplly in map1
+    bool medianBlur1;
+    
+    //!< indicates if medianBlur to be aplly in map2
+    bool medianBlur2;
+
+    //!< the size of the kernel to be used for blurring
+    double gaussianKernel1;
+ 
+    //!< the size of the kernel to be used for blurring
+    double gaussianKernel2;
+
+    //!< the size of the kernel to be used for blurring
+    double medianKernel1;
+
+    //!< the size of the kernel to be used for blurring
+    double medianKernel2;
+
   };
 }
 #endif

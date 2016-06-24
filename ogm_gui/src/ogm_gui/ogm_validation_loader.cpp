@@ -54,7 +54,14 @@ namespace ogm_gui
     matchingRatioSpinBox->setSingleStep(0.05);
     ransacSpinBox->setRange(-1, 10);
     ransacSpinBox->setSingleStep(1);
-
+    gaussianBlurSpinBox1->setRange(3,15);
+    gaussianBlurSpinBox1->setSingleStep(2);
+    gaussianBlurSpinBox2->setRange(3,15);
+    gaussianBlurSpinBox2->setSingleStep(2);
+    medianBlurSpinBox1->setRange(3,15);
+    medianBlurSpinBox1->setSingleStep(2);
+    medianBlurSpinBox2->setRange(3,15);
+    medianBlurSpinBox2->setSingleStep(2);
   }
 
   /**
@@ -128,6 +135,10 @@ namespace ogm_gui
     transSpinBox->setValue(0.5);
     matchingRatioSpinBox->setValue(0.7);
     ransacSpinBox->setValue(-1);
+    gaussianBlurSpinBox1->setValue(3);
+    gaussianBlurSpinBox2->setValue(3);
+    medianBlurSpinBox1->setValue(3);
+    medianBlurSpinBox2->setValue(3);
   }
 }
 

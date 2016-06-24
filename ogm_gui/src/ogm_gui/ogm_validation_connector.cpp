@@ -61,6 +61,22 @@ namespace ogm_gui
    QObject::connect(
       loader.ransacSpinBox, SIGNAL(valueChanged(double)),
       this, SLOT(ransacChanged(double)));
+ 
+   QObject::connect(
+      loader.gaussianBlurSpinBox1, SIGNAL(valueChanged(double)),
+      this, SLOT(gaussianBlurSpinBox1Changed(double)));
+  
+   QObject::connect(
+      loader.gaussianBlurSpinBox2, SIGNAL(valueChanged(double)),
+      this, SLOT(gaussianBlurSpinBox2Changed(double)));
+  
+   QObject::connect(
+      loader.medianBlurSpinBox1, SIGNAL(valueChanged(double)),
+      this, SLOT(medianBlurSpinBox1Changed(double)));
+  
+   QObject::connect(
+      loader.medianBlurSpinBox2, SIGNAL(valueChanged(double)),
+      this, SLOT(medianBlurSpinBox2Changed(double)));
 
    QObject::connect(
       loader.obstaclePushButton, SIGNAL(clicked(bool)),
@@ -106,6 +122,22 @@ namespace ogm_gui
       loader.scaleBrushfireCheckBox, SIGNAL(toggled(bool)),
       this, SLOT(scaleMapsBrushfireChecked()));
  
+   QObject::connect(
+      loader.gaussianBlurCheckBox1, SIGNAL(toggled(bool)),
+      this, SLOT(gaussianBlurCheckBox1Checked()));
+  
+   QObject::connect(
+      loader.gaussianBlurCheckBox2, SIGNAL(toggled(bool)),
+      this, SLOT(gaussianBlurCheckBox2Checked()));
+  
+   QObject::connect(
+      loader.medianBlurCheckBox1, SIGNAL(toggled(bool)),
+      this, SLOT(medianBlurCheckBox1Checked()));
+  
+   QObject::connect(
+      loader.medianBlurCheckBox2, SIGNAL(toggled(bool)),
+      this, SLOT(medianBlurCheckBox2Checked()));
+
 
    _detector = "SIFT";
    _descriptor = "SIFT";
@@ -118,7 +150,14 @@ namespace ogm_gui
    _binary = false;
    _manual_alignment = false;
    _scaleMapsBrushfire = false;
-
+   _gaussianBlur1 = false;
+   _gaussianBlur2 = false;
+   _medianBlur1 = false;
+   _medianBlur2 = false;
+   _gaussianKernel1 = 3;
+   _gaussianKernel2 = 3;
+   _medianKernel1 = 3;
+   _medianKernel2 = 3;
   }
 
    /**
@@ -209,6 +248,27 @@ namespace ogm_gui
     _ransacReprjError = t;
   }
 
+  void CValidationConnector::gaussianBlurSpinBox1Changed(double t)
+  {
+    _gaussianKernel1 = t;
+  }
+
+  void CValidationConnector::gaussianBlurSpinBox2Changed(double t)
+  {
+    _gaussianKernel2 = t;
+  }
+ 
+  void CValidationConnector::medianBlurSpinBox1Changed(double t)
+  {
+    _medianKernel1 = t;
+  }
+
+  void CValidationConnector::medianBlurSpinBox2Changed(double t)
+  {
+    _medianKernel2 = t;
+  }
+
+
   double CValidationConnector::getMatchingRatio()
   {
     return _matchingRatio;
@@ -218,6 +278,27 @@ namespace ogm_gui
   {
     return _ransacReprjError;
   }
+
+  double CValidationConnector:: getGaussianKernel1()
+  {
+    return _gaussianKernel1;
+  }
+  
+  double CValidationConnector:: getGaussianKernel2()
+  {
+    return _gaussianKernel2;
+  }
+  
+  double CValidationConnector:: getMedianKernel1()
+  {
+    return _medianKernel1;
+  }
+ 
+  double CValidationConnector:: getMedianKernel2()
+  {
+    return _medianKernel2;
+  }
+
   void CValidationConnector::showMapPosition(qreal x, qreal y)
   {
     loader.showMapXposition(x);
@@ -313,6 +394,29 @@ namespace ogm_gui
   {
     _scaleMapsBrushfire = !_scaleMapsBrushfire;
   }
+ 
+  void CValidationConnector::gaussianBlurCheckBox1Checked()
+  {
+    _gaussianBlur1 = !_gaussianBlur1;
+  }
+ 
+  void CValidationConnector::gaussianBlurCheckBox2Checked()
+  {
+    _gaussianBlur2 = !_gaussianBlur2;
+  }
+ 
+  void CValidationConnector::medianBlurCheckBox1Checked()
+  {
+    _medianBlur1 = !_medianBlur1;
+  }
+
+
+  void CValidationConnector::medianBlurCheckBox2Checked()
+  {
+    _medianBlur2 = !_medianBlur2;
+  }
+
+
 
   bool CValidationConnector::thresholdMaps()
   {
@@ -329,8 +433,27 @@ namespace ogm_gui
     return _scaleMapsBrushfire;
   }
 
+  bool CValidationConnector::gaussianBlur1()
+  {
+    return _gaussianBlur1;
+  }
+ 
+  bool CValidationConnector::medianBlur1()
+  {
+    return _medianBlur1;
+  }
 
-  /**
+  bool CValidationConnector::gaussianBlur2()
+  {
+    return _gaussianBlur2;
+  }
+
+  bool CValidationConnector::medianBlur2()
+  {
+    return _medianBlur2;
+  }
+
+   /**
   @brief Returns the CValidationLoader object
   @return QWidget*
   **/
