@@ -167,7 +167,7 @@ namespace ogm_gui
   @param ocgd [float] The map resolution (m/pixel)
   @return void
   **/
-  void CValidationConnector::updateMapInfo(const ogm_msgs::MapsMsg& msg)
+  void CValidationConnector::updateMapInfo(const ogm_communications::MapsMsg& msg)
   {
     loader.updateMapInfo(msg.groundTruthMap.info.width * msg.groundTruthMap.info.resolution,
                          msg.groundTruthMap.info.height * msg.groundTruthMap.info.resolution,

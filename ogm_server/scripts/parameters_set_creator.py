@@ -14,7 +14,7 @@ if __name__ == "__main__":
     matchers = ['BruteForce', 'BruteForce-L1', 'BruteForce-Hamming']
             
     matching_methods = ['SIMPLE', 'RATIO', 'CROSSCHECK']
-    matching_ratio = np.arange(0.5, 1.05, 0.05)
+    matching_ratio = np.arange(0.5, 1.00, 0.05)
     ransac_error = np.arange(-1, 8, 1)
     dist_norm = ['Manhattan']
     count = 1
@@ -35,7 +35,7 @@ if __name__ == "__main__":
                                 for dn in dist_norm:
                                     data = dict()
                                     data[count] = ['FEATURES', det, dec, m, mm, str(mr), str(r),
-                                            dn, 0,0,0,1,1,1,0,0,0]
+                                            dn, 0, 0, 0, 1, 1, 1, 0, 0, 0]
                                     # print data
                                     count = count + 1
                                     f.write(yaml.dump(data, default_flow_style=False))

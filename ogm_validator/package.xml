@@ -16,7 +16,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <exec_depend>ogm_msgs</exec_depend>
+  <exec_depend>ogm_communications</exec_depend>
   <exec_depend>ogm_server</exec_depend>
   <exec_depend>ogm_gui</exec_depend>
   <exec_depend>ogm_evaluation</exec_depend>

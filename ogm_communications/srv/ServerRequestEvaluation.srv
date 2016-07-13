@@ -18,7 +18,9 @@ float64 gaussianKernel1
 float64 gaussianKernel2
 float64 medianKernel1
 float64 medianKernel2
-ogm_msgs/MapPose transform
+ogm_communications/MapPose transform
+nav_msgs/OccupancyGrid groundTruthMap
+nav_msgs/OccupancyGrid slamMap
 ---
 float64 result
 sensor_msgs/Image matchedImage

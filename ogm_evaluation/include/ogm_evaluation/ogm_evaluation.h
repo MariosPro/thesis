@@ -24,8 +24,8 @@
 #include <math.h> 
 #include <ros/ros.h>
 #include <opencv2/opencv.hpp>
-#include "ogm_msgs/ServerRequestEvaluation.h"
-#include "ogm_msgs/MapPose.h"
+#include "ogm_communications/ServerRequestEvaluation.h"
+#include "ogm_communications/MapPose.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/parameters.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
 #include "ogm_evaluation/ogm_evaluation_utils/maps_alignment.h"
@@ -52,12 +52,12 @@ namespace ogm_evaluation
 
       /**
       @brief Service callback for performing map evaluation
-      @param req [ogm_msgs::ServerRequestEvaluation::Request&] The service request
-      @param res [ogm_msgs::ServerRequestEvaluation::Response&] The service response
+      @param req [ogm_communications::ServerRequestEvaluation::Request&] The service request
+      @param res [ogm_communications::ServerRequestEvaluation::Response&] The service response
       @return bool
       **/
-      bool evaluationCallback(ogm_msgs::ServerRequestEvaluation::Request& req,
-        ogm_msgs::ServerRequestEvaluation::Response& res);
+      bool evaluationCallback(ogm_communications::ServerRequestEvaluation::Request& req,
+        ogm_communications::ServerRequestEvaluation::Response& res);
 
     private:
 
@@ -85,7 +85,7 @@ namespace ogm_evaluation
         cv::Mat diff;
 
         //!<  the transform converting slamMap to groundTruthMap Coordinates System
-        ogm_msgs::MapPose _transform; 
+        ogm_communications::MapPose _transform; 
 
         //!< The Metrics Factory
         MetricFactory _metric_factory;

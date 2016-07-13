@@ -21,7 +21,7 @@
 
 #include <string>
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
-#include "ogm_msgs/MapPose.h"
+#include "ogm_communications/MapPose.h"
 /**
 @namespace ogm_evaluation
 @brief The main namespace for OGM Evaluation

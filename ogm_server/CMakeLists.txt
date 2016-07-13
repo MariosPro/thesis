@@ -3,10 +3,11 @@ project(ogm_server)
 
 find_package(catkin REQUIRED COMPONENTS
     roscpp
+    roslib
     tf
     nav_msgs
     sensor_msgs
-    ogm_msgs
+    ogm_communications
     map_server
 )
 
@@ -25,6 +26,7 @@ catkin_package(
     ogm_map_loader
   CATKIN_DEPENDS
     roscpp
+    roslib
     tf
     nav_msgs
 )
@@ -34,7 +36,7 @@ include_directories( include ${catkin_INCLUDE_DIRS})
 
 add_library(ogm_map_loader src/map_loader.cpp)
 target_link_libraries(ogm_map_loader
-    image_loader
+    #image_loader
     yaml-cpp
     ${catkin_LIBRARIES}
 )
@@ -46,7 +48,11 @@ target_link_libraries(ogm_map_server
 )
 
 add_library(ogm_server src/ogm_server.cpp)
-add_dependencies(ogm_server ogm_msgs_gencpp) # wait for ogm_msgs to be build
+add_dependencies(ogm_server ogm_communications_gencpp 
+  ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+  ${catkin_EXPORTED_TARGETS}
+)
+#   wait for ogm_communications to be build
 target_link_libraries(ogm_server
 	ogm_map_server
 	${catkin_LIBRARIES}
@@ -59,7 +65,10 @@ target_link_libraries(ogm_server_node
 )
 
 add_executable(ogm_load_map src/map_loader_node.cpp)
-add_dependencies(ogm_load_map ogm_msgs_gencpp) # wait for ogm_msgs to be build
+add_dependencies(ogm_load_map ogm_communications_gencpp
+  ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+  ${catkin_EXPORTED_TARGETS}
+)
 target_link_libraries(ogm_load_map
 	ogm_map_loader
 	${catkin_LIBRARIES}

@@ -161,14 +161,14 @@ namespace ogm_evaluation
     ROS_INFO_STREAM("GROUND TRUTH KEYPOINTS= " << _groundTruthKeypoints.size());
     ROS_INFO_STREAM("GROUND TRUTH DESCRIPTORS=" << _groundTruthDescriptors.rows << " "  << _groundTruthDescriptors.cols << " " << _groundTruthDescriptors.type());
     ROS_INFO_STREAM("MATCHING RATIO=" << _matchingRatio);
-  
+
    //!< draw Keypoints
    cv::Mat img_keypoints_1, img_keypoints_2;
    cv::drawKeypoints( groundTruthMap, _groundTruthKeypoints, img_keypoints_1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
    cv::drawKeypoints( slamMap, _slamKeypoints, img_keypoints_2, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
-/*   imshow("Keypoints 1", img_keypoints_1);*/
-   //imshow("Keypoints 2", img_keypoints_2);
-   /*cv::waitKey(1000);*/
+   imshow("Keypoints 1", img_keypoints_1);
+   imshow("Keypoints 2", img_keypoints_2);
+   cv::waitKey(1000);
 
     std::vector<cv::KeyPoint> slamMatchedKeyPoints, groundTruthMatchedKeyPoints;
     std::vector<cv::Point2f>  slamMatchedCoords, groundTruthMatchedCoords;

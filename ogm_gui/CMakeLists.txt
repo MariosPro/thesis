@@ -7,7 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   roslib
   tf
-  ogm_msgs
+  ogm_communications
   ogm_server
   nav_msgs
   map_server
@@ -58,7 +58,7 @@ catkin_package(
     roscpp
     roslib
     ogm_server
-    ogm_msgs
+    ogm_communications
     nav_msgs
     map_server
   INCLUDE_DIRS include
@@ -103,7 +103,12 @@ add_executable(ogm_gui_node
   src/ogm_gui/ogm_tools.cpp
    ${QT_FORMS_HPP} ${SAMPLE_MOC_SRCS}
 )
-# add_dependencies(ogm_gui_node ogm_msgs_gencpp )  # Wait for std messages to build
+ add_dependencies(ogm_gui_node 
+                 ogm_communications_gencpp 
+                 ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+                 ${catkin_EXPORTED_TARGETS}
+                 )  # Wait for ogm_communications to build
+
 target_link_libraries(ogm_gui_node
   ${catkin_LIBRARIES} 
   ${Qt5Widgets_LIBRARIES}

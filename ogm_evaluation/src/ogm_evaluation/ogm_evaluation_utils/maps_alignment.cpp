@@ -33,7 +33,7 @@ namespace ogm_evaluation
   @brief Method that aligns the two maps using the transform received from server
   @return void
   **/
-  void Alignment::alignMaps(const ogm_msgs::MapPose& _transform,
+  void Alignment::alignMaps(const ogm_communications::MapPose& _transform,
                        cv::Mat& _groundTruthMap,
                        cv::Mat& _slamMap)
   {

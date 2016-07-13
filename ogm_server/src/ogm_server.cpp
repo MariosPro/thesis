@@ -38,8 +38,8 @@ namespace ogm_server
     {
       std::string fname(argv[1]);
       std::string fname1(argv[2]);
-      _groundTruthMap.reset(new MapServer(fname));
-      _slamMap.reset(new MapServer(fname1));
+      _groundTruthMap.reset(new MapServer(fname, true));
+      _slamMap.reset(new MapServer(fname1, false));
     }
 
     _maps.groundTruthMap = _groundTruthMap->getMap();
@@ -63,12 +63,12 @@ namespace ogm_server
 
   /**
   @brief Service callback for loading both default maps
-  @param req [ogm_msgs::LoadMaps::Request&] The service request
-  @param res [ogm_msgs::LoadMaps::Response&] The service response
+  @param req [ogm_communications::LoadMaps::Request&] The service request
+  @param res [ogm_communications::LoadMaps::Response&] The service response
   @return bool
   **/
-  bool Server::loadMapsCallback(ogm_msgs::LoadMaps::Request& req,
-        ogm_msgs::LoadMaps::Response& res)
+  bool Server::loadMapsCallback(ogm_communications::LoadMapsFromServer::Request& req,
+        ogm_communications::LoadMapsFromServer::Response& res)
   {
       res.groundTruthMap = _groundTruthMap->getMap();
       res.slamMap = _slamMap->getMap();
@@ -80,39 +80,39 @@ namespace ogm_server
 
   /**
   @brief Service callback for loading the map from GUI
-  @param req [ogm_msgs::LoadExternalMap::Request&] The service request
-  @param res [ogm_msgs::LoadExternalMap::Response&] The service response
+  @param req [ogm_communications::LoadExternalMap::Request&] The service request
+  @param res [ogm_communications::LoadExternalMap::Response&] The service response
   @return bool
   **/
   bool Server::loadExternalMapCallback(
-    ogm_msgs::LoadExternalMap::Request& req,
-    ogm_msgs::LoadExternalMap::Response& res)
+    ogm_communications::LoadExternalMap::Request& req,
+    ogm_communications::LoadExternalMap::Response& res)
   {
     if(req.groundTruth)
     {
-      _groundTruthMap.reset(new MapServer(req.mapFile));
-      res.map = _groundTruthMap->getMap();
-      std::cout << req.mapFile << std::endl;
+      _groundTruthMap.reset(new MapServer(req.mapFile, req.groundTruth));
+      //res.map = _groundTruthMap->getMap();
+      ROS_INFO_STREAM("Load groundTruth Map " << req.mapFile);
     }
     else
     {
-      _slamMap.reset(new MapServer(req.mapFile));
-      res.map = _slamMap->getMap();
+      _slamMap.reset(new MapServer(req.mapFile, req.groundTruth));
+      //res.map = _slamMap->getMap();
+      ROS_INFO_STREAM("Load SLAM-produced Map " << req.mapFile);
     }
-    ROS_INFO("Sending Map to GUI");
 
     return true;
   }
 
   /**
   @brief Service callback for loading external both maps to server
-  @param req [ogm_msgs::LoadExternalMaps::Request&] The service request
-  @param res [ogm_msgs::LoadExternalMaps::Response&] The service response
+  @param req [ogm_communications::LoadExternalMaps::Request&] The service request
+  @param res [ogm_communications::LoadExternalMaps::Response&] The service response
   @return bool
   **/
   bool Server::loadExternalMapsCallback(
-    ogm_msgs::LoadExternalMaps::Request& req,
-    ogm_msgs::LoadExternalMaps::Response& res)
+    ogm_communications::LoadExternalMaps::Request& req,
+    ogm_communications::LoadExternalMaps::Response& res)
   {
     _groundTruthMap.reset(new MapServer(req.groundTruthMapFile));
     _slamMap.reset(new MapServer(req.slamMapFile));
@@ -121,22 +121,21 @@ namespace ogm_server
     
     ROS_INFO("Loading both Maps to server");
 
-
     return true;
   }
 
   /**
   @brief Service callback for map Evaluation request from GUI
-  @param req [ogm_msgs::GuiRequestEvaluation::Request&] The service request
-  @param res [ogm_msgs::GuiRequestEvaluation::Response&] The service response
+  @param req [ogm_communications::GuiRequestEvaluation::Request&] The service request
+  @param res [ogm_communications::GuiRequestEvaluation::Response&] The service response
   @return bool
   **/
   bool Server::guiRequestEvaluationCallback(
-    ogm_msgs::GuiRequestEvaluation::Request& req,
-    ogm_msgs::GuiRequestEvaluation::Response& res)
+    ogm_communications::GuiRequestEvaluation::Request& req,
+    ogm_communications::GuiRequestEvaluation::Response& res)
   {
     ros::ServiceClient client;
-    ogm_msgs::ServerRequestEvaluation srv;
+    ogm_communications::ServerRequestEvaluation srv;
 
    while (!ros::service::waitForService
        ("/ogm_evaluation/map_evaluation", ros::Duration(.1)) &&
@@ -146,7 +145,7 @@ namespace ogm_server
          ("Trying to register to /ogm_valuation/map_evaluation..");
     }
 
-    client = _nh.serviceClient<ogm_msgs::ServerRequestEvaluation>
+    client = _nh.serviceClient<ogm_communications::ServerRequestEvaluation>
        ("/ogm_evaluation/map_evaluation", true);
 
     srv.request.method = req.method;

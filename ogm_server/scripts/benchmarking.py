@@ -5,9 +5,9 @@ import rospkg
 import sys
 import os
 import yaml
-from ogm_msgs.srv import LoadExternalMaps
-from ogm_msgs.srv import GuiRequestEvaluation
-from ogm_msgs.msg import MapPose
+from ogm_communications.srv import LoadExternalMaps
+from ogm_communications.srv import GuiRequestEvaluation
+from ogm_communications.msg import MapPose
 
 def callLoadExternalMapsService(groundTruthMapFile, slamMapFile):
     rospy.wait_for_service('/ogm_server/load_static_maps_external')
@@ -28,16 +28,19 @@ def callServerRequestEvaluationService(service_dict):
         transform.scale = float(service_dict['scale'])
         transform.slamOffsetScale = float(service_dict['slamOffsetScale'])
         transform.groundTruthOffsetScale = float(service_dict['groundTruthOffsetscale'])
-        
-        resp = reqEval(service_dict['method'], service_dict['detector'], service_dict['descriptor'],
-                service_dict['matcher'], service_dict['matchingMethod'],
-                ' ', service_dict['distNorm'],
-                float(service_dict['matchingRatio']),
-                float(service_dict['ransacReprjError']),
-                int(service_dict['scaleMapsBrushfire']),
-                int(service_dict['binary']),
-                int(service_dict['manualAlignment']),
-                transform)
+
+        resp = reqEval(service_dict['method'], 
+                       service_dict['detector'], 
+                       service_dict['descriptor'],
+                       service_dict['matcher'],
+                       service_dict['matchingMethod'],
+                       ' ', service_dict['distNorm'],
+                       float(service_dict['matchingRatio']),
+                       float(service_dict['ransacReprjError']),
+                       int(service_dict['scaleMapsBrushfire']),
+                       int(service_dict['binary']),
+                       int(service_dict['manualAlignment']),
+                       transform)
         return resp.result
     except rospy.ServiceException, e:
         print "Service ServerRequestEvaluation call failed: %s"%e

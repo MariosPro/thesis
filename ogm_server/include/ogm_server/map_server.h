@@ -24,6 +24,7 @@
 //#include "tf/transform_broadcaster.h"
 //#include "nav_msgs/MapMetaData.h"
 /*#include "nav_msgs/OccupancyGrid.h"*/
+#include "ogm_communications/MapPublish.h"
 #include "ogm_server/map_loader.h"
 
 /**
@@ -45,8 +46,15 @@ namespace ogm_server {
       @param fname [const std::string&] The file name
       @return void
       **/
-      explicit MapServer(const std::string& fname);
-      
+      MapServer(const std::string& fname, bool groundTruth);
+     
+      /**
+      @brief Constructor by filename
+      @param fname [const std::string&] The file name
+      @return void
+      **/
+      MapServer(const std::string& fname);
+
       /**
       @brief Constructor by occupancy grid map
       @param map [const nav_msgs::OccupancyGrid&] The occupancy grid map
@@ -78,7 +86,7 @@ namespace ogm_server {
       //!< The ROS node handle
       ros::NodeHandle n;
       //!< ROS publisher for posting the map
-      /*ros::Publisher map_pub;*/
+      ros::Publisher map_pub;
       ////!< ROS publisher for posting the map metadata
       //ros::Publisher metadata_pub;
       ////!< ROS timer for tf posting
@@ -88,7 +96,8 @@ namespace ogm_server {
       //!< ROS map metadata message
       nav_msgs::MapMetaData meta_data_message_;
       //!< ROS occupancy grid message
-      nav_msgs::OccupancyGrid map_;
+      //nav_msgs::OccupancyGrid map_;
+      ogm_communications::MapPublish map_;
       //!< the map name
       std::string mapName_;
 

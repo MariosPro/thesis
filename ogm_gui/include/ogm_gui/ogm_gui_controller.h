@@ -31,10 +31,11 @@
 #include <QtCore/QTime>
 #include <QtCore/QTimer>
 
-#include <ogm_msgs/MapsMsg.h>
-#include <ogm_msgs/LoadExternalMap.h>
-#include <ogm_msgs/LoadMaps.h>
-#include <ogm_msgs/GuiRequestEvaluation.h>
+//#include <ogm_communications/MapsMsg.h>
+#include <ogm_communications/MapPublish.h>
+#include <ogm_communications/LoadExternalMap.h>
+#include <ogm_communications/LoadMapsFromServer.h>
+#include <ogm_communications/GuiRequestEvaluation.h>
 #include "ogm_gui/ogm_gui_connector.h"
 #include "ogm_gui/ogm_validation_connector.h"
 #include "ogm_gui/ogm_map_connector.h"
@@ -75,7 +76,7 @@ namespace ogm_gui
       ros::NodeHandle n_;
 
      //!< The MapsMsg hold the two Maps
-     ogm_msgs::MapsMsg maps_;
+     ogm_communications::MapsMsg maps_;
 
       //!< Timer for the drawing event
       QTimer* timer_;
@@ -142,10 +143,10 @@ namespace ogm_gui
 
       /**
       @brief Receives the occupancy grid map from ogm_server. Connects to "map" ROS topic
-      @param msg [const ogm_msgs::MapMsg&] The OGM message
+      @param msg [const ogm_communications::MapPublish&] The OGM message
       @return void
       **/
-      //void receiveMaps(const ogm_msgs::MapsMsg& msg);
+      void receiveMap(const ogm_communications::MapPublish& msg);
 
       /**
       @brief Initializes the ROS spin and Qt threads
@@ -170,7 +171,7 @@ namespace ogm_gui
       @param groundTruth [bool] var that shows if the map is groundTruth
       @return void
       **/
-      void receiveMapfromService(QString file_name, bool groundTruth);
+      void requestMap(QString file_name, bool groundTruth);
 
       /**
       @brief Receives the defaut maps as loaded from ogm_server.

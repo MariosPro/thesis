@@ -27,16 +27,34 @@ namespace ogm_server {
   @param fname [const std::string&] The file name
   @return void
   **/
+  MapServer::MapServer(const std::string& fname, bool groundTruth)
+  {
+    mapName_ = fname;
+
+    map_.map = map_loader::loadMap(fname);
+ 
+    map_.groundTruth = groundTruth;
+    meta_data_message_ = map_.map.info;
+
+    publishData();  
+  }
+  
+  /**
+  @brief Constructor by filename
+  @param fname [const std::string&] The file name
+  @return void
+  **/
   MapServer::MapServer(const std::string& fname)
   {
     mapName_ = fname;
 
-    map_ = map_loader::loadMap(fname);
+    map_.map = map_loader::loadMap(fname);
  
-    meta_data_message_ = map_.info;
+    meta_data_message_ = map_.map.info;
 
     //publishData();  
   }
+
 
   /**
   @brief Constructor by occupancy grid map
@@ -46,16 +64,16 @@ namespace ogm_server {
   MapServer::MapServer(const nav_msgs::OccupancyGrid& map) 
   {
 
-    map_ = map;
+    map_.map = map;
 
-    meta_data_message_ = map_.info;
+    meta_data_message_ = map_.map.info;
 
-    //publishData();
+    publishData();
   }
 
   nav_msgs::OccupancyGrid MapServer::getMap()
   {
-    return map_;
+    return map_.map;
   }
   
   std::string MapServer::getName()
@@ -66,29 +84,29 @@ namespace ogm_server {
   @brief Publishes the map data and metadata
   @return void
   **/
-/*  void MapServer::publishData(void) */
-  //{
-    //[>ROS_INFO_STREAM("PUB");<]
-    ////ROS_INFO_STREAM(" "<< map_.ground_truth <<" " 
-                        ////<<map_.map.info.width << " " <<
-                    ////map_.map.info.height << " " <<
-                    ////map_.map.info.resolution << " " << 
-                    ////map_.map.info.origin.position.x << " " <<
-                    ////map_.map.info.origin.position.y 
-                    //[>);<]
+  void MapServer::publishData(void) 
+  {
+    bool groundTruth = map_.groundTruth;
+    //ROS_INFO_STREAM(" "<< map_.ground_truth <<" " 
+                        //<<map_.map.info.width << " " <<
+                    //map_.map.info.height << " " <<
+                    //map_.map.info.resolution << " " << 
+                    //map_.map.info.origin.position.x << " " <<
+                    //map_.map.info.origin.position.y 
+                    //);
 
 
-    //tfTimer = n.createTimer(ros::Duration(0.1), 
+  /*  tfTimer = n.createTimer(ros::Duration(0.1), */
       //&MapServer::publishTransform, this);
 
     ////!< Latched publisher for metadata
     //metadata_pub= n.advertise<nav_msgs::MapMetaData>("map_metadata", 1, true);
-    //metadata_pub.publish( meta_data_message_ );
+    /*metadata_pub.publish( meta_data_message_ );*/
 
-    ////!< Latched publisher for data
-    //map_pub = n.advertise<nav_msgs::OccupancyGrid>("map", 1, true);
-    //map_pub.publish( map_ );
-  //}
+    //!< Latched publisher for data
+    map_pub = n.advertise<ogm_communications::MapPublish>("map", 1, true);
+    map_pub.publish( map_ );
+  }
 
   //[>*
   //@brief Publishes the map to map_static transform

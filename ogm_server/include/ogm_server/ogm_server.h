@@ -32,13 +32,13 @@
 #include "nav_msgs/MapMetaData.h"
 #include "nav_msgs/OccupancyGrid.h"
 #include <ogm_server/map_server.h>
-#include <ogm_msgs/MapsMsg.h>
-#include <ogm_msgs/LoadMap.h>
-#include <ogm_msgs/LoadMaps.h>
-#include <ogm_msgs/LoadExternalMap.h>
-#include <ogm_msgs/LoadExternalMaps.h>
-#include <ogm_msgs/GuiRequestEvaluation.h>
-#include <ogm_msgs/ServerRequestEvaluation.h>
+#include <ogm_communications/MapsMsg.h>
+//#include <ogm_communications/LoadMap.h>
+#include <ogm_communications/LoadMapsFromServer.h>
+#include <ogm_communications/LoadExternalMap.h>
+#include <ogm_communications/LoadExternalMaps.h>
+#include <ogm_communications/GuiRequestEvaluation.h>
+#include <ogm_communications/ServerRequestEvaluation.h>
 /**
 @namespace ogm_server
 @brief The main namespace for OGM Server
@@ -69,48 +69,48 @@ namespace ogm_server {
 
       /**
       @brief Service callback for loading both default maps
-      @param req [ogm_msgs::LoadMaps::Request&] The service request
-      @param res [ogm_msgs::LoadMaps::Response&] The service response
+      @param req [ogm_communications::LoadMapsFromServer::Request&] The service request
+      @param res [ogm_communications::LoadMapsFromServer::Response&] The service response
       @return bool
       **/
-      bool loadMapsCallback(ogm_msgs::LoadMaps::Request& req,
-        ogm_msgs::LoadMaps::Response& res);
+      bool loadMapsCallback(ogm_communications::LoadMapsFromServer::Request& req,
+        ogm_communications::LoadMapsFromServer::Response& res);
 
       /**
       @brief Service callback for loading the map
-      @param req [ogm_msgs::LoadMap::Request&] The service request
-      @param res [ogm_msgs::LoadMap::Response&] The service response
+      @param req [ogm_communications::LoadMap::Request&] The service request
+      @param res [ogm_communications::LoadMap::Response&] The service response
       @return bool
       **/
-      bool loadMapCallback(ogm_msgs::LoadMap::Request& req,
-        ogm_msgs::LoadMap::Response& res);
+      /*bool loadMapCallback(ogm_communications::LoadMap::Request& req,*/
+        //ogm_communications::LoadMap::Response& res);
 
       /**
       @brief Service callback for loading the map from GUI
-      @param req [ogm_msgs::LoadExternalMap::Request&] The service request
-      @param res [ogm_msgs::LoadExternalMap::Response&] The service response
+      @param req [ogm_communications::LoadExternalMap::Request&] The service request
+      @param res [ogm_communications::LoadExternalMap::Response&] The service response
       @return bool
       **/
-      bool loadExternalMapCallback(ogm_msgs::LoadExternalMap::Request& req,
-        ogm_msgs::LoadExternalMap::Response& res);
+      bool loadExternalMapCallback(ogm_communications::LoadExternalMap::Request& req,
+        ogm_communications::LoadExternalMap::Response& res);
  
       /**
       @brief Service callback for loading external both Maps to server
-      @param req [ogm_msgs::LoadExternalMap::Request&] The service request
-      @param res [ogm_msgs::LoadExternalMap::Response&] The service response
+      @param req [ogm_communications::LoadExternalMap::Request&] The service request
+      @param res [ogm_communications::LoadExternalMap::Response&] The service response
       @return bool
       **/
-      bool loadExternalMapsCallback(ogm_msgs::LoadExternalMaps::Request& req,
-        ogm_msgs::LoadExternalMaps::Response& res);
+      bool loadExternalMapsCallback(ogm_communications::LoadExternalMaps::Request& req,
+        ogm_communications::LoadExternalMaps::Response& res);
 
       /**
       @brief Service callback for map Evaluation request form GUI
-      @param req [ogm_msgs::GuiRequestEvaluation::Request&] The service request
-      @param res [ogm_msgs::GuiRequestEvaluation::Response&] The service response
+      @param req [ogm_communications::GuiRequestEvaluation::Request&] The service request
+      @param res [ogm_communications::GuiRequestEvaluation::Response&] The service response
       @return bool
       **/
-      bool guiRequestEvaluationCallback(ogm_msgs::GuiRequestEvaluation::Request& req,
-        ogm_msgs::GuiRequestEvaluation::Response& res);
+      bool guiRequestEvaluationCallback(ogm_communications::GuiRequestEvaluation::Request& req,
+        ogm_communications::GuiRequestEvaluation::Response& res);
 
     private:
 
@@ -124,7 +124,7 @@ namespace ogm_server {
       MapServerPtr _slamMap;
 
       //!< Service server for loading maps from files 
-      ros::ServiceServer _loadMapService;
+      //ros::ServiceServer _loadMapService;
       
       //!< Service server for loading maps from files
       ros::ServiceServer _loadMapsService;
@@ -151,7 +151,7 @@ namespace ogm_server {
       tf::TransformBroadcaster tfBroadcaster;
       
       //!< The Maps Msg
-      ogm_msgs::MapsMsg _maps;
+      ogm_communications::MapsMsg _maps;
   };
 }
 

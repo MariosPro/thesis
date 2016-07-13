@@ -32,12 +32,12 @@ namespace ogm_evaluation
 
     /**
     @brief Service callback for performing map evaluation
-    @param req [ogm_msgs::ServerRequestEvaluation::Request&] The service request
-    @param res [ogm_msgs::ServerRequestEvaluation::Response&] The service response
+    @param req [ogm_communications::ServerRequestEvaluation::Request&] The service request
+    @param res [ogm_communications::ServerRequestEvaluation::Response&] The service response
     @return bool
     **/
-    bool MapEvaluator::evaluationCallback(ogm_msgs::ServerRequestEvaluation::Request& req,
-      ogm_msgs::ServerRequestEvaluation::Response& res)
+    bool MapEvaluator::evaluationCallback(ogm_communications::ServerRequestEvaluation::Request& req,
+      ogm_communications::ServerRequestEvaluation::Response& res)
     {
       _groundTruthMap = mapToMat(req.groundTruthMap);
       _slamMap = mapToMat(req.slamMap);

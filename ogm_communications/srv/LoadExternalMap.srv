@@ -1,4 +1,3 @@
 string  mapFile
 bool groundTruth
 ---
-nav_msgs/OccupancyGrid  map

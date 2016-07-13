@@ -5,7 +5,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   roslib
   cv_bridge
-  ogm_msgs
+  ogm_communications
   geometry_msgs
   nav_msgs
   sensor_msgs
@@ -29,71 +29,102 @@ catkin_package(
     roscpp
     roslib
     cv_bridge
-    ogm_msgs
+    ogm_communications
     geometry_msgs
     nav_msgs
     sensor_msgs
 )
 
 ######################### Metrics ######################################
-add_library(ogm_evaluation_utils
-            src/ogm_evaluation/ogm_evaluation_utils/affine2DEstimator.cpp
-            src/ogm_evaluation/ogm_evaluation_utils/map_utils.cpp)
-add_dependencies(ogm_evaluation_utils ogm_msgs_gencpp) #wait for ogm_msgs to be build
-target_link_libraries(ogm_evaluation_utils ${catkin_LIBRARIES})
+add_library(${PROJECT_NAME}_utils
+            src/${PROJECT_NAME}/ogm_evaluation_utils/affine2DEstimator.cpp
+            src/${PROJECT_NAME}/ogm_evaluation_utils/map_utils.cpp)
+add_dependencies(${PROJECT_NAME}_utils 
+                ogm_communications_gencpp 
+                ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+                ${catkin_EXPORTED_TARGETS}
+                ) #wait for ogm_communications to be build
 
-add_library(ogm_evaluation_alignment
-            src/ogm_evaluation/ogm_evaluation_utils/maps_alignment.cpp)
-add_dependencies(ogm_evaluation_alignment ogm_msgs_gencpp) #wait for ogm_msgs to be build
-target_link_libraries(ogm_evaluation_alignment
+target_link_libraries(${PROJECT_NAME}_utils ${catkin_LIBRARIES})
+
+add_library(${PROJECT_NAME}_alignment
+            src/${PROJECT_NAME}/ogm_evaluation_utils/maps_alignment.cpp)
+
+add_dependencies(${PROJECT_NAME}_alignment
+                ogm_communications_gencpp 
+                ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+                ${catkin_EXPORTED_TARGETS}
+                ) #wait for ogm_communications to be build
+
+target_link_libraries(${PROJECT_NAME}_alignment
                       ${catkin_LIBRARIES}
-                      ogm_evaluation_utils)
+                      ${PROJECT_NAME}_utils)
+
 add_library(ogm_custom_descriptors 
-            src/ogm_evaluation/ogm_evaluation_descriptors/radius_statistics_descriptor.cpp
-            src/ogm_evaluation/ogm_evaluation_descriptors/circle_intersection_descriptor.cpp
-            src/ogm_evaluation/ogm_evaluation_descriptors/mean_rays_descriptor.cpp)
+            src/${PROJECT_NAME}/ogm_evaluation_descriptors/radius_statistics_descriptor.cpp
+            src/${PROJECT_NAME}/ogm_evaluation_descriptors/circle_intersection_descriptor.cpp
+            src/${PROJECT_NAME}/ogm_evaluation_descriptors/mean_rays_descriptor.cpp)
 target_link_libraries(ogm_custom_descriptors ${catkin_LIBRARIES})
 
-add_library(ogm_metric_base src/ogm_evaluation/ogm_evaluation_metrics/metric_base.cpp)
+add_library(ogm_metric_base src/${PROJECT_NAME}/ogm_evaluation_metrics/metric_base.cpp)
+
 target_link_libraries(ogm_metric_base ${catkin_LIBRARIES})
 
-add_library(ogm_omse_metric src/ogm_evaluation/ogm_evaluation_metrics/omse.cpp)
+add_library(ogm_omse_metric src/${PROJECT_NAME}/ogm_evaluation_metrics/omse.cpp)
+
 target_link_libraries(ogm_omse_metric 
                       ${catkin_LIBRARIES}
                       ogm_metric_base
-                      ogm_evaluation_utils
-                      ogm_evaluation_alignment)
+                      ${PROJECT_NAME}_utils
+                      ${PROJECT_NAME}_alignment)
 
-add_library(ogm_descriptor_factory src/ogm_evaluation/ogm_evaluation_descriptors/descriptor_factory.cpp)
+add_library(ogm_descriptor_factory src/${PROJECT_NAME}/ogm_evaluation_descriptors/descriptor_factory.cpp)
+
 target_link_libraries(ogm_descriptor_factory ${catkin_LIBRARIES} ogm_custom_descriptors)
 
-add_library(ogm_feature_metrics src/ogm_evaluation/ogm_evaluation_metrics/feature_metrics.cpp)
-add_dependencies(ogm_feature_metrics ogm_msgs_gencpp) #wait for ogm_msgs to be build
+add_library(ogm_feature_metrics src/${PROJECT_NAME}/ogm_evaluation_metrics/feature_metrics.cpp)
+
+add_dependencies(ogm_feature_metrics 
+                ogm_communications_gencpp
+                ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+                ${catkin_EXPORTED_TARGETS}
+) #wait for ogm_communications to be build
 target_link_libraries(ogm_feature_metrics 
                       ${catkin_LIBRARIES}
                       ${OpenCV_LIBRARIES}
                       ogm_metric_base
                       ogm_descriptor_factory
-                      ogm_evaluation_utils
-                      ogm_evaluation_alignment)
+                      ${PROJECT_NAME}_utils
+                      ${PROJECT_NAME}_alignment)
 
-add_library(ogm_metric_factory src/ogm_evaluation/ogm_metric_factory.cpp)
+add_library(ogm_metric_factory src/${PROJECT_NAME}/ogm_metric_factory.cpp)
 target_link_libraries(ogm_metric_factory
                       ${catkin_LIBRARIES}
                       ogm_omse_metric
                       ogm_feature_metrics
                       )
 
-add_library (ogm_evaluation src/ogm_evaluation/ogm_evaluation.cpp)
-add_dependencies(ogm_evaluation ogm_msgs_gencpp) #wait for ogm_msgs to be build
-target_link_libraries(ogm_evaluation ${catkin_LIBRARIES} ogm_metric_factory)
+add_library (${PROJECT_NAME} src/ogm_evaluation/ogm_evaluation.cpp)
+add_dependencies(${PROJECT_NAME}
+                ogm_communications_gencpp
+                ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+                ${catkin_EXPORTED_TARGETS}
+) #wait for ogm_communications to be build
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ogm_metric_factory)
 
-add_executable(ogm_evaluation_node src/ogm_evaluation/ogm_evaluation_node.cpp)
-add_dependencies(ogm_evaluation_node ogm_msgs_gencpp) # wait for ogm_msgs to be build
-target_link_libraries(ogm_evaluation_node ${catkin_LIBRARIES} ogm_evaluation)
+add_executable(${PROJECT_NAME}_node src/ogm_evaluation/ogm_evaluation_node.cpp)
+add_dependencies(${PROJECT_NAME}_node 
+                ogm_communications_gencpp
+                ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+                ${catkin_EXPORTED_TARGETS}
+) #wait for ogm_communications to be build
 
-add_executable(map_saver src/ogm_evaluation/ogm_evaluation_utils/map_saver.cpp)
+target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES} ogm_evaluation)
+
+add_executable(map_saver src/${PROJECT_NAME}/ogm_evaluation_utils/map_saver.cpp)
+
 target_link_libraries(map_saver ${catkin_LIBRARIES} )
+
 # Install libraries
 install(TARGETS
     ogm_metric_base
@@ -102,8 +133,8 @@ install(TARGETS
     ogm_descriptor_factory
     ogm_feature_metrics
     ogm_metric_factory
-    ogm_evaluation_utils
-    ogm_evaluation
+    ${PROJECT_NAME}_utils
+    ${PROJECT_NAME}
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
@@ -115,6 +146,6 @@ install(DIRECTORY include/${PROJECT_NAME}/
 )
 
 # Install excecutables
-install(TARGETS ogm_evaluation_node
+install(TARGETS ${PROJECT_NAME}_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

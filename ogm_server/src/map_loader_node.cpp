@@ -19,9 +19,11 @@
 ******************************************************************************/
 
 #include "ogm_server/map_loader.h"
-#include <ogm_msgs/LoadExternalMap.h>
+#include "ros/ros.h"
+#include <ros/package.h>
+#include <ogm_communications/LoadExternalMap.h>
 
-#define USAGE "USAGE: load_map <map_file.yaml> true/false (true for ground truth)"
+#define USAGE "USAGE: ogm_load_map <map_file.yaml> true/false (true for ground truth)"
 
 /**
 @brief Main function of the server node
@@ -39,32 +41,46 @@ int main(int argc, char** argv) {
     ros::ServiceClient client;
 
     while (!ros::service::waitForService(
-      "/map_server/load_static_map_external", ros::Duration(.1)) && ros::ok()) 
+      "/ogm_server/load_static_map_external", ros::Duration(.1)) && ros::ok()) 
     {
       ROS_WARN(
         "Trying to register to /ogm_server/load_static_map_external...");
     }
-    client = nh.serviceClient<ogm_msgs::LoadExternalMap>
+    client = nh.serviceClient<ogm_communications::LoadExternalMap>
       ("/ogm_server/load_static_map_external", true);
 
-    ogm_msgs::LoadExternalMap srv;
+    ogm_communications::LoadExternalMap srv;
 
-    if(argv[2])
-      srv.request.groundTruth = true;
+    std::stringstream ss(argv[2]);
+    bool b;
+
+    if(!(ss >> std::boolalpha >> b)) {
+       ROS_ERROR("%s", USAGE);
+        return -1;
+    }
+  
     else
-      srv.request.groundTruth = false;
+    {
+      if(b)
+        srv.request.groundTruth = true;
+      else
+        srv.request.groundTruth = false;
+    }
 
-    srv.request.mapFile = std::string(argv[1]);
+    std::string pkg = "ogm_resources";
+    srv.request.mapFile = ros::package::getPath(pkg) +
+           std::string("/maps/") + std::string(argv[1]);
 
-    if (client.call(srv)) {
+    if (client.call(srv)) 
+    {
       ROS_INFO("Map successfully loaded");
       return 0;
     }
-    else {
-      ROS_ERROR("Could not load map, maybe already loaded...");
+    else 
+    {
+      ROS_ERROR("[ogm_mad_load]: Could not load map, maybe already loaded...");
       return -1;
     }
-
   }
   else {
     ROS_ERROR("%s", USAGE);

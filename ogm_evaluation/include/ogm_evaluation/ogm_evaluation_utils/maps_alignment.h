@@ -21,7 +21,7 @@
 
 #include <opencv2/opencv.hpp>
 #include <ros/ros.h>
-#include "ogm_msgs/MapPose.h"
+#include "ogm_communications/MapPose.h"
 #include "ogm_evaluation/ogm_evaluation_utils/map_utils.h"
 
 /**
@@ -35,7 +35,7 @@ namespace ogm_evaluation
     public:
       Alignment();
 
-      void alignMaps(const ogm_msgs::MapPose& _transform,
+      void alignMaps(const ogm_communications::MapPose& _transform,
                      cv::Mat& _groundTruthMap,
                      cv::Mat& _slamMap);
 

@@ -22,7 +22,7 @@
 #define OGM_VALIDATION_CONNECTOR
 
 #include "ogm_gui/ogm_validation_loader.h"
-#include "ogm_msgs/MapsMsg.h"
+#include "ogm_communications/MapsMsg.h"
 
 /**
 @namespace ogm_gui
@@ -110,7 +110,7 @@ namespace ogm_gui
       @param ocgd [float] The map resolution (m/pixel)
       @return void
       **/
-      void updateMapInfo(const ogm_msgs::MapsMsg& msg);
+      void updateMapInfo(const ogm_communications::MapsMsg& msg);
 
       void resetMapProperties();
 

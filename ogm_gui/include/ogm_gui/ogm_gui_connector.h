@@ -22,7 +22,7 @@
 #define OGM_GUI_CONNECTOR
 
 #include "ogm_server/map_loader.h"
-#include <ogm_msgs/LoadExternalMap.h>
+#include <ogm_communications/LoadExternalMap.h>
 #include "ogm_gui/ogm_gui_loader.h"
 
 /**

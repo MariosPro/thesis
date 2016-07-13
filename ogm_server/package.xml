@@ -19,9 +19,10 @@
   <build_depend>roslint</build_depend>
 
   <depend>roscpp</depend>
+  <depend>roslib</depend>
   <depend>tf</depend>
   <depend>nav_msgs</depend>
-  <depend>ogm_msgs</depend>
+  <depend>ogm_communications</depend>
   <depend>sensor_msgs</depend>
   <depend>map_server</depend>
 

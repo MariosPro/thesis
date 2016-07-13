@@ -67,10 +67,15 @@ namespace ogm_gui
   **/
   void CGuiController::initializeCommunications(void)
   {
+    map_subscriber_ = n_.subscribe(
+      "map", 
+      1, 
+      &CGuiController::receiveMap,
+      this);
 
     QObject::connect(
       &gui_connector_, SIGNAL(requestMap(QString, bool)),
-      this, SLOT(receiveMapfromService(QString, bool)));
+      this, SLOT(requestMap(QString, bool)));
 
     QObject::connect(
       &gui_connector_,SIGNAL(loadDefaultMaps()),
@@ -202,7 +207,7 @@ namespace ogm_gui
     map_lock_ = true;
     
     ros::ServiceClient client;
-    ogm_msgs::LoadMaps srv;
+    ogm_communications::LoadMapsFromServer srv;
 
    while (!ros::service::waitForService
        ("/ogm_server/load_maps", ros::Duration(.1)) &&
@@ -212,7 +217,7 @@ namespace ogm_gui
          ("Trying to register to /ogm_server/load_maps...");
     }
 
-    client = n_.serviceClient<ogm_msgs::LoadMaps>
+    client = n_.serviceClient<ogm_communications::LoadMapsFromServer>
        ("/ogm_server/load_maps", true);
 
     srv.request.request = "Send Maps";
@@ -261,16 +266,10 @@ namespace ogm_gui
   @param groundTruth [bool] var that shows if the map is groundTruth
   @return void
   **/
-  void CGuiController::receiveMapfromService(QString file_name, bool groundTruth)
+  void CGuiController::requestMap(QString file_name, bool groundTruth)
   {
-    while(map_lock_)
-    {
-      usleep(100);
-    }
-    map_lock_= true;
-
     ros::ServiceClient client;
-    ogm_msgs::LoadExternalMap srv;
+    ogm_communications::LoadExternalMap srv;
 
     while (!ros::service::waitForService
        ("/ogm_server/load_static_map_external", ros::Duration(.1)) &&
@@ -280,7 +279,7 @@ namespace ogm_gui
          ("Trying to register to /ogm_server/load_static_map_external...");
     }
 
-    client = n_.serviceClient<ogm_msgs::LoadExternalMap>
+    client = n_.serviceClient<ogm_communications::LoadExternalMap>
        ("/ogm_server/load_static_map_external", true);
 
     srv.request.mapFile = file_name.toStdString();
@@ -290,22 +289,36 @@ namespace ogm_gui
     {
       if(groundTruth)
       {
-        ROS_INFO("Ground Truth Map successfully loaded from GUI");
-        maps_.groundTruthMap = srv.response.map;
+        ROS_INFO("[ogm_gui]: Request for loading ground truth map sent");
       }
       else
       {
-        ROS_INFO("Slam - produced Map successfully loaded from GUI");
-        maps_.slamMap = srv.response.map;
+        ROS_INFO("[ogm_gui]: Request for loading slam-produced map sent");
       }
     }
     else
     {
        ROS_ERROR("Could not load Map, maybe already loaded...");
     }
-  
+  }
+
+  /**
+  @brief Receives the occupancy grid map from ogm_server. Connects to "map" ROS topic
+  @param msg [const ogm_communications::MapPublish&] The OGM message
+  @return void
+   **/
+  void CGuiController::receiveMap(const ogm_communications::MapPublish& msg)
+  {
+    while(map_lock_)
+    {
+      usleep(100);
+    }
+    map_lock_= true;
+    bool groundTruth = msg.groundTruth;
+
     if(groundTruth)
     {
+      maps_.groundTruthMap = msg.map;
        initial_map_ = running_map_ = QImage(maps_.groundTruthMap.info.width, maps_.groundTruthMap.info.height, QImage::Format_RGB32);
        running_map_ = convertOccupancyGridToQImage(running_map_, maps_.groundTruthMap);
        initial_map_ = running_map_.mirrored(false,true);
@@ -314,6 +327,7 @@ namespace ogm_gui
 
     else
     {
+       maps_.slamMap = msg.map;
        initial_slam_map_ = running_map_ = QImage(maps_.slamMap.info.width, maps_.slamMap.info.height, QImage::Format_RGB32);
        running_map_ = convertOccupancyGridToQImage(running_map_, maps_.slamMap);
       initial_slam_map_ = running_map_.mirrored(false,true);
@@ -437,7 +451,7 @@ namespace ogm_gui
   void CGuiController::requestMetric(QString metricMethod)
   {
     ros::ServiceClient client;
-    ogm_msgs::GuiRequestEvaluation srv;
+    ogm_communications::GuiRequestEvaluation srv;
 
     while (!ros::service::waitForService
        ("/ogm_server/map_evaluation", ros::Duration(.1)) &&
@@ -447,7 +461,7 @@ namespace ogm_gui
          ("Trying to register to /ogm_server/map_evaluation...");
     }
 
-    client = n_.serviceClient<ogm_msgs::GuiRequestEvaluation>
+    client = n_.serviceClient<ogm_communications::GuiRequestEvaluation>
        ("/ogm_server/map_evaluation", true);
 
     QPointF pos =  map_connector_.getPosition();
