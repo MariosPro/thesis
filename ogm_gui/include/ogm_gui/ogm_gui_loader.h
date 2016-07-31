@@ -53,14 +53,25 @@ namespace ogm_gui
 
       //!< The action of properties button 
       /* QAction *actionProperties; */
+
       //!< The action of toggle grid button
       QAction *actionGrid;
-      //!< The action of loading a map button
+
+      //!< The action of loading a ground thruth map button
       QAction *actionLoadMap;
+
+      //!< The action of loading a SLAM-produced map button
+      QAction *actionLoadSlamMap;
+
+      //!< The action of loading the default maps from server button
+      QAction *actionLoadMapsFromServer;
+
       //!< The action of zooming in button
       QAction *actionZoomIn;
+
       //!< The action of zooming out button
       QAction *actionZoomOut;
+
       //!< The action of map adjusted button
       QAction *actionAdjusted;
 

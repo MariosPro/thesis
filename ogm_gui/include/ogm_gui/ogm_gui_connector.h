@@ -21,6 +21,8 @@
 #ifndef OGM_GUI_CONNECTOR
 #define OGM_GUI_CONNECTOR
 
+#include "ogm_server/map_loader.h"
+#include <ogm_communications/LoadExternalMap.h>
 #include "ogm_gui/ogm_gui_loader.h"
 
 /**
@@ -139,7 +141,7 @@ namespace ogm_gui
       @brief Unchecks the zoom in & out buttons when right click in map is pushed
       @return void
       **/
-      void uncheckZoomButtons(void);
+      //void uncheckZoomButtons(void);
 
     //------------------------------------------------------------------------//
     public Q_SLOTS:
@@ -163,22 +165,16 @@ namespace ogm_gui
       void actionLoadMapTriggered(void);
 
       /**
-      @brief Qt slot that is called when the zoom in tool button is pressed
+      @brief Qt slot that is called when the LoadSlamMap tool button is pressed
       @return void
       **/
-      void actionZoomInTriggered(void);
+      void actionLoadSlamMapTriggered(void);
 
       /**
-      @brief Qt slot that is called when the zoom out tool button is pressed
+      @brief Qt slot that is called when the LoadMapsfromServer tool button is pressed
       @return void
       **/
-      void actionZoomOutTriggered(void);
-
-      /**
-      @brief Qt slot that is called when the adjusted map visualization tool button is pressed
-      @return void
-      **/
-      void actionAdjustedTriggered(void);
+      void actionLoadMapsFromServerTriggered(void);
 
       /**
       @brief Qt slot that is called when the grid status has changed
@@ -190,25 +186,18 @@ namespace ogm_gui
     Q_SIGNALS:
 
       /**
-      @brief Qt signal that is emmited in GuiConnector::actionZoomInTriggered and connects to MapLoader::setCursorZoomIn
-      @param state [bool] Toggle flag
+      @brief Emmited in GuiConnector::actionLoadMapTriggered and connects to GuiController::receiveMap
+      @param img [QString] The map filename to be loaded
+      @param groundTruth [bool] if map to be loaded is groundTruth
       @return void
       **/
-      void setZoomInCursor(bool state);
+      void requestMap (QString mapFile, bool groundTruth);
 
       /**
-      @brief Qt signal that is emmited in GuiConnector::actionZoomOutTriggered and connects to MapLoader::setCursorZoomOut
-      @param state [bool] Toggle flag
+      @brief Emmited in GuiConnector::actionLoadMapsfromServerTriggered and connects to GuiController::receiveMapsFromServer
       @return void
       **/
-      void setZoomOutCursor(bool state);
-
-      /**
-      @brief Qt signal that is emmited when the Adjust map button is pressed
-      @param state [bool] Toggle flag
-      @return void
-      **/
-      void setAdjustedCursor(bool state);
+      void loadDefaultMaps(void);
 
       /**
       @brief Signal emmited on exit pressed

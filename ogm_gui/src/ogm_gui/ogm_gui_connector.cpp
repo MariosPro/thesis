@@ -50,16 +50,12 @@ namespace ogm_gui
       this,SLOT(actionLoadMapTriggered()));
 
     QObject::connect(
-      loader_.actionZoomIn,SIGNAL(triggered(bool)),
-      this,SLOT(actionZoomInTriggered()));
+      loader_.actionLoadSlamMap,SIGNAL(triggered(bool)),
+      this,SLOT(actionLoadSlamMapTriggered()));
 
     QObject::connect(
-      loader_.actionZoomOut,SIGNAL(triggered(bool)),
-      this,SLOT(actionZoomOutTriggered()));
-
-    QObject::connect(
-      loader_.actionAdjusted,SIGNAL(triggered(bool)),
-      this,SLOT(actionAdjustedTriggered()));
+      loader_.actionLoadMapsFromServer,SIGNAL(triggered(bool)),
+      this,SLOT(actionLoadMapsFromServerTriggered()));
 
     QObject::connect(
       loader_.actionGrid,SIGNAL(triggered(bool)),
@@ -85,47 +81,50 @@ namespace ogm_gui
   **/
   void CGuiConnector::actionLoadMapTriggered(void)
   {
-/*     QString file_name = QFileDialog::getOpenFileName( */
-      // &loader_,
-      // tr("Load map"),
-      // QString().fromStdString(
-        // ogm_gui_tools::getRosPackagePath("ogm_resources") +
-          // std::string("/maps")),
-        // tr("Yaml map files (*.yaml)"));
-    // if(file_name.isEmpty() || file_name.isNull())
-    // {
-      // return;
-    // }
+     QString file_name = QFileDialog::getOpenFileName( 
+       &loader_,
+       tr("Load map"),
+       QString().fromStdString(
+         ogm_gui_tools::getRosPackagePath("ogm_resources") +
+           std::string("/maps")),
+         tr("Yaml map files (*.yaml)"));
+     if(file_name.isEmpty() || file_name.isNull())
+     {
+       return;
+     }
 
-    // ros::NodeHandle nh;
+     Q_EMIT requestMap(file_name, true);
 
-    // nav_msgs::OccupancyGrid map;
+  }
 
-    // map = ogm_server::map_loader::loadMap(file_name.toStdString().c_str());
+  /**
+  @brief Qt slot that is called when the LoadSlamMap tool button is pressed
+  @return void
+  **/
+  void CGuiConnector::actionLoadSlamMapTriggered(void)
+  {
+     QString file_name = QFileDialog::getOpenFileName( 
+       &loader_,
+       tr("Load SLAM-produced map"),
+       QString().fromStdString(
+         ogm_gui_tools::getRosPackagePath("ogm_resources") +
+           std::string("/maps")),
+         tr("Yaml map files (*.yaml)"));
+     if(file_name.isEmpty() || file_name.isNull())
+     {
+       return;
+     }
 
-    // ros::ServiceClient client;
+     Q_EMIT requestMap(file_name, false);
+  }
 
-    // while (!ros::service::waitForService
-      // ("/ogm_server/load_static_map_external", ros::Duration(.1)) &&
-        // ros::ok())
-    // {
-      // ROS_WARN
-        // ("Trying to register to /ogm_server/load_static_map_external...");
-    // }
-
-    // client = nh.serviceClient<ogm_msgs::LoadExternalMap>
-      // ("/ogm_server/load_static_map_external", true);
-
-    // ogm_msgs::LoadExternalMap srv;
-
-    // srv.request.map = map;
-
-    // if (client.call(srv)) {
-      // ROS_INFO("Map successfully loaded");
-    // }
-    // else {
-      // ROS_ERROR("Could not load map, maybe already loaded...");
-    /* } */
+  /**
+  @brief Qt slot that is called when the LoadMapsfromServer tool button is pressed
+  @return void
+  **/
+  void CGuiConnector::actionLoadMapsFromServerTriggered(void)
+  {
+    Q_EMIT loadDefaultMaps();
   }
 
   /**
@@ -140,52 +139,6 @@ namespace ogm_gui
     msg.exec();
   }
 
-
-  /**
-  @brief Qt slot that is called when the zoom in tool button is pressed
-  @return void
-  **/
-  void CGuiConnector::actionZoomInTriggered(void)
-  {
-    if ( ! map_initialized_ )
-    {
-      return;
-    }
-    Q_EMIT setZoomInCursor(loader_.actionZoomIn->isChecked());
-    loader_.actionZoomOut->setChecked(false);
-    loader_.actionAdjusted->setChecked(false);
-  }
-  
-  /**
-  @brief Qt slot that is called when the zoom out tool button is pressed
-  @return void
-  **/
-  void CGuiConnector::actionZoomOutTriggered(void)
-  {
-    if ( ! map_initialized_ )
-    {
-      return;
-    }
-    Q_EMIT setZoomOutCursor(loader_.actionZoomOut->isChecked());
-    loader_.actionZoomIn->setChecked(false);
-    loader_.actionAdjusted->setChecked(false);
-  }
-  
-  /**
-  @brief Qt slot that is called when the adjusted map visualization tool button is pressed
-  @return void
-  **/
-  void CGuiConnector::actionAdjustedTriggered(void)
-  {
-    if ( ! map_initialized_ )
-    {
-      return;
-    }
-    Q_EMIT setAdjustedCursor(loader_.actionAdjusted->isChecked());
-    loader_.actionZoomIn->setChecked(false);
-    loader_.actionZoomOut->setChecked(false);
-  }
-  
   /**
   @brief Qt slot that is called when the grid status has changed
   @return void
@@ -198,7 +151,7 @@ namespace ogm_gui
     }
     grid_enabled_ =! grid_enabled_;
   }
-  
+
   /**
   @brief Returns the grid enabled state
   @return bool : True if grid is enabled
@@ -207,7 +160,7 @@ namespace ogm_gui
   {
     return grid_enabled_;
   }
-  
+
   /**
   @brief Adds a widget to the main window Qt grid
   @param w [QWidget*] The widget to be placed
@@ -225,7 +178,7 @@ namespace ogm_gui
     else
       loader_.gridLayout->addWidget(w, row, column, 0);
   }
-  
+
   /**
   @brief Wraps the Qt gridColumnStretch function
   @param cell [int] The specific column
@@ -236,7 +189,7 @@ namespace ogm_gui
   {
     loader_.gridLayout->setColumnStretch(cell, stretch);
   }
-  
+
   /**
   @brief Shows the main window
   @return void
@@ -246,7 +199,7 @@ namespace ogm_gui
     loader_.show();
     loader_.showMaximized();
   }
-  
+
   /**
   @brief Displays a message in the QMainWindow status bar
   @param s [QString] The message
@@ -256,7 +209,7 @@ namespace ogm_gui
   {
     loader_.statusbar->showMessage(s, 0);
   }
-  
+
   /**
   @brief Returns the exit event captured
   @return QEvent* The captured event
@@ -265,7 +218,7 @@ namespace ogm_gui
   {
     return loader_.getCloseEvent();
   }
-    
+
   /**
   @brief Returns the exit triggered status
   @return bool True if exit has been triggered
@@ -274,7 +227,7 @@ namespace ogm_gui
   {
     return loader_.closeTriggered();
   }
-  
+
   /**
   @brief Shuts down the main window
   @return void
@@ -283,7 +236,7 @@ namespace ogm_gui
   {
     loader_.shutdown();
   }
-  
+
   /**
   @brief Sets the map_initialized_ private variable
   @param mi [bool] The new value
@@ -293,17 +246,7 @@ namespace ogm_gui
   {
     map_initialized_ = mi;
   }
-  
-  /**
-  @brief Unchecks the zoom in & out buttons when right click in map is pushed
-  @return void
-  **/
-  void CGuiConnector::uncheckZoomButtons(void)
-  {
-    loader_.actionZoomIn->setChecked(false);
-    loader_.actionZoomOut->setChecked(false);
-  }
-  
+
   /**
   @brief Raises a message box with a specific message
   @param title [QString] The message box title

@@ -58,6 +58,9 @@
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QGraphicsScene>
+#include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QGraphicsPixmapItem>
 //#include <QtGui/QWindowsStyle>
 #include <QtWidgets/QInputDialog>
 #include <QtGui/QMouseEvent>

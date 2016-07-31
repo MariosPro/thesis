@@ -33,69 +33,182 @@ namespace ogm_gui
     argv_(argv)
   {
     setupUi(this);
-    internal_img_ = new QImage(100,100,QImage::Format_RGB32);
-    map_min_ = QPoint(0,0);
-    map_max_ = QPoint(0,0);
-    zoom_ = 0;
+    
+    scene = new QGraphicsScene(mapGraphicsView);
+    //stackedWidget->addWidget(mapGraphicsView);
+    ground_truth_map = new CMapItem();
+    slam_map = new CMapItem();
+    scene->addItem(slam_map);
+    scene->addItem(ground_truth_map);
+    scene->setSceneRect(0, 0, this->width(), this->height());
+    ground_truth_map->setFlag(QGraphicsItem::ItemIsMovable);
+    ground_truth_map->setFlag(QGraphicsItem::ItemIsFocusable);
+    ground_truth_map->setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+    ground_truth_map->setFocus();
+    mapGraphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    mapGraphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    mapGraphicsView->setScene(scene);
+    mapGraphicsView->setInteractive(true);
+    transparency = 0.5;
+
+    //mapGraphicsView->show();
   }
-  
+
   /**
-  @brief Captures the resize event
-  @param e [QResizeEvent*] The resize event
+  @brief Resets the map's position
   @return void
   **/
-  void CMapLoader::resizeEvent(QResizeEvent *e)
+  void CMapLoader::resetMap()
   {
-    updateImage(internal_img_);
+      ground_truth_map->setPos(0 ,0);
+      ground_truth_map->setRotation(0);
+      ground_truth_map->setScale(1.0);
+      //slamOffsetScale = 1.0;
+      //groundTruthOffsetScale = 1.0;
   }
-  
+
+  void CMapLoader::setMapXposition(double x)
+  {
+    ground_truth_map->setPos(x, ground_truth_map->y());
+
+  }
+
+  void CMapLoader::setMapYposition(double y)
+  {
+    ground_truth_map->setPos(ground_truth_map->x(), y);
+  }
+
+  void CMapLoader::setMapRotation(int r)
+  {
+    /*ground_truth_map->setTransformOriginPoint(QPointF(slam_map->boundingRect().center()));*/
+    /*ground_truth_map->setRotation(r);*/
+    ground_truth_map->setMapRotation(r);
+  }
+ 
+  void CMapLoader::setMapScale(double s)
+  {
+/*    ground_truth_map->setTransformOriginPoint(QPointF(slam_map->boundingRect().center()));*/
+    /*ground_truth_map->setScale(s);*/
+    ground_truth_map->setMapScale(s);
+  }
+
+  void CMapLoader::setMapTransparency(double t)
+  {
+    transparency = t;
+  }
+
+  void CMapLoader::displayMatchingImage(QImage* img)
+  {
+    std::cout << newDims.first << " " << newDims.second << std::endl;
+    matchingLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
+                Qt::KeepAspectRatio,
+                Qt::SmoothTransformation));
+  }
+ 
+  void CMapLoader::displayMergedImage(QImage* img)
+  {
+    mergedLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
+                Qt::KeepAspectRatio,
+                Qt::SmoothTransformation));
+  }
+
   /**
   @brief Return the dimensions according to the container size
   @param w [int] Image width
   @param h [int] Image height
   @return std::pair<int,int> : The size the map must be resized to
   **/
-  std::pair<int,int> CMapLoader::checkDimensions(int w,int h)
+  std::pair<int,int> CMapLoader::checkDimensions(int w, int h, 
+                      int containerWidth, int containerHeight, bool groundTruth)
   {
-    float containerWidth = this->width();
-    float containerHeight = this->height();
-    float aspectRatio = (float)w / (float)h;
-    float finalW,finalH;
+
+    double aspectRatio = (double)w / (double)h;
+    double finalW,finalH;
+
     if(containerHeight * aspectRatio > containerWidth)
     {
       finalW = containerWidth;
       finalH = containerWidth / aspectRatio;
+
+      if(groundTruth)
+        groundTruthOffsetScale = (double) containerWidth / (double)w;
+      else
+        slamOffsetScale = (double) containerWidth / (double)w;
     }
     else
     {
       finalW = containerHeight * aspectRatio;
       finalH = containerHeight;
+
+      if(groundTruth)
+        groundTruthOffsetScale = (double) containerHeight / (double)h;
+      else
+        slamOffsetScale = (double) containerHeight / (double)h;
+
     }
+    groundTruthOffsetScale = round(groundTruthOffsetScale * 100) / 100;
+    slamOffsetScale = round(slamOffsetScale * 100) / 100;
+
     return std::pair<int,int>(finalW,finalH);
   }
-  
+
   /**
   @brief Updates the image
   @param img [QImage*] The image to be updated
   @return void
   **/
-  void CMapLoader::updateImage(QImage *img)
+  void CMapLoader::updateImage(QImage *img, bool groundTruth)
   {
-    internal_img_ = img;
-    std::pair<int,int> newDims = checkDimensions(img->width(),img->height());
-    map->setPixmap(
-      QPixmap().fromImage(
-        (*img).
-          copy(map_min_.x(),
-              map_min_.y(),
-              map_max_.x() - map_min_.x(),
-              map_max_.y() - map_min_.y()).
-          scaled(newDims.first,newDims.second,
+    //std::pair<int,int> newDims;
+
+    if(!groundTruth)
+    {
+
+      newDims = checkDimensions(img->width(), img->height(),
+                               this->width(), this->height(), false);
+      slam_map->setPixmap(
+        QPixmap().fromImage((
+            *img).scaled(newDims.first,newDims.second,
+                Qt::IgnoreAspectRatio,
+                Qt::SmoothTransformation)));
+
+      mapGraphicsView->resize(newDims.first, newDims.second);
+      scene->setSceneRect(0, 0, newDims.first, newDims.second);
+      mapGraphicsView->fitInView(scene->sceneRect());
+    }
+
+    else
+    {
+      newDims = checkDimensions(img->width(), img->height(),
+                                slam_map->boundingRect().width(),
+                                slam_map->boundingRect().height(), true);
+
+      QPixmap pixmap = QPixmap::fromImage(
+          (*img).scaled(newDims.first, newDims.second,
               Qt::IgnoreAspectRatio,
-              Qt::SmoothTransformation)));
-    map->resize(newDims.first,newDims.second);
+              Qt::SmoothTransformation));
+      makeTransparent(&pixmap, transparency);
+      ground_truth_map->setPixmap(pixmap);
+    }
   }
-  
+
+  /**
+  @brief Makes the image transparent
+  @param img [QImage*] The image to be made transparent
+  @param opacity [double] The map opacity
+  @return void
+  **/
+  void CMapLoader::makeTransparent(QPixmap *img, double opacity)  
+  {
+    QImage image(img->size(), QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
+    QPainter p(&image);
+    p.setOpacity(opacity);
+    p.drawPixmap(0, 0, *img);
+    p.end();
+    *img = QPixmap::fromImage(image);
+  }
+
   /**
   @brief Draws a grid in an image
   @param img [QImage*] The image for the grid to be drawn on
@@ -105,218 +218,73 @@ namespace ogm_gui
   void CMapLoader::drawGrid(QImage *img,float resolution)
   {
     QPainter painter(img);
-    painter.setPen(QColor(100,100,100,150));
+    painter.setPen(QColor(100, 100, 100, 150));
     int pix = 1.0 / resolution;
-    for(unsigned int i = 1 ; i <= img->width() / pix + 1 ; i++)
+    for(unsigned int i = 1 ; i <= img->width(); i++)
     {
       painter.drawLine(0, i * pix, img->width() - 1, i * pix);
     }
-    for(unsigned int i = 1 ; i <= img->height() / pix + 1 ; i++)
+    for(unsigned int i = 1 ; i <= img->height(); i++)
     {
       painter.drawLine(i * pix, 0, i * pix, img->height() - 1);
     }
   }
-  
-  /**
-  @brief Updates the zoom of the image
-  @param p [QPoint] The point of the zoom event
-  @param zoomIn [bool] True if zoom in, false if zoom out
-  @return void
-  **/
-  void CMapLoader::updateZoom(QPoint p,bool zoomIn)
-  {
-    QPoint np = getGlobalPoint(p);
-    np.setY(internal_img_->height() - np.y());
-    int prevZoom = zoom_;
-    if(zoomIn)
-    {
-      zoom_++;
-    }
-    else 
-    {
-      zoom_--;
-    }
-    if(zoom_ < 0)
-    {
-      zoom_ = 0;
-      return;
-    }
-    float intW = internal_img_->width();
-    float intH = internal_img_->height();
-    float newWidth = internal_img_->width() / pow(ZOOM_RATIO,zoom_);
-    float newHeight = internal_img_->height() / pow(ZOOM_RATIO,zoom_);
-    QPoint evOriginal = np;
-    
-    float xmin,xmax,ymin,ymax;
-    float prevxmin, prevymin, prevWidth, prevHeight;
-    prevxmin = map_min_.x();
-    prevymin = map_min_.y();
-    prevWidth = map_max_.x() - map_min_.x();
-    prevHeight = map_max_.y() - map_min_.y();
-    float xhit = evOriginal.x();
-    float yhit = evOriginal.y();
 
-    xmin = xhit - (xhit - prevxmin) * newWidth / prevWidth;
-    xmax = xmin + newWidth ;
-    ymin = yhit - (yhit - prevymin) * newHeight / prevHeight;
-    ymax = ymin + newHeight;
-    
-    if(xmin < 0)
-    {
-      xmax += - xmin;
-      xmin = 0;
-    }
-    else if(xmax > internal_img_->width() - 1)
-    {
-      xmin -= xmax - internal_img_->width() + 1;
-      xmax = internal_img_->width() - 1;
-    }
-    if(ymin < 0)
-    {
-      ymax += - ymin;
-      ymin = 0;
-    }
-    else if(ymax > internal_img_->height() - 1)
-    {
-      ymin -= ymax - internal_img_->height() + 1;
-      ymax = internal_img_->height() - 1;
-    }
-    map_min_ = QPoint(xmin,ymin);
-    map_max_ = QPoint(xmax,ymax);
-  }
-  
   /**
-  @brief Updates the image center by moving directionally
-  @param key [int] The key pressed
-  @return void
+  @brief Returns the pos of the object to the scene
+  @return QPointF : The pos to the scene
   **/
-  void CMapLoader::moveDirectionally(int key)
+  QPointF CMapLoader::getPosition()
   {
-    int xcenter = (map_max_.x() + map_min_.x()) / 2; 
-    int ycenter = (map_max_.y() + map_min_.y()) / 2; 
-    QPoint p(xcenter, ycenter);
-    //~ float move_by = (map_max_.x() - map_min_.x()) / 10.0;
-    float move_by = 50;
-    
-    switch(key)
-    {
-      case Qt::Key_Right:
-        p.setX(p.x() + move_by);
-        break;
-      case Qt::Key_Left:
-        p.setX(p.x() - move_by);
-        break;
-      case Qt::Key_Up:
-        p.setY(p.y() - move_by);
-        break;
-      case Qt::Key_Down:
-        p.setY(p.y() + move_by);
-        break;
-      default:
-        return;
-    }
-    updateCenter(p);
+    return ground_truth_map->pos();
   }
   
-  
   /**
-  @brief Updates the image center
-  @param p [QPoint] The new center
-  @return void
+  @brief Returns the rotation (z-axis) of the object to the scene
+  @return qreal : The rotation to the scene
   **/
-  void CMapLoader::updateCenter(QPoint p)
+  qreal CMapLoader::getRotation()
   {
-    
-    float intW = internal_img_->width();
-    float intH = internal_img_->height();
-    float newWidth = internal_img_->width() / pow(ZOOM_RATIO,zoom_);
-    float newHeight = internal_img_->height() / pow(ZOOM_RATIO,zoom_);
-    QPoint evOriginal = p;
-    //~ evOriginal.setY(internal_img_->height() - evOriginal.y());
-    
-    float xmin,xmax,ymin,ymax;
-    xmin = evOriginal.x() - newWidth / 2;
-    xmax = evOriginal.x() + newWidth / 2;
-    ymin = evOriginal.y() - newHeight / 2;
-    ymax = evOriginal.y() + newHeight / 2;
-    if(xmin < 0)
-    {
-      xmax += - xmin;
-      xmin = 0;
-    }
-    else if(xmax > internal_img_->width() - 1)
-    {
-      xmin -= xmax - internal_img_->width() + 1;
-      xmax = internal_img_->width() - 1;
-    }
-    if(ymin < 0)
-    {
-      ymax += - ymin;
-      ymin = 0;
-    }
-    else if(ymax > internal_img_->height() - 1)
-    {
-      ymin -= ymax - internal_img_->height() + 1;
-      ymax = internal_img_->height() - 1;
-    }
-    map_min_ = QPoint(xmin,ymin);
-    map_max_ = QPoint(xmax,ymax);
+    return ground_truth_map->rotation();
   }
   
   /**
-  @brief Unscales the input point
-  @param p [QPoint] Point of an event in the adjusted map
-  @return QPoint : The same point in the original map
+  @brief Returns the scaling of the object
+  @return qreal : The scaling
   **/
-  QPoint CMapLoader::pointUnscaled(QPoint p)
+  qreal CMapLoader::getScale()
   {
-    QPoint newPoint;
-    float x = p.x();
-    float y = p.y();
-    float initialWidth = internal_img_->width();
-    float currentWidth = map->width();
-    //~ ROS_ERROR("InitialW, CurrW : %f %f",initialWidth,currentWidth);
-    float climax = initialWidth / currentWidth;
-    newPoint.setX(x * climax);
-    newPoint.setY(y * climax);
-    return newPoint;
+    return ground_truth_map->scale();
   }
-  
+
   /**
-  @brief Resets the zoom of the image
-  @return void
+  @brief Returns the scaling of the slam Map
+  @return qreal : The scaling
   **/
-  void CMapLoader::resetZoom(void)
+  qreal CMapLoader::getSlamMapScale()
   {
-    zoom_ = 0;
-    map_min_ = QPoint(0,0);
-    map_max_ = QPoint(internal_img_->width() - 1,internal_img_->height() - 1);
+    ROS_INFO_STREAM("SLAMoffsetScale=" << slamOffsetScale);
+    return slamOffsetScale;
   }
-    
+
   /**
-  @brief Calculates the "real" point in the image
-  @param p [QPoint] The point to be translated
-  @return QPoint : The new point
+  @brief Returns the scaling of the slam Map
+  @return qreal : The scaling
   **/
-  QPoint CMapLoader::getGlobalPoint(QPoint p){
-    //~ ROS_ERROR("Robot place set (loader) : %d %d",p.x(),p.y());
-    QPoint np = pointUnscaled(p);
-    //~ ROS_ERROR("Robot place set (unscaled): %d %d",np.x(),np.y());
-    int xev = np.x() / pow(ZOOM_RATIO,zoom_) + map_min_.x();
-    int yev = np.y() / pow(ZOOM_RATIO,zoom_) + map_min_.y();
-    //~ ROS_ERROR("Robot place set (unzoomed): %d %d",xev,yev);
-    return QPoint(xev,internal_img_->height() - yev);
-  }
-  
-  /**
-  @brief Sets the initial image size
-  @param s [QSize] The initial image size
-  @return void
-  **/
-  void CMapLoader::setInitialImageSize(QSize s)
+  qreal CMapLoader::getGroundTruthMapScale()
   {
-    initial_image_size_ = s;
-    map_min_ = QPoint(0, 0);
-    map_max_ = QPoint(s.width(), s.height());
+
+    ROS_INFO_STREAM("GroundoffsetScale=" << groundTruthOffsetScale);
+    return groundTruthOffsetScale;
   }
+
+  /**
+  @brief Returns the item's scene transformation matrix
+  @return QTransform : The transformation matrix
+  **/
+  QTransform CMapLoader::getTransform()
+  {
+    return ground_truth_map->sceneTransform();
+  }
+
 }

@@ -1,0 +1,3 @@
+<launch>
+  <node name="$(anon ogm_evaluation_node)" pkg="ogm_evaluation" type="ogm_evaluation_node" output="screen"/>
+</launch>

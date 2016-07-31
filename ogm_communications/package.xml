@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ogm_communications</name>
+  <version>0.1.0</version>
+  <description>Provides msgs, services for OGM Validator.</description>
+
+  <maintainer email="protopapasmarios@gmail.com">Marios Protopapas</maintainer>
+
+  <license>GPLv3</license>
+
+  <author>Marios Protopapas</author>
+  <author>Manos Tsardoulias</author>
+
+  <url type="bugtracker">https://github.com/MariosPro/thesis/issues</url>
+  <url type="repository">https://github.com/MariosPro/thesis</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roslint</build_depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+
+  <export>
+  </export>
+</package>

@@ -59,6 +59,28 @@ namespace ogm_gui
       @return void
       **/
       ~CValidationLoader(void);
+
+      /**
+      @brief Updates the information tree according to the specific map
+      @param width [float] The map width
+      @param height [float] The map height
+      @param ocgd [float] The map resolution (m/pixel)
+      @return void
+      **/
+      void updateMapInfo(float width, float height, float ocgd, bool groundTruth);
+
+      void showMapXposition(qreal x);
+
+      void showMapYposition(qreal y);
+
+      void showMapRotation(qreal r);
+
+      void showMapScale(qreal s);
+
+      void showMapTransparency(double t);
+
+      void resetMapProperties();
+
   };
 }
 

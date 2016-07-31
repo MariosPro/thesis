@@ -22,6 +22,7 @@
 #define OGM_VALIDATION_CONNECTOR
 
 #include "ogm_gui/ogm_validation_loader.h"
+#include "ogm_communications/MapsMsg.h"
 
 /**
 @namespace ogm_gui
@@ -44,6 +45,50 @@ namespace ogm_gui
       //!< Input arguments
       char**  argv_;
 
+      //!< the Feature Detector to be implemented
+      std::string _detector;
+
+      //!< the Feature Descriptor to be implemented
+      std::string _descriptor;
+ 
+      //!< the Feature matcher to be implemented
+      std::string _matcher;
+   
+      //!< the Feature matching Method to be used
+      std::string _matchingMethod;
+
+      //!< the closestObstacle method to be implemented
+      std::string _closestObstacleMethod;
+  
+      //!< the distance  method to be used
+      std::string _distMethod;
+
+      double _matchingRatio;
+
+      double _ransacReprjError;
+
+      double _medianKernel1;
+
+      double _medianKernel2;
+
+      double _gaussianKernel1;
+
+      double _gaussianKernel2;
+
+      bool _binary;
+
+      bool _manual_alignment;
+
+      bool _scaleMapsBrushfire;
+
+      bool _gaussianBlur1;
+
+      bool _gaussianBlur2;
+
+      bool _medianBlur1;
+      
+      bool _medianBlur2;
+
     //------------------------------------------------------------------------//
     public:
 
@@ -59,17 +104,137 @@ namespace ogm_gui
       CValidationConnector(int argc, char **argv);
 
       /**
+      @brief Updates the information tree according to the specific map
+      @param width [float] The map width
+      @param height [float] The map height
+      @param ocgd [float] The map resolution (m/pixel)
+      @return void
+      **/
+      void updateMapInfo(const ogm_communications::MapsMsg& msg);
+
+      void resetMapProperties();
+
+      void displayMetricResult(QString method, double result);
+
+      /**
       @brief Returns the CValidationLoader object
       @return QWidget*
       **/
       QWidget* getLoader(void);
 
+      std::string getDescriptor();
 
+      std::string getDetector();
+
+      std::string getMatcher();
+  
+      std::string getMatchingMethod();
+ 
+      std::string getClosestObstacleMethod();
+
+      std::string getDistanceMethod();
+
+      double getMatchingRatio();
+
+      double getRansacReprjError();
+
+      double getGaussianKernel1();
+
+      double getGaussianKernel2();
+
+      double getMedianKernel1();
+
+      double getMedianKernel2();
+
+      bool thresholdMaps();
+
+      bool manualAlignMaps();
+
+      bool scaleMapsBrushfire();
+
+      bool gaussianBlur1();
+
+      bool gaussianBlur2();
+
+      bool medianBlur1();
+
+      bool medianBlur2();
     //------------------------------------------------------------------------//
     public Q_SLOTS:
 
+      void posxChanged(double x);
+
+      void posyChanged(double y);
+      
+      void rotationChanged(int r);
+
+      void scaleChanged(double s);
+      
+      void transparencyChanged(double t);
+
+      void matchingRatioChanged(double t);
+
+      void ransacChanged(double t);
+
+      void gaussianBlurSpinBox1Changed(double t);
+
+      void gaussianBlurSpinBox2Changed(double t);
+
+      void medianBlurSpinBox1Changed(double t);
+
+      void medianBlurSpinBox2Changed(double t);
+
+      void showMapPosition(qreal x, qreal y);
+
+      void showMapRotation(qreal r);
+
+      void showMapScale(qreal s);
+
+      void showMapTransparency(double t);
+
+      void obstacleTriggered();
+
+      void featureMatchingTriggered();
+
+      void detectorComboBoxActivated(const QString& text);
+
+      void descriptorComboBoxActivated(const QString& text);
+
+      void matcherComboBoxActivated(const QString& text);
+
+      void matchingMethodComboBoxActivated(const QString& text);
+
+      void closestObstacleComboBoxActivated(const QString& text);
+
+      void distanceComboBoxActivated(const QString& text);
+
+      void binaryMapsChecked();
+
+      void manualAlignmentChecked();
+
+      void scaleMapsBrushfireChecked();
+
+      void gaussianBlurCheckBox1Checked();
+
+      void gaussianBlurCheckBox2Checked();
+
+      void medianBlurCheckBox1Checked();
+
+      void medianBlurCheckBox2Checked();
     //------------------------------------------------------------------------//
     Q_SIGNALS:
+
+      void changeXPos(double x);
+ 
+      void changeYPos(double y);
+
+      void changeRotation(int r);
+
+      void changeScale(double s);
+
+      void changeTransparency(double t);
+
+      void MetricNeeded(QString metricMethod);
   };
 }
 #endif

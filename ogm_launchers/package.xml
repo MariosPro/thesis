@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="2">
+ <name>ogm_launchers</name>
+  <version>0.1.0</version>
+  <description>Launch files, to easily bringup server, maps, guis</description>
+
+  <maintainer email="protopapasmarios@gmail.com">Marios Protopapas</maintainer>
+
+  <license>GPLv3</license>
+
+  <url type="bugtracker">https://github.com/MariosPro/thesis/issues</url>
+  <url type="repository">https://github.com/MariosPro/thesis</url>
+
+  <author>Marios Protopapas</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roslint</build_depend>
+
+  <depend>ogm_server</depend>
+  <depend>ogm_gui</depend>
+  <depend>ogm_evaluation</depend>
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+  </export>
+</package>

@@ -1,0 +1,2 @@
+nav_msgs/OccupancyGrid groundTruthMap
+nav_msgs/OccupancyGrid slamMap

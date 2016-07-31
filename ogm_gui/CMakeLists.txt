@@ -6,9 +6,11 @@ set(CMAKE_INCLUDE_CURRENT_DIR_ON)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   roslib
-  # ogm_msgs
-  # nav_msgs
-  # map_server
+  tf
+  ogm_communications
+  ogm_server
+  nav_msgs
+  map_server
 )
 
 find_package(Qt5 REQUIRED COMPONENTS
@@ -55,9 +57,10 @@ catkin_package(
   CATKIN_DEPENDS
     roscpp
     roslib
-    #ogm_msgs
-    # nav_msgs
-    # map_server
+    ogm_server
+    ogm_communications
+    nav_msgs
+    map_server
   INCLUDE_DIRS include
   LIBRARIES
 )
@@ -77,6 +80,7 @@ QT_WRAP_CPP(ogm_gui_node SAMPLE_MOC_SRCS include/ogm_gui/ogm_gui_connector.h)
 QT_WRAP_CPP(ogm_gui_node SAMPLE_MOC_SRCS include/ogm_gui/ogm_validation_connector.h)
 QT_WRAP_CPP(ogm_gui_node SAMPLE_MOC_SRCS include/ogm_gui/ogm_map_connector.h)
 QT_WRAP_CPP(ogm_gui_node SAMPLE_MOC_SRCS include/ogm_gui/ogm_alignment_connector.h)
+QT_WRAP_CPP(ogm_gui_node SAMPLE_MOC_SRCS include/ogm_gui/ogm_map_item.h)
 
 #----------------------------------------------------------------------------------------------------#
 
@@ -95,10 +99,16 @@ add_executable(ogm_gui_node
   src/ogm_gui/ogm_alignment_loader.cpp
   src/ogm_gui/ogm_map_connector.cpp
   src/ogm_gui/ogm_map_loader.cpp
+  src/ogm_gui/ogm_map_item.cpp
   src/ogm_gui/ogm_tools.cpp
    ${QT_FORMS_HPP} ${SAMPLE_MOC_SRCS}
 )
-# add_dependencies(ogm_gui_node ogm_msgs_gencpp )  # Wait for std messages to build
+ add_dependencies(ogm_gui_node 
+                 ogm_communications_gencpp 
+                 ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+                 ${catkin_EXPORTED_TARGETS}
+                 )  # Wait for ogm_communications to build
+
 target_link_libraries(ogm_gui_node
   ${catkin_LIBRARIES} 
   ${Qt5Widgets_LIBRARIES}

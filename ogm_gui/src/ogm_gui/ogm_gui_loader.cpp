@@ -59,6 +59,34 @@ namespace ogm_gui
     actionLoadMap->setIcon(iconLoadMap);
     toolBar->addAction(actionLoadMap);
 
+    actionLoadSlamMap = new QAction(this);
+    actionLoadSlamMap->setObjectName(QString::fromUtf8("actionLoadSlamMap"));
+    actionLoadSlamMap->setCheckable(false);
+    actionLoadSlamMap->setIconText(QString("Load SLAM-produced map"));
+    QIcon iconLoadSlamMap;
+    iconLoadSlamMap.addFile(QString::fromUtf8((
+      ogm_gui_tools::getRosPackagePath("ogm_gui") +
+        std::string("/resources/images/load_map.png")).c_str()),
+      QSize(),
+      QIcon::Normal,
+      QIcon::Off);
+    actionLoadSlamMap->setIcon(iconLoadSlamMap);
+    toolBar->addAction(actionLoadSlamMap);
+
+    actionLoadMapsFromServer = new QAction(this);
+    actionLoadMapsFromServer->setObjectName(QString::fromUtf8("actionLoadMapsFromServer"));
+    actionLoadMapsFromServer->setCheckable(false);
+    actionLoadMapsFromServer->setIconText(QString("Load default maps from server"));
+    QIcon iconLoadMapsFromServer;
+    iconLoadMapsFromServer.addFile(QString::fromUtf8((
+      ogm_gui_tools::getRosPackagePath("ogm_gui") +
+        std::string("/resources/images/translate_down.png")).c_str()),
+      QSize(),
+      QIcon::Normal,
+      QIcon::Off);
+    actionLoadMapsFromServer->setIcon(iconLoadMapsFromServer);
+    toolBar->addAction(actionLoadMapsFromServer);
+
     toolBar->addSeparator();
 
     actionGrid = new QAction(this);
@@ -76,49 +104,6 @@ namespace ogm_gui
     actionGrid->setIcon(iconGrid);
     toolBar->addAction(actionGrid);
 
-    actionZoomIn = new QAction(this);
-    actionZoomIn->setObjectName(QString::fromUtf8("actionZoomIn"));
-    actionZoomIn->setCheckable(true);
-    actionZoomIn->setIconText(QString("Zoom in"));
-    QIcon iconZoomIn;
-    iconZoomIn.addFile(QString::fromUtf8((
-      ogm_gui_tools::getRosPackagePath("ogm_gui") +
-        std::string("/resources/images/zoom_in_b.png")).c_str()),
-      QSize(),
-      QIcon::Normal,
-      QIcon::Off);
-    actionZoomIn->setIcon(iconZoomIn);
-    toolBar->addAction(actionZoomIn);
-
-    actionZoomOut = new QAction(this);
-    actionZoomOut->setObjectName(QString::fromUtf8("actionZoomOut"));
-    actionZoomOut->setCheckable(true);
-    actionZoomOut->setIconText(QString("Zoom out"));
-    QIcon iconZoomOut;
-    iconZoomOut.addFile(QString::fromUtf8((
-      ogm_gui_tools::getRosPackagePath("ogm_gui") +
-        std::string("/resources/images/zoom_out_b.png")).c_str()),
-      QSize(),
-      QIcon::Normal,
-      QIcon::Off);
-    actionZoomOut->setIcon(iconZoomOut);
-    toolBar->addAction(actionZoomOut);
-
-    actionAdjusted = new QAction(this);
-    actionAdjusted->setObjectName(QString::fromUtf8("actionAdjusted"));
-    actionAdjusted->setCheckable(false);
-    actionAdjusted->setChecked(true);
-    actionAdjusted->setIconText(QString("Adjust size"));
-    QIcon iconAdjust;
-    iconAdjust.addFile(QString::fromUtf8((
-      ogm_gui_tools::getRosPackagePath("ogm_gui") +
-        std::string("/resources/images/adjusted.png")).c_str()),
-      QSize(),
-      QIcon::Normal,
-      QIcon::Off);
-    actionAdjusted->setIcon(iconAdjust);
-    toolBar->addAction(actionAdjusted);
-
     toolBar->setIconSize(QSize(30,30));
   }
 
@@ -133,7 +118,7 @@ namespace ogm_gui
     if(close_signal_)
     {
       event->accept();
-      //~ ROS_ERROR("Shutting down ros...");
+       //ROS_ERROR("Shutting down ros...");
       ros::shutdown();
       exit(0);
       return;

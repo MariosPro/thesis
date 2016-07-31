@@ -53,6 +53,9 @@ Thumbs.db
 # General #
 ###########
 .*.swp
+.*.swo
+.*.swn
+.*.swm
 *.log
 core*
 *~
@@ -65,7 +68,4 @@ cscope.files
 
 # Images #
 ##########
-*.png
-*.jp*g
-*.bmp
 *.bag

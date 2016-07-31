@@ -20,7 +20,11 @@
 
   <depend>roscpp</depend>
   <depend>roslib</depend>
-  <depend>cv_bridge</depend>
+  <depend>tf</depend>
+  <depend>nav_msgs</depend>
+  <depend>ogm_communications</depend>
+  <depend>ogm_server</depend>
+  <depend>map_server</depend>
   <depend>libqt5-dev</depend>
 
   <export>

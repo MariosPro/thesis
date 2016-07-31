@@ -34,12 +34,12 @@ namespace ogm_gui
   @enum EOGMState
   @brief Holds the possible map states
   **/
-  enum EOGMMapState
-  {
-    NORMAL,
-    ZOOMIN,
-    ZOOMOUT,
-   };
+/*  enum EOGMMapState*/
+  //{
+    //NORMAL,
+    //ZOOMIN,
+    //ZOOMOUT,
+   /*};*/
 
   /**
   @class CMapConnector
@@ -63,13 +63,19 @@ namespace ogm_gui
       QCursor zoom_out_cursor_;
 
       //!< Holds the map state
-      EOGMMapState map_state_;
+      //EOGMMapState map_state_;
 
       //!< Object of CMapLoader
       CMapLoader loader_;
 
       //!< True if map is initialized
       bool map_initialized_;
+
+      bool translated;
+
+      bool rotated;
+
+      bool scaled;
 
     //------------------------------------------------------------------------//
     public:
@@ -87,42 +93,69 @@ namespace ogm_gui
       @return void
       **/
       ~CMapConnector(void);
+ 
+      void setMapXposition(double x);
+
+      void setMapYposition(double y);
+
+      void setMapRotation(int r);
+
+      void setMapScale(double s);
+
+      void setMapTransparency(double t);
+
+      void displayMatchingImage(QImage* img);
+
+      void displayMergedImage(QImage* img);
+      /**
+      @brief Returns the pos of the object to the scene
+      @return QPointF : The pos to the scene
+      **/
+      QPointF getPosition();
+
+      /**
+      @brief Returns the rotation (z-axis) of the object to the scene
+      @return qreal : The rotation to the scene
+      **/
+      qreal getRotation();
+
+      /**
+      @brief Returns the scaling of the object
+      @return qreal : The scaling
+      **/
+      qreal getScale();
+
+      /**
+      @brief Returns the scaling of the slam Map
+      @return qreal : The scaling
+      **/
+      qreal getSlamMapScale();
+
+      /**
+      @brief Returns the scaling of the ground Truth Map
+      @return qreal : The scaling
+      **/
+      qreal getGroundTruthMapScale();
+
+      /**
+      @brief Returns the item's scene transformation matrix
+      @return QTransform : The transformation matrix
+      **/
+      QTransform getTransform();
 
       /**
       @brief Emits the signalUpdateImage signal
       @param img [QImage*] The image to be updated
       @return void
       **/
-      void updateImage(QImage *img);
+      void updateImage(QImage *img, bool groundTruth);
 
       /**
-      @brief Sets map initial size to the loader
-      @param s [QSize] Map size
+      @brief Sets the map initialization status
+      @param mi [bool] The initialization status
       @return void
       **/
-      void setInitialImageSize(QSize s);
-
-      /**
-      @brief Updates the map zoom. Wrapper for a loader function
-      @param p [QPoint] The point of the zoom event
-      @param z [bool] True if zoom in, false if zoom out
-      @return void
-      **/
-      void updateZoom(QPoint p,bool z);
-
-      /**
-      @brief Updates the map center
-      @param p [QPoint] The new center
-      @return void
-      **/
-      void updateCenter(QPoint p);
-
-      /**
-      @brief Returns the point in the real map image. Wrapper for a loader function.
-      @param p [QPoint] A point
-      @return QPoint : The "real" point in the original map
-      **/
-      QPoint getGlobalPoint(QPoint p);
+      void setMapInitialized(bool mi);
 
       /**
       @brief Wrapper for the draw grid function of loader
@@ -133,138 +166,31 @@ namespace ogm_gui
       void drawGrid(QImage *img,float resolution);
 
       /**
-      @brief Calls the Qt function that gets the real point that the event happened
-      @param p [QPoint] The point of the event
-      @return QPoint : The "real" point
-      **/
-      QPoint mapToGlobal(QPoint p);
-
-      /**
       @brief Returns the CMapLoader object
       @return QWidget* : The object
       **/
       QWidget* getLoader(void);
 
       /**
-      @brief Sets the map initialization status
-      @param mi [bool] The initialization status
+      @brief Resets map position to the loader
       @return void
       **/
-      void setMapInitialized(bool mi);
+      void resetMap();
 
     //------------------------------------------------------------------------//
     public Q_SLOTS:
-
-      /**
-      @brief General event filter. Captures all events
-      @param watched [QObject*] The object in which the event was triggered
-      @param event [QEvent*] The type of event
-      @return bool : True is event served
-      **/
-      bool eventFilter( QObject* watched, QEvent* event);
-
-      /**
-      @brief Called from signalUpdateImage signal. Calls the updateImage of CMapLoader
-      @param img [QImage*] The image to be painted
-      @return void
-      **/
-      void serveImage(QImage *img);
-
-      /**
-      @brief Called when zoom in event happens
-      @param state [bool] True when zoom in active
-      @return void
-      **/
-      void setCursorZoomIn(bool state);
-
-      /**
-      @brief Called when zoom out event happens
-      @param state [bool] True when zoom out active
-      @return void
-      **/
-     void setCursorZoomOut(bool state);
-
-      /**
-      @brief Called when zoom adjusted event happens
-      @param state [bool] True when zoom adjusted active
-      @return void
-      **/
-      void setCursorAdjusted(bool state);
-
-      /**
-      @brief Called when moveUpMap signal is received. Moves the map on upward direction
-      @return void
-      **/
-      void moveUp(void);
-
-      /**
-      @brief Called when moveDownMap signal is received. Moves the map on downard direction
-      @return void
-      **/
-      void moveDown(void);
-
-      /**
-      @brief Called when moveLeftMap signal is received. Moves the map on leftward direction
-      @return void
-      **/
-      void moveLeft(void);
-
-      /**
-      @brief Called when moveRightMap signal is received. Moves the map on rightward direction
-      @return void
-      **/
-      void moveRight(void);
-
-      /**
-      @brief Called when rotateLeftMap signal is received. Rotates the map on leftward direction
-      @return void
-      **/
-      void rotateLeft(void);
-
-      /**
-      @brief Called when rotateRightMap signal is received. Moves the map on rightward direction
-      @return void
-      **/
-      void rotateRight(void);
-
-      /**
-      @brief Called when scaleMap signal is received. Scales the map.
-      @return void
-      **/
-      void scale(void);
-
-    //------------------------------------------------------------------------//
+    
+      //------------------------------------------------------------------------//
     Q_SIGNALS:
+      void mapPosChanged(qreal x, qreal y);
 
-      /**
-      @brief Emmited in updateImage function
-      @param img [QImage*] The image to be updated
-      @return void
-      **/
-      void signalUpdateImage(QImage *img);
+      void mapRotationChanged(qreal r);
 
-      /**
-      @brief Emmited when click is captured and state is ZOOMIN
-      @param p [QPoint] The event point
-      @return void
-      **/
-      void zoomInPressed(QPoint p);
+      void mapScaleChanged(qreal s);
 
-      /**
-      @brief Emmited when click is captured and state is ZOOMOUT
-      @param p [QPoint] The event point
-      @return void
-      **/
-      void zoomOutPressed(QPoint p);
+      void mapTransparencyChanged(qreal t);
 
-      /**
-      @brief Emmited when click is captured and state is NORMAL
-      @param p [QPoint] The event point
-      @param b [Qt::MouseButton] The mouse button clicked
-      @return void
-      **/
-      void itemClicked(QPoint p,Qt::MouseButton b);
- };
+  };
 }
 
 #endif

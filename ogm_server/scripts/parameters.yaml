@@ -1,0 +1,3 @@
+combinations:
+  1: FEATURES SIFT SIFT BruteForce SIMPLE 0 3 Manhattan 0 0 0 1 1 1 0 0 0
+  2: FEATURES ORB  ORB  BruteForce-Hamming SIMPLE 0 3 Manhattan 0 0 0 1 1 1 0 0 0
