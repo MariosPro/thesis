@@ -1,0 +1,3 @@
+<launch>
+  <node name="$(anon feature_evaluation_node)" pkg="feature_evaluation" type="feature_evaluation_node" output="screen"/>
+</launch>

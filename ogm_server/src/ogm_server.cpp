@@ -138,15 +138,15 @@ namespace ogm_server
     ogm_communications::ServerRequestEvaluation srv;
 
    while (!ros::service::waitForService
-       ("/ogm_evaluation/map_evaluation", ros::Duration(.1)) &&
+       ("/feature_evaluation/map_evaluation", ros::Duration(.1)) &&
          ros::ok())
     {
        ROS_WARN
-         ("Trying to register to /ogm_valuation/map_evaluation..");
+         ("Trying to register to /feature_evaluation/map_evaluation..");
     }
 
     client = _nh.serviceClient<ogm_communications::ServerRequestEvaluation>
-       ("/ogm_evaluation/map_evaluation", true);
+       ("/feature_evaluation/map_evaluation", true);
 
     srv.request.method = req.method;
     srv.request.detector = req.detector;

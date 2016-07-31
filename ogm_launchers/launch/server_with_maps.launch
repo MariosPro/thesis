@@ -1,4 +1,4 @@
 <launch>
   <node type="ogm_server_node" pkg="ogm_server" name="ogm_server" output="screen" args="$(find ogm_resources)/maps/slam_env_1.yaml $(find ogm_resources)/maps/slam_final_1.yaml"/>
- <include file="$(find ogm_evaluation)/launch/ogm_evaluation.launch"/>
+ <include file="$(find feature_evaluation)/launch/feature_evaluation.launch"/>
 </launch>
