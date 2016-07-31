@@ -2,7 +2,7 @@
 <package format="2">
   <name>feature_evaluation</name>
   <version>0.1.0</version>
-  <description>Implements various methods of feature matching evaluation on Occopancy Grid Maps.</description>
+  <description>Implements various methods of feature matching evaluation on Occupancy Grid Maps.</description>
 
   <maintainer email="protopapasmarios@gmail.com">Marios Protopapas</maintainer>
 

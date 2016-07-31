@@ -1,0 +1,4 @@
+nav_msgs/OccupancyGrid map1
+nav_msgs/OccupancyGrid map2
+---
+float64 result

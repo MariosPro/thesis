@@ -59,6 +59,10 @@ namespace ogm_server
     _guiRequestEvaluationService = _nh.advertiseService(
      "/ogm_server/map_evaluation", &Server::guiRequestEvaluationCallback, this);
 
+    _guiRequestStructuralEvaluationService = _nh.advertiseService(
+     "/ogm_server/structural_evaluation", &Server::guiRequestStructuralEvaluationCallback, this);
+
+
   }
 
   /**
@@ -188,4 +192,47 @@ namespace ogm_server
     return true;
 
   }
+  
+  /**
+  @brief Service callback for structural Evaluation request from GUI
+  @param req [ogm_communications::GuiRequestStructuralEvaluation::Request&] The service request
+  @param res [ogm_communications::GuiRequestStructuralEvaluation::Response&] The service response
+  @return bool
+  **/
+  bool Server::guiRequestStructuralEvaluationCallback(
+    ogm_communications::GuiRequestStructuralEvaluation::Request& req,
+    ogm_communications::GuiRequestStructuralEvaluation::Response& res)
+  {
+    ros::ServiceClient client;
+    ogm_communications::StructuralEvaluation srv;
+
+   while (!ros::service::waitForService
+       ("/structural_evaluation/map_evaluation", ros::Duration(.1)) &&
+         ros::ok())
+    {
+       ROS_WARN
+         ("Trying to register to /structural_evaluation/map_evaluation..");
+    }
+
+    client = _nh.serviceClient<ogm_communications::StructuralEvaluation>
+       ("/structural_evaluation/map_evaluation", true);
+
+    srv.request.map1 = _groundTruthMap->getMap();
+    srv.request.map2 = _slamMap->getMap();
+   
+    if (client.call(srv)) 
+    {
+      ROS_INFO("[ogm_server] Structural Evaluation metric succesfully completed");
+      res.result =  srv.response.result;
+        }
+    else
+    {
+       ROS_ERROR("[ogm_server] Structural Evaluation request failed...");
+       return false;
+    }
+
+    return true;
+
+  }
+
 } // end of namespace ogm_server

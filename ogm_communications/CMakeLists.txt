@@ -22,7 +22,9 @@ add_service_files(
     LoadExternalMaps.srv
     LoadMapsFromServer.srv
     GuiRequestEvaluation.srv
+    GuiRequestStructuralEvaluation.srv
     ServerRequestEvaluation.srv
+    StructuralEvaluation.srv
 )
 
 

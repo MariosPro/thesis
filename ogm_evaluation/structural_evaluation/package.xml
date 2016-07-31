@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>structural_evaluation</name>
+  <version>0.0.0</version>
+  <description>Implements various methods of structural evaluation on Occupancy Grid Maps.</description>
+
+  <maintainer email="protopapasmarios@gmail.com">Marios Protopapas</maintainer>
+
+  <license>GPLv3</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>ogm_communications</depend>
+  <depend>nav_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>rospy</depend>
+
+  <export>
+  </export>
+</package>

@@ -39,6 +39,9 @@
 #include <ogm_communications/LoadExternalMaps.h>
 #include <ogm_communications/GuiRequestEvaluation.h>
 #include <ogm_communications/ServerRequestEvaluation.h>
+#include <ogm_communications/GuiRequestStructuralEvaluation.h>
+#include <ogm_communications/StructuralEvaluation.h>
+
 /**
 @namespace ogm_server
 @brief The main namespace for OGM Server
@@ -112,6 +115,16 @@ namespace ogm_server {
       bool guiRequestEvaluationCallback(ogm_communications::GuiRequestEvaluation::Request& req,
         ogm_communications::GuiRequestEvaluation::Response& res);
 
+      /**
+      @brief Service callback for structural Evaluation request from GUI
+      @param req [ogm_communications::GuiRequestStructuralEvaluation::Request&] The service request
+      @param res [ogm_communications::GuiRequestStructuralEvaluation::Response&] The service response
+      @return bool
+      **/
+      bool guiRequestStructuralEvaluationCallback(
+        ogm_communications::GuiRequestStructuralEvaluation::Request& req,
+        ogm_communications::GuiRequestStructuralEvaluation::Response& res);
+
     private:
 
       //!< THe ROS node handle
@@ -138,6 +151,9 @@ namespace ogm_server {
       //!< Service server for mapEvaluation
       ros::ServiceServer _guiRequestEvaluationService;
       
+      //!< Service server for mapEvaluation
+      ros::ServiceServer _guiRequestStructuralEvaluationService;
+
       //!< ROS publisher for posting the map
       ros::Publisher map_pub;
       
