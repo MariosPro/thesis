@@ -28,7 +28,7 @@
 #include <opencv2/nonfree/nonfree.hpp>
 #include <opencv2/nonfree/features2d.hpp>
 #include <ros/package.h>
-#include "ogm_msgs/MapPose.h"
+#include "ogm_communications/MapPose.h"
 #include "ogm_evaluation/ogm_evaluation_metrics/metric_base.h"
 #include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_extractor.h"
 #include "ogm_evaluation/ogm_evaluation_descriptors/descriptor_factory.h"
@@ -178,7 +178,7 @@ namespace ogm_evaluation
 
      MapUtils _mapUtils;
 
-     ogm_msgs::MapPose _transform;
+     ogm_communications::MapPose _transform;
 
      cv::Mat H;
 
