@@ -3,7 +3,7 @@
 # import rospy
 # import sys
 # from nav_msgs.msg import OccupancyGrid
-# from geometry_msgs.msg import Point
+from geometry_msgs.msg import Point
 from skimage.morphology import skeletonize
 from skimage import draw
 from visualization import Visualization
@@ -14,10 +14,11 @@ class VoronoiDiagram:
     
     def extractVoronoi(self, map):
         # self.image[map.ogm < 0] = 100
-        binary = map.ogm  <= 50.0
+        binary = map.ogm <= 50.0
         # perform skeletonization
         skeleton = skeletonize(binary)
         voronoiPoints = []
+        vizPoints = []
         for i in range(skeleton.shape[0]):
             for j in range(skeleton.shape[1]):
                 if skeleton[i][j] == 1:
@@ -25,19 +26,28 @@ class VoronoiDiagram:
                     p.x = i
                     p.y = j
                     voronoiPoints.append(p)
-                    vizPoints.append(i * map.resolution + map.origin['x'], j *
-                            map.resolution + map.origin['y'])
+                    vp = Point()
+                    vp.x = i * map.resolution + map.origin['x']
+                    vp.y = j * map.resolution + map.origin['y']
+                    vizPoints.append(vp)
 
         print "Voronoi Diagram extracted"
 
-        Visualization.visualize("visualization_map",
-                8,
-                2,
-                "voronoi_points",
-                0.02,
-                [1.0, 1.0, 0.0, 0.0],
-                vizPoints,
-                )
+        if map.frame_id == "visualization_map1":
+            colors = [1.0, 1.0, 0.0, 0.0]
+            ns = "map1/voronoiPoints"
+        else:
+            colors = [1.0, 0.0, 0.0, 1.0]
+            ns = "map2/voronoiPoints"
+        print ns
+        Visualization.visualize(map.frame_id,
+                                8,
+                                0,
+                                ns,
+                                0.02,
+                                colors,
+                                vizPoints,
+                                )
 
         # display results
        #  fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4.5), sharex=True, sharey=True, subplot_kw={'adjustable':'box-forced'})

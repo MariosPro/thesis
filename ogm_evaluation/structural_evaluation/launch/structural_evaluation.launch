@@ -4,9 +4,12 @@
 	
 	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 	
-	<node pkg="tf" type="static_transform_publisher" name="world2map" args="0 0 0 0 0 0  world map 100" />
+	<node pkg="tf" type="static_transform_publisher" name="world2visualization_map1" args="0 0 0 0 0 0  world visualization_map1 100" />
 
-  <node name="structural_evaluation_node" type="structural_evaluation_node.py" pkg="structural_evaluation" output="screen"/>
+        <node pkg="tf" type="static_transform_publisher" name="world2visualization_map2" args="0 0 0 0 0 0  world visualization_map2 100" />
+
+
+  <node name="structural_evaluation_node" type="main.py" pkg="structural_evaluation" output="screen"/>
   
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find structural_evaluation)/rviz/config.rviz"/>
 

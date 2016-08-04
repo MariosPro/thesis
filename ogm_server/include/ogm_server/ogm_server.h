@@ -40,7 +40,7 @@
 #include <ogm_communications/GuiRequestEvaluation.h>
 #include <ogm_communications/ServerRequestEvaluation.h>
 #include <ogm_communications/GuiRequestStructuralEvaluation.h>
-#include <ogm_communications/StructuralEvaluation.h>
+#include <ogm_communications/ServerRequestStructuralEvaluation.h>
 
 /**
 @namespace ogm_server

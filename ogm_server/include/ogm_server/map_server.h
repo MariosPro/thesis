@@ -23,7 +23,7 @@
 /*#include "tf/tf.h"*/
 //#include "tf/transform_broadcaster.h"
 //#include "nav_msgs/MapMetaData.h"
-/*#include "nav_msgs/OccupancyGrid.h"*/
+#include "nav_msgs/OccupancyGrid.h"
 #include "ogm_communications/MapPublish.h"
 #include "ogm_server/map_loader.h"
 
@@ -85,8 +85,10 @@ namespace ogm_server {
     
       //!< The ROS node handle
       ros::NodeHandle n;
-      //!< ROS publisher for posting the map
+      //!< ROS publishers for posting the maps
       ros::Publisher map_pub;
+      ros::Publisher viz_pub2;
+      ros::Publisher viz_pub1;
       ////!< ROS publisher for posting the map metadata
       //ros::Publisher metadata_pub;
       ////!< ROS timer for tf posting

@@ -204,7 +204,7 @@ namespace ogm_server
     ogm_communications::GuiRequestStructuralEvaluation::Response& res)
   {
     ros::ServiceClient client;
-    ogm_communications::StructuralEvaluation srv;
+    ogm_communications::ServerRequestStructuralEvaluation srv;
 
    while (!ros::service::waitForService
        ("/structural_evaluation/map_evaluation", ros::Duration(.1)) &&
@@ -214,7 +214,7 @@ namespace ogm_server
          ("Trying to register to /structural_evaluation/map_evaluation..");
     }
 
-    client = _nh.serviceClient<ogm_communications::StructuralEvaluation>
+    client = _nh.serviceClient<ogm_communications::ServerRequestStructuralEvaluation>
        ("/structural_evaluation/map_evaluation", true);
 
     srv.request.map1 = _groundTruthMap->getMap();

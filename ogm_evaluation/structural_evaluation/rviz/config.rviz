@@ -7,6 +7,8 @@ Panels:
         - /Global Options1
         - /Occupancy Grid Map1
         - /MarkerArray1
+        - /Occupancy Grid Map2
+        - /MarkerArray2
       Splitter Ratio: 0.647651
     Tree Height: 687
   - Class: rviz/Selection
@@ -49,18 +51,35 @@ Visualization Manager:
       Plane Cell Count: 40
       Reference Frame: <Fixed Frame>
       Value: false
+    - Alpha: 0.5
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: true
+      Enabled: true
+      Name: Occupancy Grid Map
+      Topic: /visualization_map1
+      Unreliable: false
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: visualization_map1/visualization_marker_array
+      Name: MarkerArray
+      Namespaces:
+        {}
+      Queue Size: 1000
+      Value: true
     - Alpha: 1
       Class: rviz/Map
       Color Scheme: map
       Draw Behind: true
       Enabled: true
       Name: Occupancy Grid Map
-      Topic: /visualization_map
+      Topic: /visualization_map2
       Unreliable: false
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: visualization_marker_array
+      Marker Topic: visualization_map2/visualization_marker_array
       Name: MarkerArray
       Namespaces:
         {}
@@ -90,7 +109,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 14.0633
+      Distance: 14.0008
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -105,7 +124,7 @@ Visualization Manager:
       Pitch: 1.5698
       Target Frame: <Fixed Frame>
       Value: XYOrbit (rviz)
-      Yaw: 4.70817
+      Yaw: 4.71817
     Saved: ~
 Window Geometry:
   Displays:
@@ -123,5 +142,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1213
-  X: 1423
-  Y: 43
+  X: 1421
+  Y: 14

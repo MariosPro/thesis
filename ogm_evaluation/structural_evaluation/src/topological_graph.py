@@ -6,11 +6,10 @@ from voronoi_diagram import VoronoiDiagram
 class TopologicalGraph:
     
     #Constructor
-    def __init__(self, map):
-        self.map = map
-        self.VoronoiDiagram = VoronoiDiagram()
+    def __init__(self):
+        self.voronoiDiagram = VoronoiDiagram()
 
-    def extractTopologicalGraph(map):
+    def extractTopologicalGraph(self, map):
         self.voronoi = self.voronoiDiagram.extractVoronoi(map)
     
 

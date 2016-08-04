@@ -106,6 +106,18 @@ namespace ogm_server {
     //!< Latched publisher for data
     map_pub = n.advertise<ogm_communications::MapPublish>("map", 1, true);
     map_pub.publish( map_ );
+    viz_pub1 = n.advertise<nav_msgs::OccupancyGrid>("visualization_map1", 1, true);
+    viz_pub2 = n.advertise<nav_msgs::OccupancyGrid>("visualization_map2", 1, true);
+    if(groundTruth)
+    {
+      map_.map.header.frame_id = "visualization_map1";
+      viz_pub1.publish(map_.map);
+    }
+    else
+    {
+      map_.map.header.frame_id = "visualization_map2";
+      viz_pub2.publish(map_.map);
+    }
   }
 
   //[>*

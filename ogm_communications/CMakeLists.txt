@@ -24,7 +24,7 @@ add_service_files(
     GuiRequestEvaluation.srv
     GuiRequestStructuralEvaluation.srv
     ServerRequestEvaluation.srv
-    StructuralEvaluation.srv
+    ServerRequestStructuralEvaluation.srv
 )
 
 
