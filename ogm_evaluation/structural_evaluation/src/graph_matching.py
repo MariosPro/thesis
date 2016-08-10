@@ -9,9 +9,10 @@ class GraphMatching:
     def __init__(self, map1, map2):
         self.map1 = Map(map1, "visualization_map1")
         self.map2 = Map(map2, "visualization_map2")
- 
-    def extractTopologicalGraphs(self):
         self.graph1 = TopologicalGraph()
         self.graph2 = TopologicalGraph()
+
+ 
+    def extractTopologicalGraphs(self):
         self.graph1.extractTopologicalGraph(self.map1)
         self.graph2.extractTopologicalGraph(self.map2)

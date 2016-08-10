@@ -7,28 +7,37 @@ from geometry_msgs.msg import Point
 from skimage.morphology import skeletonize
 from skimage import draw
 from visualization import Visualization
-# import numpy as np
+import numpy as np
 import matplotlib.pyplot as plt
 
 class VoronoiDiagram:
     
     def extractVoronoi(self, map):
+        
+        visualization = Visualization(map.frame_id)
+
         # self.image[map.ogm < 0] = 100
-        binary = map.ogm <= 50.0
+        width = map.ogm.shape[0]
+        height = map.ogm.shape[1]
+        binary = np.zeros(map.ogm.shape)
+
+        binary[map.ogm <= 50.0] = 1
+        print binary.shape
         # perform skeletonization
         skeleton = skeletonize(binary)
+        print skeleton.shape
         voronoiPoints = []
         vizPoints = []
         for i in range(skeleton.shape[0]):
             for j in range(skeleton.shape[1]):
                 if skeleton[i][j] == 1:
                     p = Point()
-                    p.x = i
-                    p.y = j
+                    p.x = j
+                    p.y = map.height- i
                     voronoiPoints.append(p)
                     vp = Point()
-                    vp.x = i * map.resolution + map.origin['x']
-                    vp.y = j * map.resolution + map.origin['y']
+                    vp.x = j * map.resolution + map.origin['x']
+                    vp.y = (map.height - i) * map.resolution + map.origin['y']
                     vizPoints.append(vp)
 
         print "Voronoi Diagram extracted"
@@ -40,7 +49,7 @@ class VoronoiDiagram:
             colors = [1.0, 0.0, 0.0, 1.0]
             ns = "map2/voronoiPoints"
         print ns
-        Visualization.visualize(map.frame_id,
+        visualization.visualize(map.frame_id,
                                 8,
                                 0,
                                 ns,
@@ -66,37 +75,6 @@ class VoronoiDiagram:
         # plt.show()
         # plt.close()
 
-        return voronoiPoints
+        return skeleton
 
-    # def visualize(self, voronoiPoints):
-        # markers_erase = MarkerArray()
-        # m_erase = Marker()
-        # m_erase.action = 3
-        # m_erase.ns = "voronoi_diagram_connections"
-        # markers_erase.markers.append(m_erase)
-        # self.rviz_publisher.publish(markers_erase)
-
-        # markers = MarkerArray()
-        # c = 0
-        # for i in range(0, len(voronoiPoints)):
-            # c +=1
-            # m = Marker()
-            # m.header.frame_id = "map"
-            # m.header.stamp = rospy.Time()
-            # m.type = m.POINTS
-            # m.action = m.ADD
-            # m.id = c
-            # m.ns = "voronoi_diagram_connections"
-            # m.scale.x  = 0.02
-            # m.scale.y  = 0.02
-            # m.color.a = 1.0
-            # m.color.r = 1.0
-            # m.color.g = 0.0
-            # m.color.b = 0.0
-            # p1 = Point()
-            # p1.x = voronoiPoints[i].y * self.resolution + self.origin.position.x
-            # p1.y = (self.height - voronoiPoints[i].x) * self.resolution  + self.origin.position.y
-            # m.points.append(p1)
-            # markers.markers.append(m)
-        # self.rviz_publisher.publish(markers)
 

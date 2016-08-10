@@ -8,20 +8,24 @@ from geometry_msgs.msg import Point
 
 
 class Visualization:
-    @staticmethod
-    def visualize(frame_id, shape, action, ns, scale, color, points):
+
+    def __init__(self, frame_id):
         topic = frame_id + "/visualization_marker_array"
         print topic
-        rviz_publisher = \
+        self.rviz_publisher = \
             rospy.Publisher(topic, MarkerArray,
-                    queue_size = 10000)
+                    queue_size = 100)
 
+
+
+    def visualize(self, frame_id, shape, action, ns, scale, color, points):
+        
         markers_erase = MarkerArray()
         m_erase = Marker()
         m_erase.action = 3
         m_erase.ns = ns
         markers_erase.markers.append(m_erase)
-        rviz_publisher.publish(markers_erase)
+        self.rviz_publisher.publish(markers_erase)
         markers = MarkerArray()
         c = 0
         print "Vizualize in Rviz"
@@ -46,7 +50,7 @@ class Visualization:
             p1.y = points[i].y
             m.points.append(p1)
             markers.markers.append(m)
-        rviz_publisher.publish(markers)
+        self.rviz_publisher.publish(markers)
 
 
 
