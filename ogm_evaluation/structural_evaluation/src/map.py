@@ -15,4 +15,4 @@ class Map:
         self.frame_id = frame_id
         self.ogm = np.asarray(ogm.data).reshape(self.height, self.width)
         self.ogm = np.flipud(self.ogm)
-   
+

@@ -46,17 +46,15 @@ class VoronoiDiagram:
             colors = [1.0, 1.0, 0.0, 0.0]
             ns = "map1/voronoiPoints"
         else:
-            colors = [1.0, 0.0, 0.0, 1.0]
+            colors =[1.0, 0.0, 0.0, 1.0]
             ns = "map2/voronoiPoints"
-        print ns
         visualization.visualize(map.frame_id,
                                 8,
                                 0,
                                 ns,
                                 0.02,
                                 colors,
-                                vizPoints,
-                                )
+                                vizPoints)
 
         # display results
        #  fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4.5), sharex=True, sharey=True, subplot_kw={'adjustable':'box-forced'})

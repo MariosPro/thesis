@@ -15,4 +15,4 @@ class GraphMatching:
  
     def extractTopologicalGraphs(self):
         self.graph1.extractTopologicalGraph(self.map1)
-        self.graph2.extractTopologicalGraph(self.map2)
+        # self.graph2.extractTopologicalGraph(self.map2)
