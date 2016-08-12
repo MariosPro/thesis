@@ -98,9 +98,9 @@ crossesHitKernel.append(np.array((
     [0, 0, 0])))
 
 crossesMissKernel.append(np.array((
-    [1, 1, 0],
-    [1, 0, 0],
-    [0, 0, 0])))
+    [0, 1, 0],
+    [0, 0, 0],
+    [0, 1, 1])))
 
 crossesHitKernel.append(np.array((
     [0, 0, 0],
@@ -118,9 +118,9 @@ crossesHitKernel.append(np.array((
     [1, 1, 0])))
 
 crossesMissKernel.append(np.array((
-    [1, 1, 0],
-    [1, 0, 0],
-    [0, 0, 0])))
+    [0, 0, 0],
+    [1, 0, 1],
+    [0, 0, 1])))
 
 crossesHitKernel.append(np.array((
     [0, 0, 0],
@@ -128,9 +128,9 @@ crossesHitKernel.append(np.array((
     [0, 1, 1])))
 
 crossesMissKernel.append(np.array((
-    [0, 1, 1],
-    [0, 0, 1],
-    [0, 0, 0])))
+    [0, 0, 0],
+    [1, 0, 1],
+    [1, 0, 0])))
 
 
 #Class for extracting Topological Graph from OGM
@@ -160,13 +160,14 @@ class TopologicalGraph:
         else:
             ns = "map2/voronoiVertices"
         colors = [1.0, 0.0, 1.0, 0.0]
-        visualization.visualize(map.frame_id,
-                                8,
+        visualization.visualizeVertices(map.frame_id,
+                                2,
                                 0,
                                 ns,
-                                0.02,
+                                0.1,
                                 colors,
-                                vizPoints)
+                                vizPoints,
+                                False)
 
     def findVertices(self, voronoi):
 
@@ -208,13 +209,14 @@ class TopologicalGraph:
 
         voronoiVerticesImage = np.zeros((finalVoronoiEdges.shape), np.uint8)
         voronoiVerticesImage[voronoiVertices > 0] = 255
-
-        return voronoiVertices
-
- 
+    
         cv2.imshow('voronoi', voronoiImage)
         cv2.imshow('voronoiEdges', finalVoronoiEdgesImage)
         cv2.imshow('voronoiCrosses', finalVoronoiCrossesImage)
         cv2.imshow("voronoiVertices", voronoiVerticesImage)
         cv2.waitKey(1000)
 
+        return voronoiVertices
+
+ 
+  
