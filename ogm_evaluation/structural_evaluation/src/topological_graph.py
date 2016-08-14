@@ -9,129 +9,170 @@ from geometry_msgs.msg import Point
 
 # structuring elements for morphological operations
 
-edgesKernel = []
-crossesHitKernel = []
-crossesMissKernel = []
-edgesKernel.append(np.array((
-    [1, 0, 0],
+edgesHitKernel = []
+edgesMissKernel = []
+junctionsHitKernel = []
+junctionsMissKernel = []
+
+edgesHitKernel.append(np.array((
+    [0, 0, 0],
     [0, 1, 0],
     [0, 0, 0])))
 
-edgesKernel.append(np.array((
-    [0, 1, 0],
+edgesMissKernel.append(np.array((
+    [0, 0, 0],
+    [1, 0, 1],
+    [1, 1, 1])))
+
+edgesHitKernel.append(np.array((
+    [0, 0, 0],
     [0, 1, 0],
     [0, 0, 0])))
 
-edgesKernel.append(np.array((
-    [0, 0, 1],
-    [0, 1, 0],
-    [0, 0, 0]), np.uint8))
-
-edgesKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 1],
-    [0, 0, 0]), np.uint8))
-
-edgesKernel.append(np.array((
-    [0, 0, 0],
+edgesMissKernel.append(np.array((
     [1, 1, 0],
-    [0, 0, 0]), np.uint8))
-
-edgesKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 0],
-    [1, 0, 0]), np.uint8))
-
-edgesKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 0],
-    [0, 1, 0]), np.uint8))
-
-edgesKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 0],
-    [0, 0, 1]), np.uint8))
-
-crossesHitKernel.append(np.array((
     [1, 0, 0],
-    [1, 1, 0],
-    [0, 0, 0])))
-
-crossesMissKernel.append(np.array((
-    [0, 1, 0],
-    [0, 0, 0],
     [1, 1, 0])))
 
-crossesHitKernel.append(np.array((
+edgesHitKernel.append(np.array((
     [0, 0, 0],
-    [1, 1, 0],
-    [1, 0, 0])))
-
-crossesMissKernel.append(np.array((
-    [1, 1, 0],
-    [0, 0, 0],
-    [0, 1, 0])))
-
-crossesHitKernel.append(np.array((
-    [0, 1, 1],
     [0, 1, 0],
     [0, 0, 0])))
 
-crossesMissKernel.append(np.array((
+edgesMissKernel.append(np.array((
+    [1, 1, 1],
+    [1, 0, 1],
+    [0, 0, 0])))
+
+edgesHitKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0])))
+
+edgesMissKernel.append(np.array((
+    [0, 1, 1],
+    [0, 0, 1],
+    [0, 1, 1])))
+
+junctionsHitKernel.append(np.array((
+    [0, 0, 1],
+    [1, 1, 0],
+    [0, 1, 0])))
+
+junctionsMissKernel.append(np.array((
+    [0, 1, 0],
+    [0, 0, 1],
+    [0, 0, 0])))
+
+junctionsHitKernel.append(np.array((
+    [0, 1, 0],
+    [1, 1, 0],
+    [0, 0, 1])))
+
+junctionsMissKernel.append(np.array((
+    [0, 0, 0],
+    [0, 0, 1],
+    [0, 1, 0])))
+
+junctionsHitKernel.append(np.array((
+    [0, 1, 0],
+    [0, 1, 1],
+    [1, 0, 0])))
+
+junctionsMissKernel.append(np.array((
+    [0, 0, 0],
     [1, 0, 0],
-    [1, 0, 1],
-    [0, 0, 0])))
-
-crossesHitKernel.append(np.array((
-    [1, 1, 0],
-    [0, 1, 0],
-    [0, 0, 0])))
-
-crossesMissKernel.append(np.array((
-    [0, 0, 1],
-    [1, 0, 1],
-    [0, 0, 0])))
-
-crossesHitKernel.append(np.array((
-    [0, 0, 1],
-    [0, 1, 1],
-    [0, 0, 0])))
-
-crossesMissKernel.append(np.array((
-    [0, 1, 0],
-    [0, 0, 0],
-    [0, 1, 1])))
-
-crossesHitKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 1],
-    [0, 0, 1])))
-
-crossesMissKernel.append(np.array((
-    [0, 1, 1],
-    [0, 0, 0],
     [0, 1, 0])))
 
-crossesHitKernel.append(np.array((
-    [0, 0, 0],
+junctionsHitKernel.append(np.array((
+    [1, 0, 0],
+    [0, 1, 1],
+    [0, 1, 0])))
+
+junctionsMissKernel.append(np.array((
     [0, 1, 0],
-    [1, 1, 0])))
+    [1, 0, 0],
+    [0, 0, 0])))
 
-crossesMissKernel.append(np.array((
-    [0, 0, 0],
-    [1, 0, 1],
-    [0, 0, 1])))
-
-crossesHitKernel.append(np.array((
-    [0, 0, 0],
+junctionsHitKernel.append(np.array((
     [0, 1, 0],
-    [0, 1, 1])))
+    [0, 1, 0],
+    [1, 0, 1])))
 
-crossesMissKernel.append(np.array((
+junctionsMissKernel.append(np.array((
     [0, 0, 0],
-    [1, 0, 1],
+    [0, 0, 0],
+    [0, 0, 0])))
+
+junctionsHitKernel.append(np.array((
+    [1, 0, 0],
+    [0, 1, 1],
     [1, 0, 0])))
 
+junctionsMissKernel.append(np.array((
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0])))
+
+junctionsHitKernel.append(np.array((
+    [1, 0, 1],
+    [0, 1, 0],
+    [0, 1, 0])))
+
+junctionsMissKernel.append(np.array((
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0])))
+
+junctionsHitKernel.append(np.array((
+    [0, 0, 1],
+    [1, 1, 0],
+    [0, 0, 1])))
+
+junctionsMissKernel.append(np.array((
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0])))
+
+junctionsHitKernel.append(np.array((
+    [1, 0, 0],
+    [0, 1, 0],
+    [1, 0, 1])))
+
+junctionsMissKernel.append(np.array((
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0])))
+
+junctionsHitKernel.append(np.array((
+    [1, 0, 1],
+    [0, 1, 0],
+    [1, 0, 0])))
+
+junctionsMissKernel.append(np.array((
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0])))
+
+junctionsHitKernel.append(np.array((
+    [1, 0, 1],
+    [0, 1, 0],
+    [0, 0, 1])))
+
+junctionsMissKernel.append(np.array((
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0])))
+
+junctionsHitKernel.append(np.array((
+    [0, 0, 1],
+    [0, 1, 0],
+    [1, 0, 1])))
+
+junctionsMissKernel.append(np.array((
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0])))
 
 #Class for extracting Topological Graph from OGM
 class TopologicalGraph:
@@ -173,15 +214,18 @@ class TopologicalGraph:
 
         voronoi = voronoi.astype(int)
         voronoiEdges = []
-        voronoiCrosses = []
+        voronoiJunctions = []
         voronoiImage = np.zeros((voronoi.shape), np.uint8)
         voronoiImage[voronoi > 0] = 255
 
+        for i in xrange(0, len(junctionsHitKernel)):
+            print junctionsHitKernel[i]
+            print junctionsMissKernel[i]
         # extract voronoi edges from every diffent structuring element
-        for kernel in edgesKernel :
+        for i in xrange(0, len(edgesHitKernel)) :
             voronoiEdges.append(ndimage.binary_hit_or_miss(voronoi,
-                kernel).astype(int))
-
+            structure1 = edgesHitKernel[i], structure2 = edgesMissKernel[i]).astype(int))
+ 
         finalVoronoiEdges = voronoiEdges[0]
         for i in xrange(1, len(voronoiEdges)):
             finalVoronoiEdges = np.logical_or(finalVoronoiEdges,
@@ -190,29 +234,29 @@ class TopologicalGraph:
         finalVoronoiEdgesImage = np.zeros((finalVoronoiEdges.shape), np.uint8)
         finalVoronoiEdgesImage[finalVoronoiEdges > 0] = 255
         
-        # extract voronoi crosses from every diffent structuring element
-        for i in xrange(0, len(crossesHitKernel)):
-            voronoiCrosses.append(ndimage.binary_hit_or_miss(voronoi,
-                structure1=crossesHitKernel[i], structure2=crossesMissKernel[i]).astype(int))
+        # extract voronoi junctions from every diffent structuring element
+        for i in xrange(0, len(junctionsHitKernel)):
+            voronoiJunctions.append(ndimage.binary_hit_or_miss(voronoi,
+                structure1 = junctionsHitKernel[i], structure2 = junctionsMissKernel[i]).astype(int))
 
-        finalVoronoiCrosses = voronoiCrosses[0]
-        for i in xrange(1, len(voronoiCrosses)):
-            finalVoronoiCrosses = np.logical_or(finalVoronoiCrosses,
-                    voronoiCrosses[i]).astype(int)
+        finalVoronoiJunctions = voronoiJunctions[0]
+        for i in xrange(1, len(voronoiJunctions)):
+            finalVoronoiJunctions = np.logical_or(finalVoronoiJunctions,
+                    voronoiJunctions[i]).astype(int)
 
-        finalVoronoiCrossesImage = np.zeros((finalVoronoiCrosses.shape), np.uint8)
-        finalVoronoiCrossesImage[finalVoronoiCrosses > 0] = 255
+        finalVoronoiJunctionsImage = np.zeros((finalVoronoiJunctions.shape), np.uint8)
+        finalVoronoiJunctionsImage[finalVoronoiJunctions > 0] = 255
 
         # create the final voronoi vertices array
         voronoiVertices = np.logical_or(finalVoronoiEdges,
-                finalVoronoiCrosses).astype(int)
+                finalVoronoiJunctions).astype(int)
 
         voronoiVerticesImage = np.zeros((finalVoronoiEdges.shape), np.uint8)
         voronoiVerticesImage[voronoiVertices > 0] = 255
     
         cv2.imshow('voronoi', voronoiImage)
         cv2.imshow('voronoiEdges', finalVoronoiEdgesImage)
-        cv2.imshow('voronoiCrosses', finalVoronoiCrossesImage)
+        cv2.imshow('voronoiJunctions', finalVoronoiJunctionsImage)
         cv2.imshow("voronoiVertices", voronoiVerticesImage)
         cv2.waitKey(1000)
 

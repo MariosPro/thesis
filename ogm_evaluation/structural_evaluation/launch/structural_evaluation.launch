@@ -1,8 +1,8 @@
 <launch>
 	
-	<arg name="map_file" default="$(find ogm_resources)/maps/slam_env_1.yaml" />
+       <!-- <arg name="map_file" default="$(find ogm_resources)/maps/slam_env_1.yaml" />-->
 	
-	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+	<!--<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />-->
 	
 	<node pkg="tf" type="static_transform_publisher" name="world2visualization_map1" args="0 0 0 0 0 0  world visualization_map1 100" />
 
