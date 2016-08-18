@@ -1,14 +1,141 @@
 #!/usr/bin/env python
 
-# import rospy
-# import sys
-# from nav_msgs.msg import OccupancyGrid
+import cv2
+from scipy import ndimage
 from geometry_msgs.msg import Point
 from skimage.morphology import skeletonize
-from skimage import draw
 from visualization import Visualization
 import numpy as np
-import matplotlib.pyplot as plt
+
+# structuring elements for morphological operations
+
+pruningHitKernel = []
+pruningMissKernel = []
+finalPruningKernel = []
+
+# pruning structuring elements
+pruningHitKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0])))
+
+pruningMissKernel.append(np.array((
+    [1, 1, 0],
+    [1, 0, 0],
+    [1, 1, 1])))
+
+pruningHitKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0])))
+
+pruningMissKernel.append(np.array((
+    [1, 1, 1],
+    [1, 0, 0],
+    [1, 1, 0])))
+
+pruningHitKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0])))
+
+pruningMissKernel.append(np.array((
+    [0, 0, 1],
+    [1, 0, 1],
+    [1, 1, 1])))
+
+pruningHitKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0])))
+
+pruningMissKernel.append(np.array((
+    [1, 0, 0],
+    [1, 0, 1],
+    [1, 1, 1])))
+
+pruningHitKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0])))
+
+pruningMissKernel.append(np.array((
+    [1, 1, 1],
+    [1, 0, 1],
+    [1, 0, 0])))
+
+pruningHitKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0])))
+
+pruningMissKernel.append(np.array((
+    [1, 1, 1],
+    [1, 0, 1],
+    [0, 0, 1])))
+
+pruningHitKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0])))
+
+pruningMissKernel.append(np.array((
+    [1, 1, 1],
+    [0, 0, 1],
+    [0, 1, 1])))
+
+pruningHitKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0])))
+
+pruningMissKernel.append(np.array((
+    [0, 1, 1],
+    [0, 0, 1],
+    [1, 1, 1])))
+
+#final pruning structuring elements
+
+finalPruningKernel.append(np.array((
+    [1, 1, 0],
+    [0, 1, 0],
+    [0, 0, 0])))
+
+finalPruningKernel.append(np.array((
+    [0, 0, 1],
+    [0, 1, 1],
+    [0, 0, 0])))
+
+finalPruningKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 1, 1])))
+
+finalPruningKernel.append(np.array((
+    [0, 0, 0],
+    [1, 1, 0],
+    [1, 0, 0])))
+
+finalPruningKernel.append(np.array((
+    [0, 1, 1],
+    [0, 1, 0],
+    [0, 0, 0])))
+
+finalPruningKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 1],
+    [0, 0, 1])))
+
+finalPruningKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [1, 1, 0])))
+
+finalPruningKernel.append(np.array((
+    [1, 0, 0],
+    [1, 1, 0],
+    [0, 0, 0])))
+
 
 class VoronoiDiagram:
     
@@ -16,16 +143,36 @@ class VoronoiDiagram:
         
         visualization = Visualization(map.frame_id)
 
-        # self.image[map.ogm < 0] = 100
-        width = map.ogm.shape[0]
-        height = map.ogm.shape[1]
-        binary = np.zeros(map.ogm.shape)
+        smoothedImage = map.mapImage
+        smoothedImage = cv2.GaussianBlur(smoothedImage, (9, 9), 0)
+        smoothedImage = cv2.medianBlur(smoothedImage, 11)
+        binary = np.ones(map.mapImage.shape, np.uint8)
+        binary[smoothedImage < 255] = 0
 
-        binary[map.ogm <= 50.0] = 1
-        print binary.shape
+        binaryImage = np.zeros(map.ogm.shape)
+        binaryImage[binary > 0] = 255
+
+        kernel = np.ones((4, 4), np.uint8)
+        # smoothedBinary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, 4)
+        smoothedBinary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel, 3)
+        smoothedBinaryImage = np.zeros(smoothedBinary.shape)
+        smoothedBinaryImage[smoothedBinary > 0] = 255
+        # binary[ smoothedImage <= 50.0] = 1
+        cv2.imshow("binaryImage", binaryImage)
+        cv2.imshow("smoothedMap", smoothedBinaryImage)
+        cv2.imshow("Map", map.mapImage)
+        cv2.imshow("smoothedImage", smoothedImage)
+        cv2.waitKey(1000)
+
         # perform skeletonization
-        skeleton = skeletonize(binary)
-        print skeleton.shape
+        skeleton = skeletonize(smoothedBinary)
+
+        # pruning of the skeleton
+        skeleton = self.pruning(skeleton, 20)
+
+        # final pruning of the skeleton
+        skeleton = self.finalPruning(skeleton)
+
         voronoiPoints = []
         vizPoints = []
         for i in range(skeleton.shape[0]):
@@ -33,7 +180,7 @@ class VoronoiDiagram:
                 if skeleton[i][j] == 1:
                     p = Point()
                     p.x = j
-                    p.y = map.height- i
+                    p.y = map.height - i
                     voronoiPoints.append(p)
                     vp = Point()
                     vp.x = j * map.resolution + map.origin['x']
@@ -46,34 +193,52 @@ class VoronoiDiagram:
             colors = [1.0, 1.0, 0.0, 0.0]
             ns = "map1/voronoiPoints"
         else:
-            colors =[1.0, 0.0, 0.0, 1.0]
+            colors = [1.0, 0.0, 0.0, 1.0]
             ns = "map2/voronoiPoints"
         visualization.visualizePoints(map.frame_id,
-                                8,
-                                0,
-                                ns,
-                                0.02,
-                                colors,
-                                vizPoints,
-                                True)
-
-        # display results
-       #  fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4.5), sharex=True, sharey=True, subplot_kw={'adjustable':'box-forced'})
-
-        # ax1.imshow(binary, cmap=plt.cm.gray)
-        # ax1.axis('off')
-        # ax1.set_title('original', fontsize=20)
-
-        # ax2.imshow(skeleton, cmap=plt.cm.gray)
-        # ax2.axis('off')
-        # ax2.set_title('skeleton', fontsize=20)
-
-        # fig.subplots_adjust(wspace=0.02, hspace=0.02, top=0.98,
-                            # bottom=0.02, left=0.02, right=0.98)
-
-        # plt.show()
-        # plt.close()
+                                    8,
+                                    0,
+                                    ns,
+                                    0.02,
+                                    colors,
+                                    vizPoints,
+                                    True)
 
         return skeleton
 
+    def pruning(self, skeleton, iterations):
+        removedBranches = []
+        prunedSkeleton = skeleton
+        for i in xrange(0, iterations):
+            for i in xrange(0, len(pruningHitKernel)):
+                removedBranches.append(ndimage.binary_hit_or_miss(prunedSkeleton,
+                                                                  structure1 =
+                                                                  pruningHitKernel[i],
+                                                                  structure2 =
+                                                                  pruningMissKernel[i]).astype(int))
+            finalRemovedBranches = removedBranches[0]
+            for i in xrange(1, len(removedBranches)):
+                finalRemovedBranches = np.logical_or(finalRemovedBranches,
+                                                     removedBranches[i]).astype(int)
+
+            prunedSkeleton = np.logical_and(skeleton,
+                                           np.logical_not(finalRemovedBranches).astype(int)).astype(int)
+
+        return prunedSkeleton
+    
+    def finalPruning(self, skeleton):
+        removedBranches = []
+        prunedSkeleton = skeleton
+        for i in xrange(0, len(finalPruningKernel)):
+            removedBranches.append(ndimage.binary_hit_or_miss(prunedSkeleton,
+                                                              finalPruningKernel[i]).astype(int))
+        finalRemovedBranches = removedBranches[0]
+        for i in xrange(1, len(removedBranches)):
+            finalRemovedBranches = np.logical_or(finalRemovedBranches,
+                                                 removedBranches[i]).astype(int)
+
+        prunedSkeleton = np.logical_and(skeleton,
+                                       np.logical_not(finalRemovedBranches).astype(int)).astype(int)
+
+        return prunedSkeleton
 

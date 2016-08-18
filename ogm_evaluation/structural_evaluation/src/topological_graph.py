@@ -187,7 +187,10 @@ class TopologicalGraph:
         self.voronoi = self.voronoiDiagram.extractVoronoi(map)
         voronoiVertices = self.findVertices(self.voronoi)
 
-       #visualize in rviz
+        #remove vertices in unknown area in ogm
+        # voronoiVertices[map.ogm == -1] = 0
+
+        #visualize in rviz
         vizPoints = []
         for i in xrange(voronoiVertices.shape[0]):
             for j in xrange(voronoiVertices.shape[1]):
@@ -218,9 +221,9 @@ class TopologicalGraph:
         voronoiImage = np.zeros((voronoi.shape), np.uint8)
         voronoiImage[voronoi > 0] = 255
 
-        for i in xrange(0, len(junctionsHitKernel)):
-            print junctionsHitKernel[i]
-            print junctionsMissKernel[i]
+      #   for i in xrange(0, len(junctionsHitKernel)):
+            # print junctionsHitKernel[i]
+            # print junctionsMissKernel[i]
         # extract voronoi edges from every diffent structuring element
         for i in xrange(0, len(edgesHitKernel)) :
             voronoiEdges.append(ndimage.binary_hit_or_miss(voronoi,
@@ -254,9 +257,9 @@ class TopologicalGraph:
         voronoiVerticesImage = np.zeros((finalVoronoiEdges.shape), np.uint8)
         voronoiVerticesImage[voronoiVertices > 0] = 255
     
-        cv2.imshow('voronoi', voronoiImage)
-        cv2.imshow('voronoiEdges', finalVoronoiEdgesImage)
-        cv2.imshow('voronoiJunctions', finalVoronoiJunctionsImage)
+      #   cv2.imshow('voronoi', voronoiImage)
+        # cv2.imshow('voronoiEdges', finalVoronoiEdgesImage)
+        # cv2.imshow('voronoiJunctions', finalVoronoiJunctionsImage)
         cv2.imshow("voronoiVertices", voronoiVerticesImage)
         cv2.waitKey(1000)
 

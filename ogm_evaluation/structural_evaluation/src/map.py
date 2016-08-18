@@ -16,3 +16,12 @@ class Map:
         self.ogm = np.asarray(ogm.data).reshape(self.height, self.width)
         self.ogm = np.flipud(self.ogm)
 
+        self.mapImage = np.zeros(self.ogm.shape, np.uint8)
+        for i in xrange(self.ogm.shape[0]):
+            for j in xrange(self.ogm.shape[1]):
+                if self.ogm[i][j] == -1:
+                    self.mapImage[i][j] = 127
+                else:
+                    self.mapImage[i][j] = (100 - self.ogm[i][j]) / 100 * 255
+
+
