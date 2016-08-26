@@ -136,11 +136,10 @@ finalPruningKernel.append(np.array((
     [1, 1, 0],
     [0, 0, 0])))
 
-
 class VoronoiDiagram:
-    
+
     def extractVoronoi(self, map):
-        
+
         visualization = Visualization(map.frame_id)
 
         smoothedImage = map.mapImage
@@ -157,12 +156,11 @@ class VoronoiDiagram:
         smoothedBinary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel, 3)
         smoothedBinaryImage = np.zeros(smoothedBinary.shape)
         smoothedBinaryImage[smoothedBinary > 0] = 255
-        # binary[ smoothedImage <= 50.0] = 1
-        cv2.imshow("binaryImage", binaryImage)
-        cv2.imshow("smoothedMap", smoothedBinaryImage)
-        cv2.imshow("Map", map.mapImage)
-        cv2.imshow("smoothedImage", smoothedImage)
-        cv2.waitKey(1000)
+        # cv2.imshow("binaryImage", binaryImage)
+        # cv2.imshow("smoothedMap", smoothedBinaryImage)
+        # cv2.imshow("Map", map.mapImage)
+#         cv2.imshow("smoothedImage", smoothedImage)
+        # cv2.waitKey(1000)
 
         # perform skeletonization
         skeleton = skeletonize(smoothedBinary)
@@ -223,6 +221,8 @@ class VoronoiDiagram:
 
             prunedSkeleton = np.logical_and(skeleton,
                                            np.logical_not(finalRemovedBranches).astype(int)).astype(int)
+        
+        prunedSkeleton = skeletonize(prunedSkeleton)
 
         return prunedSkeleton
     
