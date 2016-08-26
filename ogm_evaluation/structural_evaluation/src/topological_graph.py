@@ -1,21 +1,59 @@
 #!/usr/bin/env python
 
 # import cv2
+import timeit
 import numpy as np
 from scipy import ndimage
 from voronoi_diagram import VoronoiDiagram
 from visualization import Visualization
 from geometry_msgs.msg import Point
 from graph_tool.all import *
-import graph_tool as gt
 
 # structuring elements for morphological operations
-
+edgesKernel = []
 edgesHitKernel = []
 edgesMissKernel = []
 junctionsHitKernel = []
 junctionsMissKernel = []
+edgesKernel.append(np.array((
+    [1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0])))
 
+edgesKernel.append(np.array((
+    [0, 1, 0],
+    [0, 1, 0],
+    [0, 0, 0])))
+
+edgesKernel.append(np.array((
+    [0, 0, 1],
+    [0, 1, 0],
+    [0, 0, 0]), np.uint8))
+
+edgesKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 1],
+    [0, 0, 0]), np.uint8))
+
+edgesKernel.append(np.array((
+    [0, 0, 0],
+    [1, 1, 0],
+    [0, 0, 0]), np.uint8))
+
+edgesKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [1, 0, 0]), np.uint8))
+
+edgesKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 1, 0]), np.uint8))
+
+edgesKernel.append(np.array((
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 0, 1]), np.uint8))
 edgesHitKernel.append(np.array((
     [0, 0, 0],
     [0, 1, 0],
@@ -191,7 +229,10 @@ class TopologicalGraph:
         print "TopologicalGraph instance Created %s" % (map.frame_id)
         
         # extract voronoi diagram
+        start_time = timeit.default_timer()
         self.voronoi = self.voronoiDiagram.extractVoronoi(map)
+        elapsed = timeit.default_timer() - start_time
+        print "Voronoi Diagram execution time (ms): ", elapsed * 1000
      #    self.voronoi = np.array(([0,1,1,1],
                                 # [0,1,0,0],
                                 # [0,1,0,0],
@@ -206,8 +247,10 @@ class TopologicalGraph:
                                 # [0,1,0,0]))
 
         # detect vertices neighbors (in order to construct the topology graph)
-        self.detectVerticesNeighbors(self.voronoi, voronoiVertices, map.ogm)
-
+        start_time = timeit.default_timer()
+        self.detectVerticesNeighbors(self.voronoi, voronoiVertices)
+        elapsed = timeit.default_timer() - start_time
+        print "Neighbors execution time (ms): ", elapsed * 1000
         
         # visualize in rviz
         vizPoints = []
@@ -232,14 +275,14 @@ class TopologicalGraph:
                                 vizPoints,
                                 False)
         # visualize the graph
-        for v in self.graph.vertices():
-            print  v
-            print "neighbors"
-            for n in v.all_neighbours():
-                print n
-            print "edges"
-            for e in v.all_edges():
-                print e
+   #      for v in self.graph.vertices():
+            # print  v
+            # print "neighbors"
+            # for n in v.all_neighbours():
+                # print n
+            # print "edges"
+            # for e in v.all_edges():
+                # print e
 
   #       graph_draw(self.graph, pos=self.graph.vp['pose'],
                    # vertex_text= self.graph.vertex_index,
@@ -252,22 +295,20 @@ class TopologicalGraph:
         voronoi = voronoi.astype(int)
         voronoiEdges = []
         voronoiJunctions = []
-        voronoiImage = np.zeros((voronoi.shape), np.uint8)
-        voronoiImage[voronoi > 0] = 255
+     #    voronoiImage = np.zeros((voronoi.shape), np.uint8)
+        # voronoiImage[voronoi > 0] = 255
 
         # extract voronoi edges from every diffent structuring element
-        for i in xrange(0, len(edgesHitKernel)):
-            voronoiEdges.append(ndimage.binary_hit_or_miss(voronoi,
-                                                            structure1  = edgesHitKernel[i],
-                                                            structure2 = edgesMissKernel[i]).astype(int))
+        for i in xrange(0, len(edgesKernel)):
+            voronoiEdges.append(ndimage.binary_hit_or_miss(voronoi, edgesKernel[i]).astype(int))
  
         finalVoronoiEdges = voronoiEdges[0]
         for i in xrange(1, len(voronoiEdges)):
             finalVoronoiEdges = np.logical_or(finalVoronoiEdges,
                     voronoiEdges[i]).astype(int)
 
-        finalVoronoiEdgesImage = np.zeros((finalVoronoiEdges.shape), np.uint8)
-        finalVoronoiEdgesImage[finalVoronoiEdges > 0] = 255
+   #      finalVoronoiEdgesImage = np.zeros((finalVoronoiEdges.shape), np.uint8)
+        # finalVoronoiEdgesImage[finalVoronoiEdges > 0] = 255
 
         # extract voronoi junctions from every diffent structuring element
         for i in xrange(0, len(junctionsHitKernel)):
@@ -279,15 +320,15 @@ class TopologicalGraph:
             finalVoronoiJunctions = np.logical_or(finalVoronoiJunctions,
                     voronoiJunctions[i]).astype(int)
 
-        finalVoronoiJunctionsImage = np.zeros((finalVoronoiJunctions.shape), np.uint8)
-        finalVoronoiJunctionsImage[finalVoronoiJunctions > 0] = 255
+#         finalVoronoiJunctionsImage = np.zeros((finalVoronoiJunctions.shape), np.uint8)
+        # finalVoronoiJunctionsImage[finalVoronoiJunctions > 0] = 255
 
         # create the final voronoi vertices array
         voronoiVertices = np.logical_or(finalVoronoiEdges,
                 finalVoronoiJunctions).astype(int)
 
-        voronoiVerticesImage = np.zeros((finalVoronoiEdges.shape), np.uint8)
-        voronoiVerticesImage[voronoiVertices > 0] = 255
+  #       voronoiVerticesImage = np.zeros((finalVoronoiEdges.shape), np.uint8)
+        # voronoiVerticesImage[voronoiVertices > 0] = 255
 
         # cv2.imshow('voronoi', voronoiImage)
         # cv2.imwrite('/home/marios/Pictures/voronoi.jpg',voronoiImage)
@@ -298,9 +339,9 @@ class TopologicalGraph:
 
         return voronoiVertices
 
-    def detectVerticesNeighbors(self, isOnVoronoi, isVertice, ogm):
-        width = isVertice.shape[1]
-        height = isVertice.shape[0]
+    def detectVerticesNeighbors(self, isOnVoronoi, isVertice):
+      #   width = isVertice.shape[1]
+        # height = isVertice.shape[0]
         verticesPoses = []
 
         for i in xrange(0, isVertice.shape[0]):
@@ -310,7 +351,7 @@ class TopologicalGraph:
         
         self.graph.vertex_properties['pose'] = self.graph.new_vertex_property("vector<double>")
         self.graph.edge_properties['distance'] = self.graph.new_edge_property("double")
-        self.graph.edge_properties['label'] = self.graph.new_edge_property("string")
+        # self.graph.edge_properties['label'] = self.graph.new_edge_property("string")
 
         for v in verticesPoses:        
             vertice = self.graph.add_vertex()
@@ -323,7 +364,7 @@ class TopologicalGraph:
             # print brush
             current.append(self.graph.vertex_properties['pose'][v].a)
             # print self.graph.vertex_properties['pose'][v].a
-       #      print current
+            # print current
             # print type(current)
             _next = []
             expanded = True
@@ -333,8 +374,6 @@ class TopologicalGraph:
                 counter += 1
                 for c in current:
                     # print "current", c
-                    # print "current size list", len(c)
-                    # print type(c[0])
                     for kx in range(-1, 2):
                         for ky in range(-1, 2):
                             if ky == 0 and kx == 0:
@@ -365,7 +404,7 @@ class TopologicalGraph:
                                             
                                             # add distance as edge property
                                             self.graph.ep['distance'][e] = counter + 1
-                                            self.graph.ep.label[e] = self.graph.ep['distance'][e]
+                                            # self.graph.ep.label[e] = self.graph.ep['distance'][e]
                                             # print "distance=", self.graph.ep['distance'][e]
                 current = _next
                 _next = []

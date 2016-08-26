@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import timeit
 from topological_graph import TopologicalGraph
 from map import Map
 
@@ -14,5 +15,8 @@ class GraphMatching:
 
  
     def extractTopologicalGraphs(self):
+        start_time = timeit.default_timer()
         self.graph1.extractTopologicalGraph(self.map1)
+        elapsed = timeit.default_timer() -start_time
+        print "Topological Graph execution time (ms): ", elapsed * 1000
         # self.graph2.extractTopologicalGraph(self.map2)
