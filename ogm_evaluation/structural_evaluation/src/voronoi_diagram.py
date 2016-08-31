@@ -97,7 +97,7 @@ pruningMissKernel.append(np.array((
     [0, 0, 1],
     [1, 1, 1])))
 
-#final pruning structuring elements
+# final pruning structuring elements
 
 finalPruningKernel.append(np.array((
     [1, 1, 0],
@@ -139,25 +139,49 @@ finalPruningKernel.append(np.array((
     [1, 1, 0],
     [0, 0, 0])))
 
+
 class VoronoiDiagram:
 
-    def extractVoronoi(self, map):
+    def extractVoronoi(self, map, parameters):
 
         visualization = Visualization(map.frame_id)
 
         smoothedImage = map.mapImage
-        smoothedImage = cv2.GaussianBlur(smoothedImage, (9, 9), 0)
-        smoothedImage = cv2.medianBlur(smoothedImage, 11)
+        if map.frame_id == "visualization_map1" \
+                and parameters['gaussianBlur1']:
+            kernel = parameters['gaussianKernel1']
+            smoothedImage = cv2.GaussianBlur(smoothedImage,
+                                             (kernel, kernel), 0)
+        if map.frame_id == "visualization_map2" \
+                and parameters['gaussianBlur2']:
+            kernel = parameters['gaussianKernel2']
+            smoothedImage = cv2.GaussianBlur(smoothedImage, 
+                                             (kernel, kernel), 0)
+        if map.frame_id == "visualization_map1" \
+                 and parameters['medianBlur1']:
+                kernel = parameters['medianKernel1']
+                smoothedImage = cv2.medianBlur(smoothedImage,
+                                               kernel)
+        if map.frame_id == "visualization_map2" \
+                and parameters['medianBlur2']:
+            kernel = parameters['medianKernel2']
+            smoothedImage = cv2.medianBlur(smoothedImage, 
+                                           kernel)
+
         binary = np.ones(map.mapImage.shape, np.uint8)
         binary[smoothedImage < 255] = 0
+        smoothedBinary = binary
 
- #        binaryImage = np.zeros(map.ogm.shape)
+        # binaryImage = np.zeros(map.ogm.shape)
         # binaryImage[binary > 0] = 255
 
         kernel = np.ones((4, 4), np.uint8)
-        # smoothedBinary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, 4)
-        smoothedBinary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel, 3)
-       #  smoothedBinaryImage = np.zeros(smoothedBinary.shape, np.uint8)
+        if parameters['morphOpen']:
+            # smoothedBinary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, 4)
+            smoothedBinary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel,
+                                              parameters['morphOpenIterations'])
+        
+        #  smoothedBinaryImage = np.zeros(smoothedBinary.shape, np.uint8)
         # smoothedBinaryImage[smoothedBinary > 0] = 255
         # # cv2.imshow("binaryImage", binaryImage)
         # cv2.imshow("smoothedMap", smoothedBinaryImage)
@@ -166,32 +190,34 @@ class VoronoiDiagram:
         # cv2.waitKey(1000)
 
         # perform skeletonization
-        method = 'medial_axis'
         start_time = timeit.default_timer()
-        skeleton = self.skeletonization(smoothedBinary, method)
+        skeleton = self.skeletonization(smoothedBinary,
+                                        parameters['skeletonizationMethod'])
         elapsed = timeit.default_timer() - start_time
-        print "Skeletonization via " , method, " execution time (ms): ", elapsed * 1000
+        print "Skeletonization via ", parameters['skeletonizationMethod'], \
+            " execution time (ms): ", elapsed * 1000
 
-    #     skeletonImage = np.zeros(skeleton.shape)
+        # skeletonImage = np.zeros(skeleton.shape)
         # skeletonImage[skeleton > 0] = 255
         # cv2.imshow("skeletonImage", skeletonImage)
         # cv2.waitKey(1000)
         # pruning of the skeleton
-        start_time = timeit.default_timer()
-        for i in range(0, 20):
-            skeleton = self.pruning(skeleton, method)
-        elapsed = timeit.default_timer() - start_time
-        print "Pruning execution time (ms): ", elapsed * 1000
-      #   prunedskeletonImage = np.zeros(skeleton.shape)
-        # prunedskeletonImage[skeleton > 0] = 255
-        # cv2.imshow("prunedskeletonImage", prunedskeletonImage)
-        # cv2.waitKey(1000)
+        if parameters['pruning']:
+            start_time = timeit.default_timer()
+            for i in range(0, parameters['pruningIterations']):
+                skeleton = self.pruning(skeleton)
+            elapsed = timeit.default_timer() - start_time
+            print "Pruning execution time (ms): ", elapsed * 1000
+            # prunedskeletonImage = np.zeros(skeleton.shape)
+            # prunedskeletonImage[skeleton > 0] = 255
+            # cv2.imshow("prunedskeletonImage", prunedskeletonImage)
+            # cv2.waitKey(1000)
 
-        # # final pruning of the skeleton
-        start_time = timeit.default_timer()
-        skeleton = self.finalPruning(skeleton)
-        elapsed = timeit.default_timer() - start_time
-        print "Final pruning execution time (ms): ", elapsed * 1000
+            # # final pruning of the skeleton
+            start_time = timeit.default_timer()
+            skeleton = self.finalPruning(skeleton)
+            elapsed = timeit.default_timer() - start_time
+            print "Final pruning execution time (ms): ", elapsed * 1000
 
         vizPoints = []
         for i in range(skeleton.shape[0]):
@@ -214,13 +240,13 @@ class VoronoiDiagram:
             colors = [1.0, 0.0, 0.0, 1.0]
             ns = "map2/voronoiPoints"
         visualization.visualizePoints(map.frame_id,
-                                    8,
-                                    0,
-                                    ns,
-                                    0.02,
-                                    colors,
-                                    vizPoints,
-                                    True)
+                                      8,
+                                      0,
+                                      ns,
+                                      0.02,
+                                      colors,
+                                      vizPoints,
+                                      True)
 
         return skeleton
 
@@ -229,7 +255,7 @@ class VoronoiDiagram:
             skeleton = self.thinning(binary)
         if method == "medial_axis":
             skeleton = medial_axis(binary)
-        if method == "morphology":
+        if method == "thinning":
             skeleton = skeletonize(binary)
         return skeleton
 
@@ -279,7 +305,7 @@ class VoronoiDiagram:
 
         return dst * 255
 
-    def pruning(self, skeleton, method):
+    def pruning(self, skeleton):
         prunedSkeleton = skeleton
 
         removedBranches = []
@@ -296,7 +322,8 @@ class VoronoiDiagram:
                                                  removedBranches[k]).astype(int)
  
         prunedSkeleton = np.logical_and(skeleton,
-                                       np.logical_not(finalRemovedBranches).astype(int)).astype(int)
+                                        np.logical_not(finalRemovedBranches).
+                                        astype(int)).astype(int)
         
         # start_time = timeit.default_timer()
         # prunedSkeleton = self.skeletonization(prunedSkeleton, 'morphology')

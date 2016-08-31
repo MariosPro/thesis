@@ -1,3 +1,18 @@
+bool gaussianBlur1
+bool gaussianBlur2
+bool medianBlur1
+bool medianBlur2
+bool morphOpen
+bool pruning
+float64 gaussianKernel1
+float64 gaussianKernel2
+float64 medianKernel1
+float64 medianKernel2
+float64 morphOpenIterations
+float64 pruningIterations
+string skeletonizationMethod
 ---
 float64 result
+geometry_msgs/Point[] voronoi
+geometry_msgs/Point[] vertices
 

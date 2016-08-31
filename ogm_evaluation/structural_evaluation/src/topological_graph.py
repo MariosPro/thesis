@@ -7,7 +7,8 @@ from scipy import ndimage
 from voronoi_diagram import VoronoiDiagram
 from visualization import Visualization
 from geometry_msgs.msg import Point
-from graph_tool.all import *
+from graph_tool import *
+from graph_tool import util
 
 # structuring elements for morphological operations
 edgesKernel = []
@@ -224,23 +225,23 @@ class TopologicalGraph:
         self.voronoiDiagram = VoronoiDiagram()
         self.graph = Graph(directed = False)
 
-    def extractTopologicalGraph(self, map):
+    def extractTopologicalGraph(self, map, parameters):
         visualization = Visualization(map.frame_id)
         print "TopologicalGraph instance Created %s" % (map.frame_id)
         
         # extract voronoi diagram
         start_time = timeit.default_timer()
-        self.voronoi = self.voronoiDiagram.extractVoronoi(map)
+        self.voronoi = self.voronoiDiagram.extractVoronoi(map, parameters)
         elapsed = timeit.default_timer() - start_time
         print "Voronoi Diagram execution time (ms): ", elapsed * 1000
-     #    self.voronoi = np.array(([0,1,1,1],
+        # self.voronoi = np.array(([0,1,1,1],
                                 # [0,1,0,0],
                                 # [0,1,0,0],
                                 # [0,1,1,1],
                                 # [0,0,0,0]))
         # detect voronoi vertices
         voronoiVertices = self.findVertices(self.voronoi)
-       #  voronoiVertices = np.array(([0,0,0,1],
+        # voronoiVertices = np.array(([0,0,0,1],
                                 # [0,0,0,0],
                                 # [0,0,0,0],
                                 # [0,0,0,1],
@@ -258,8 +259,8 @@ class TopologicalGraph:
             for j in xrange(voronoiVertices.shape[1]):
                 if voronoiVertices[i][j] == 1:
                     p = Point()
-                    p.x = j *map.resolution + map.origin['x']
-                    p.y = (map.height -i) * map.resolution + map.origin['y']
+                    p.x = j * map.resolution + map.origin['x']
+                    p.y = (map.height - i) * map.resolution + map.origin['y']
                     vizPoints.append(p)
         if map.frame_id == "visualization_map1":
             ns = "map1/voronoiVertices"
@@ -267,13 +268,13 @@ class TopologicalGraph:
             ns = "map2/voronoiVertices"
         colors = [1.0, 0.0, 1.0, 0.0]
         visualization.visualizeVertices(map.frame_id,
-                                2,
-                                0,
-                                ns,
-                                0.1,
-                                colors,
-                                vizPoints,
-                                False)
+                                        2,
+                                        0,
+                                        ns,
+                                        0.1,
+                                        colors,
+                                        vizPoints,
+                                        False)
         # visualize the graph
    #      for v in self.graph.vertices():
             # print  v
@@ -313,19 +314,19 @@ class TopologicalGraph:
         # extract voronoi junctions from every diffent structuring element
         for i in xrange(0, len(junctionsHitKernel)):
             voronoiJunctions.append(ndimage.binary_hit_or_miss(voronoi,
-                structure1 = junctionsHitKernel[i], structure2 = junctionsMissKernel[i]).astype(int))
+                structure1  = junctionsHitKernel[i], structure2 = junctionsMissKernel[i]).astype(int))
 
         finalVoronoiJunctions = voronoiJunctions[0]
         for i in xrange(1, len(voronoiJunctions)):
             finalVoronoiJunctions = np.logical_or(finalVoronoiJunctions,
-                    voronoiJunctions[i]).astype(int)
+                                                  voronoiJunctions[i]).astype(int)
 
 #         finalVoronoiJunctionsImage = np.zeros((finalVoronoiJunctions.shape), np.uint8)
         # finalVoronoiJunctionsImage[finalVoronoiJunctions > 0] = 255
 
         # create the final voronoi vertices array
         voronoiVertices = np.logical_or(finalVoronoiEdges,
-                finalVoronoiJunctions).astype(int)
+                                        finalVoronoiJunctions).astype(int)
 
   #       voronoiVerticesImage = np.zeros((finalVoronoiEdges.shape), np.uint8)
         # voronoiVerticesImage[voronoiVertices > 0] = 255
@@ -393,7 +394,7 @@ class TopologicalGraph:
                                     # print "current vertex pos=",v_pos[0], v_pos[1]
                                     if not (v_pos[0] == x and v_pos[1] == y):
                                         # add this node as neighbor
-                                        v1 = find_vertex(self.graph,
+                                        v1 = util.find_vertex(self.graph,
                                                         self.graph.vertex_properties['pose'],
                                                         (x, y))
 

@@ -104,6 +104,10 @@ namespace ogm_gui
     QObject::connect(
         &validation_connector_, SIGNAL(MetricNeeded(QString)),
         this, SLOT(requestMetric(QString)));
+ 
+    QObject::connect(
+        &validation_connector_, SIGNAL(requestStructuralEvaluation()),
+        this, SLOT(requestStructuralEvaluation()));
 
      QObject::connect(
         &map_connector_, SIGNAL(mapPosChanged(qreal, qreal)),
@@ -529,6 +533,48 @@ namespace ogm_gui
        ROS_ERROR_STREAM("[ogm_gui] " << metricMethod.toStdString() << " not received..");
     }
   }
+
+  void CGuiController::requestStructuralEvaluation()
+  {
+    ros::ServiceClient client;
+    ogm_communications::GuiRequestStructuralEvaluation srv;
+
+    while (!ros::service::waitForService
+       ("/ogm_server/structural_evaluation", ros::Duration(.1)) &&
+         ros::ok())
+    {
+       ROS_WARN
+         ("Trying to register to /ogm_server/structural_evaluation...");
+    }
+
+    client = n_.serviceClient<ogm_communications::GuiRequestStructuralEvaluation>
+       ("/ogm_server/structural_evaluation", true);
+
+    srv.request.gaussianBlur1 = validation_connector_.gaussianBlur1();
+    srv.request.gaussianBlur2 = validation_connector_.gaussianBlur2();
+    srv.request.medianBlur1 = validation_connector_.medianBlur1();
+    srv.request.medianBlur2 = validation_connector_.medianBlur2();
+    srv.request.medianKernel1 = validation_connector_.getMedianKernel1();
+    srv.request.medianKernel2 = validation_connector_.getMedianKernel2();
+    srv.request.gaussianKernel1 = validation_connector_.getGaussianKernel1();
+    srv.request.gaussianKernel2 = validation_connector_.getGaussianKernel2();
+    srv.request.morphOpen = validation_connector_.morphOpen();
+    srv.request.pruning = validation_connector_.pruning();
+    srv.request.morphOpenIterations = validation_connector_.getMorphOpenIterations();
+    srv.request.pruningIterations = validation_connector_.getPruningIterations();
+    srv.request.skeletonizationMethod = validation_connector_.getSkeletonizationMethod();
+
+    if (client.call(srv)) 
+    {
+      structuralEvaluationResult_ = srv.response.result;
+      ROS_INFO_STREAM("[ogm_gui] Structural Evaluation completed");
+    }
+    else
+    {
+       ROS_ERROR_STREAM("[ogm_gui] Structural Evaluation failed..");
+    }
+  }
+
 }
 
 

@@ -42,7 +42,12 @@ namespace ogm_gui
     featuresPushButton->setIcon(QIcon(QString::fromUtf8((
       ogm_gui_tools::getRosPackagePath("ogm_gui") +
       std::string("/resources/images/translate_down.png")).c_str())));
+ 
+    graphMatchingPushButton->setIcon(QIcon(QString::fromUtf8((
+      ogm_gui_tools::getRosPackagePath("ogm_gui") +
+      std::string("/resources/images/translate_down.png")).c_str())));
 
+    // alignment 
     posxSpinBox->setRange(-1000, 1000);
     posySpinBox->setRange(-1000, 1000);
     rotationSpinBox->setRange(0, 360);
@@ -50,6 +55,8 @@ namespace ogm_gui
     transSpinBox->setRange(0.00, 1.00);
     transSpinBox->setSingleStep(0.1);
     scaleSpinBox->setSingleStep(0.05);
+
+    //feature evaluation
     matchingRatioSpinBox->setRange(0.5, 1);
     matchingRatioSpinBox->setSingleStep(0.05);
     ransacSpinBox->setRange(-1, 10);
@@ -62,6 +69,20 @@ namespace ogm_gui
     medianBlurSpinBox1->setSingleStep(2);
     medianBlurSpinBox2->setRange(3,15);
     medianBlurSpinBox2->setSingleStep(2);
+
+    //structural evaluation
+    gaussianBlurSpinBox1_2->setRange(3,15);
+    gaussianBlurSpinBox1_2->setSingleStep(2);
+    gaussianBlurSpinBox2_2->setRange(3,15);
+    gaussianBlurSpinBox2_2->setSingleStep(2);
+    medianBlurSpinBox1_2->setRange(3,15);
+    medianBlurSpinBox1_2->setSingleStep(2);
+    medianBlurSpinBox2_2->setRange(3,15);
+    medianBlurSpinBox2_2->setSingleStep(2);
+    pruningSpinBox->setRange(1,100);
+    pruningSpinBox->setSingleStep(1);
+    morphOpeningSpinBox->setRange(1,100);
+    morphOpeningSpinBox->setSingleStep(1);
   }
 
   /**
@@ -139,6 +160,11 @@ namespace ogm_gui
     gaussianBlurSpinBox2->setValue(3);
     medianBlurSpinBox1->setValue(3);
     medianBlurSpinBox2->setValue(3);
+    gaussianBlurSpinBox1_2->setValue(3);
+    gaussianBlurSpinBox2_2->setValue(3);
+    medianBlurSpinBox1_2->setValue(3);
+    medianBlurSpinBox2_2->setValue(3);
+
   }
 }
 

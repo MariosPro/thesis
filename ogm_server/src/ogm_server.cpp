@@ -219,12 +219,27 @@ namespace ogm_server
 
     srv.request.map1 = _groundTruthMap->getMap();
     srv.request.map2 = _slamMap->getMap();
+    srv.request.gaussianBlur1 = req.gaussianBlur1;
+    srv.request.gaussianBlur2 = req.gaussianBlur2;
+    srv.request.medianBlur1 = req.medianBlur1;
+    srv.request.medianBlur2 = req.medianBlur2;
+    srv.request.gaussianKernel1 = req.gaussianKernel1;
+    srv.request.gaussianKernel2 = req.gaussianKernel2;
+    srv.request.medianKernel1 = req.medianKernel1;
+    srv.request.medianKernel2 = req.medianKernel2;
+    srv.request.morphOpen = req.morphOpen;
+    srv.request.pruning = req.pruning;
+    srv.request.morphOpenIterations= req.morphOpenIterations;
+    srv.request.skeletonizationMethod = req.skeletonizationMethod;
+    srv.request.pruningIterations = req.pruningIterations;
    
     if (client.call(srv)) 
     {
       ROS_INFO("[ogm_server] Structural Evaluation metric succesfully completed");
       res.result =  srv.response.result;
-        }
+      res.voronoi = srv.response.voronoi;
+      res.vertices = srv.response.vertices;
+    }
     else
     {
        ROS_ERROR("[ogm_server] Structural Evaluation request failed...");

@@ -89,6 +89,18 @@ namespace ogm_gui
       
       bool _medianBlur2;
 
+      //structural Evaluation Parameters
+      
+      bool _morphOpen;
+
+      bool _pruning;
+
+      std::string _skeletonizationMethod;
+
+      double _pruningIterations;
+
+      double _morphOpenIterations;
+
     //------------------------------------------------------------------------//
     public:
 
@@ -159,6 +171,17 @@ namespace ogm_gui
       bool medianBlur1();
 
       bool medianBlur2();
+
+      //structural evaluation getters
+      std::string getSkeletonizationMethod();
+
+      double getPruningIterations();
+
+      double getMorphOpenIterations();
+
+      bool pruning();
+
+      bool morphOpen();
     //------------------------------------------------------------------------//
     public Q_SLOTS:
 
@@ -221,6 +244,18 @@ namespace ogm_gui
       void medianBlurCheckBox1Checked();
 
       void medianBlurCheckBox2Checked();
+
+      // structural evaluation
+      void morphOpeningCheckBoxChecked();
+
+      void pruningCheckBoxChecked();
+
+      void pruningSpinBoxChanged(double t);
+
+      void morphOpeningSpinBoxChanged(double t);
+
+      void skeletonizationComboBoxActivated(const QString& text);
+
     //------------------------------------------------------------------------//
     Q_SIGNALS:
 
@@ -235,6 +270,8 @@ namespace ogm_gui
       void changeTransparency(double t);
 
       void MetricNeeded(QString metricMethod);
+
+      void requestStructuralEvaluation();
   };
 }
 #endif

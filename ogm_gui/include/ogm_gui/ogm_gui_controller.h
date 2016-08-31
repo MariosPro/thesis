@@ -36,6 +36,7 @@
 #include <ogm_communications/LoadExternalMap.h>
 #include <ogm_communications/LoadMapsFromServer.h>
 #include <ogm_communications/GuiRequestEvaluation.h>
+#include <ogm_communications/GuiRequestStructuralEvaluation.h>
 #include "ogm_gui/ogm_gui_connector.h"
 #include "ogm_gui/ogm_validation_connector.h"
 #include "ogm_gui/ogm_map_connector.h"
@@ -111,6 +112,9 @@ namespace ogm_gui
 
       //!< Metric result
       double metricResult_;
+
+      //!< structural evaluation result
+      double structuralEvaluationResult_;
 
       //------------------------------------------------------------------------//
     public:
@@ -196,6 +200,8 @@ namespace ogm_gui
       void changeMapTransparency(double t);
 
       void requestMetric(QString metricMethod);
+
+      void requestStructuralEvaluation();
 
       //------------------------------------------------------------------------//
     Q_SIGNALS:

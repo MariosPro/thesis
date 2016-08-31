@@ -137,27 +137,93 @@ namespace ogm_gui
    QObject::connect(
       loader.medianBlurCheckBox2, SIGNAL(toggled(bool)),
       this, SLOT(medianBlurCheckBox2Checked()));
+  
+   // structural evaluation
+   QObject::connect(
+      loader.graphMatchingPushButton, SIGNAL(clicked(bool)),
+      this, SIGNAL(requestStructuralEvaluation()));
+ 
+   QObject::connect(
+      loader.gaussianBlurCheckBox1_2, SIGNAL(toggled(bool)),
+      this, SLOT(gaussianBlurCheckBox1Checked()));
+  
+   QObject::connect(
+      loader.gaussianBlurCheckBox2_2, SIGNAL(toggled(bool)),
+      this, SLOT(gaussianBlurCheckBox2Checked()));
+  
+   QObject::connect(
+      loader.medianBlurCheckBox1_2, SIGNAL(toggled(bool)),
+      this, SLOT(medianBlurCheckBox1Checked()));
+  
+   QObject::connect(
+      loader.medianBlurCheckBox2_2, SIGNAL(toggled(bool)),
+      this, SLOT(medianBlurCheckBox2Checked()));
+  
+   QObject::connect(
+      loader.morphOpeningCheckBox, SIGNAL(toggled(bool)),
+      this, SLOT(morphOpeningCheckBoxChecked()));
+ 
+   QObject::connect(
+      loader.pruningCheckBox, SIGNAL(toggled(bool)),
+      this, SLOT(pruningCheckBoxChecked()));
+
+   QObject::connect(
+      loader.skeletonizationComboBox, SIGNAL(currentIndexChanged(const QString&)),
+      this, SLOT(skeletonizationComboBoxActivated(const QString&)));
+ 
+   QObject::connect(
+      loader.gaussianBlurSpinBox1_2, SIGNAL(valueChanged(double)),
+      this, SLOT(gaussianBlurSpinBox1Changed(double)));
+  
+   QObject::connect(
+      loader.gaussianBlurSpinBox2_2, SIGNAL(valueChanged(double)),
+      this, SLOT(gaussianBlurSpinBox2Changed(double)));
+  
+   QObject::connect(
+      loader.medianBlurSpinBox1_2, SIGNAL(valueChanged(double)),
+      this, SLOT(medianBlurSpinBox1Changed(double)));
+  
+   QObject::connect(
+      loader.medianBlurSpinBox2_2, SIGNAL(valueChanged(double)),
+      this, SLOT(medianBlurSpinBox2Changed(double)));
+ 
+   QObject::connect(
+      loader.pruningSpinBox, SIGNAL(valueChanged(double)),
+      this, SLOT(pruningSpinBoxChanged(double)));
+ 
+   QObject::connect(
+      loader.morphOpeningSpinBox, SIGNAL(valueChanged(double)),
+      this, SLOT(morphOpeningSpinBoxChanged(double)));
 
 
-   _detector = "SIFT";
-   _descriptor = "SIFT";
-   _matcher = "BruteForce";
-   _matchingMethod = "SIMPLE";
-   _closestObstacleMethod = "Brushfire";
-   _distMethod = "Manhattan";
-   _matchingRatio = 0.7;
-   _ransacReprjError = 5;
-   _binary = false;
-   _manual_alignment = false;
-   _scaleMapsBrushfire = false;
-   _gaussianBlur1 = false;
-   _gaussianBlur2 = false;
-   _medianBlur1 = false;
-   _medianBlur2 = false;
-   _gaussianKernel1 = 3;
-   _gaussianKernel2 = 3;
-   _medianKernel1 = 3;
-   _medianKernel2 = 3;
+  // feature evaluation
+  _detector = "SIFT";
+  _descriptor = "SIFT";
+  _matcher = "BruteForce";
+  _matchingMethod = "SIMPLE";
+  _closestObstacleMethod = "Brushfire";
+  _distMethod = "Manhattan";
+  _matchingRatio = 0.7;
+  _ransacReprjError = 5;
+  _binary = false;
+  _manual_alignment = false;
+  _scaleMapsBrushfire = false;
+  _gaussianBlur1 = false;
+  _gaussianBlur2 = false;
+  _medianBlur1 = false;
+  _medianBlur2 = false;
+  _gaussianKernel1 = 3;
+  _gaussianKernel2 = 3;
+  _medianKernel1 = 3;
+  _medianKernel2 = 3;
+
+  //structural evaluation
+  _morphOpenIterations = 4;
+  _pruningIterations = 20;
+  _skeletonizationMethod = "medial_axis";
+  _pruning = false;
+  _morphOpen = false;
+    
   }
 
    /**
@@ -451,6 +517,59 @@ namespace ogm_gui
   bool CValidationConnector::medianBlur2()
   {
     return _medianBlur2;
+  }
+
+  // structrural evaluation slots
+  void CValidationConnector::morphOpeningCheckBoxChecked()
+  {
+    _morphOpen = !_morphOpen;
+  }
+
+  void CValidationConnector::pruningCheckBoxChecked()
+  {
+    _pruning = !_pruning;
+  }
+
+  void CValidationConnector::skeletonizationComboBoxActivated(const QString& text)
+  {
+    _skeletonizationMethod = text.toStdString();
+    ROS_INFO_STREAM("SKELETONIZATION METHOD: " << text.toStdString());
+  }
+
+  void CValidationConnector::morphOpeningSpinBoxChanged(double t)
+  {
+    _morphOpenIterations = t;
+  }
+
+  void CValidationConnector::pruningSpinBoxChanged(double t)
+  {
+    _pruningIterations = t;
+  }
+
+  //structural evaluation getters
+  bool CValidationConnector::pruning()
+  {
+    return _pruning;
+  }
+  
+  bool CValidationConnector::morphOpen()
+  {
+    return _morphOpen;
+  }
+
+  double CValidationConnector::getMorphOpenIterations()
+  {
+    return _morphOpenIterations;
+  }
+
+  double CValidationConnector::getPruningIterations()
+  {
+    return _pruningIterations;
+  }
+
+  std::string CValidationConnector::getSkeletonizationMethod()
+  {
+    return _skeletonizationMethod;
   }
 
    /**

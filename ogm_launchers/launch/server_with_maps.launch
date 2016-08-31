@@ -2,7 +2,7 @@
   <arg name="structural" default="true" />
   <arg name="feature" default="false" />
 
-  <node type="ogm_server_node" pkg="ogm_server" name="ogm_server" output="screen" args="$(find ogm_resources)/maps/slam_env_1.yaml $(find ogm_resources)/maps/slam_final_1.yaml"/>
+  <node type="ogm_server_node" pkg="ogm_server" name="ogm_server" output="screen" args="$(find ogm_resources)/maps/frieburg079.yaml $(find ogm_resources)/maps/csal_slam_real_1.yaml"/>
   <include if ="$(arg feature)"
      file="$(find feature_evaluation)/launch/feature_evaluation.launch"/>
 
