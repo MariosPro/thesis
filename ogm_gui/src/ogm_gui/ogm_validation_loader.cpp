@@ -34,7 +34,7 @@ namespace ogm_gui
     argv_(argv)
   {
     setupUi(this);
-
+    
     obstaclePushButton->setIcon(QIcon(QString::fromUtf8((
       ogm_gui_tools::getRosPackagePath("ogm_gui") +
       std::string("/resources/images/translate_down.png")).c_str())));

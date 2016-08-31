@@ -11,8 +11,8 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-    <horstretch>1</horstretch>
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
@@ -64,21 +64,33 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>10</y>
-         <width>391</width>
-         <height>281</height>
+         <y>20</y>
+         <width>381</width>
+         <height>221</height>
         </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
        </property>
       </widget>
      </widget>
      <widget class="QWidget" name="matching">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <widget class="QLabel" name="matchingLabel">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>10</x>
          <y>30</y>
-         <width>400</width>
-         <height>300</height>
+         <width>361</width>
+         <height>211</height>
         </rect>
        </property>
        <property name="sizePolicy">
@@ -99,10 +111,10 @@
       <widget class="QLabel" name="mergedLabel">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>30</y>
-         <width>400</width>
-         <height>300</height>
+         <x>20</x>
+         <y>20</y>
+         <width>351</width>
+         <height>221</height>
         </rect>
        </property>
        <property name="sizePolicy">

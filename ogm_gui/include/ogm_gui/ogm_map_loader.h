@@ -61,6 +61,8 @@ namespace ogm_gui
 
       std::pair<int,int> newDims;
 
+      bool _matched, _merged;
+
       /**
       @brief Return the dimensions according to the container size
       @param w [int] Image width

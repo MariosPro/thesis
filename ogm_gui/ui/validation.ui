@@ -7,18 +7,18 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>636</height>
+    <height>763</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
     <horstretch>0</horstretch>
-    <verstretch>1</verstretch>
+    <verstretch>0</verstretch>
    </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>250</width>
+    <width>400</width>
     <height>0</height>
    </size>
   </property>
@@ -31,316 +31,813 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QTabWidget" name="validationTabWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>20</y>
-     <width>371</width>
-     <height>631</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>600</width>
-     <height>16777215</height>
-    </size>
-   </property>
-   <property name="whatsThis">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ddd&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="currentIndex">
-    <number>1</number>
-   </property>
-   <widget class="QWidget" name="informationTab">
-    <attribute name="title">
-     <string>Maps Information</string>
-    </attribute>
-    <widget class="QWidget" name="layoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>11</y>
-       <width>311</width>
-       <height>371</height>
-      </rect>
+  <layout class="QGridLayout" name="gridLayout_6">
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="validationTabWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>3</verstretch>
+      </sizepolicy>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QLabel" name="groundMapWidthLabel">
-          <property name="text">
-           <string>Ground Truth Map Width:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="groundMapHeightLabel">
-          <property name="text">
-           <string>Ground Truth Map Height:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="groundMapResLabel">
-          <property name="text">
-           <string>Ground Truth Map Resolution:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="producedMapWidthLabel">
-          <property name="text">
-           <string>SLAM Produced Map Width:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="producedMapHeightLabel">
-          <property name="text">
-           <string>SLAM Produced Map Height:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="producedMapResLabel">
-          <property name="text">
-           <string>SLAM Produced Map Resolution:</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="posxLabel">
-          <property name="text">
-           <string>Translation  - x</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QDoubleSpinBox" name="posxSpinBox"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="posyLabel">
-          <property name="text">
-           <string>Translation - y</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QDoubleSpinBox" name="posySpinBox"/>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="rotationLabel">
-          <property name="text">
-           <string>Rotation - z  axis</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QSpinBox" name="rotationSpinBox"/>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="scaleLabel">
-          <property name="text">
-           <string>Scaling</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QDoubleSpinBox" name="scaleSpinBox"/>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="transLabel">
-          <property name="text">
-           <string>Transparency</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QDoubleSpinBox" name="transSpinBox"/>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="metricsTab">
-    <attribute name="title">
-     <string>Validation Metrics</string>
-    </attribute>
-    <widget class="QToolBox" name="metricToolBox">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>351</width>
-       <height>551</height>
-      </rect>
+     <property name="minimumSize">
+      <size>
+       <width>382</width>
+       <height>400</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>600</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ddd&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="currentIndex">
       <number>1</number>
      </property>
-     <widget class="QWidget" name="page_1">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>100</width>
-        <height>30</height>
-       </rect>
+     <widget class="QWidget" name="informationTab">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-      <attribute name="label">
-       <string>Obstacle Mean Square Error</string>
+      <attribute name="title">
+       <string>Maps Information</string>
       </attribute>
-      <widget class="QWidget" name="layoutWidget_2">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>110</y>
-         <width>311</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_7">
-        <item>
-         <widget class="QLabel" name="label_14">
-          <property name="text">
-           <string>Result:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="obstacleLabel">
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>0.0</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget_5">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>70</y>
-         <width>311</width>
-         <height>29</height>
-        </rect>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_8">
-        <item>
-         <widget class="QLabel" name="label_18">
-          <property name="text">
-           <string>Compute MSE:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="obstaclePushButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777159</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>2</x>
-         <y>2</y>
-         <width>330</width>
-         <height>62</height>
+         <x>10</x>
+         <y>11</y>
+         <width>361</width>
+         <height>371</height>
         </rect>
        </property>
-       <layout class="QGridLayout" name="gridLayout_2">
+       <layout class="QGridLayout" name="gridLayout_8">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
         <item row="0" column="0">
-         <widget class="QLabel" name="label_15">
-          <property name="text">
-           <string>Closest Obstacle Method:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="closestObstacleComboBox">
+         <layout class="QVBoxLayout" name="verticalLayout">
           <item>
-           <property name="text">
-            <string>Brushfire</string>
-           </property>
+           <widget class="QLabel" name="groundMapWidthLabel">
+            <property name="text">
+             <string>Ground Truth Map Width:</string>
+            </property>
+           </widget>
           </item>
           <item>
-           <property name="text">
-            <string>NearestNeighbor</string>
-           </property>
+           <widget class="QLabel" name="groundMapHeightLabel">
+            <property name="text">
+             <string>Ground Truth Map Height:</string>
+            </property>
+           </widget>
           </item>
-         </widget>
+          <item>
+           <widget class="QLabel" name="groundMapResLabel">
+            <property name="text">
+             <string>Ground Truth Map Resolution:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="producedMapWidthLabel">
+            <property name="text">
+             <string>SLAM Produced Map Width:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="producedMapHeightLabel">
+            <property name="text">
+             <string>SLAM Produced Map Height:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="producedMapResLabel">
+            <property name="text">
+             <string>SLAM Produced Map Resolution:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="label_16">
-          <property name="text">
-           <string>Distance Method:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="distanceComboBox">
-          <item>
-           <property name="text">
-            <string>Manhattan</string>
-           </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="posxLabel">
+            <property name="text">
+             <string>Translation  - x</string>
+            </property>
+           </widget>
           </item>
-          <item>
-           <property name="text">
-            <string>Euclidean</string>
-           </property>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="posxSpinBox"/>
           </item>
-         </widget>
+          <item row="1" column="0">
+           <widget class="QLabel" name="posyLabel">
+            <property name="text">
+             <string>Translation - y</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="posySpinBox"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="rotationLabel">
+            <property name="text">
+             <string>Rotation - z  axis</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="rotationSpinBox"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="scaleLabel">
+            <property name="text">
+             <string>Scaling</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QDoubleSpinBox" name="scaleSpinBox"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="transLabel">
+            <property name="text">
+             <string>Transparency</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QDoubleSpinBox" name="transSpinBox"/>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
      </widget>
-     <widget class="QWidget" name="page_2">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>351</width>
-        <height>489</height>
-       </rect>
+     <widget class="QWidget" name="metricsTab">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>400</height>
+       </size>
+      </property>
+      <attribute name="title">
+       <string>Validation Metrics</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_9">
+       <item row="0" column="0">
+        <widget class="QToolBox" name="metricToolBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>351</width>
+           <height>400</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <widget class="QWidget" name="page_1">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>351</width>
+            <height>598</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <attribute name="label">
+           <string>Obstacle Mean Square Error</string>
+          </attribute>
+          <widget class="QWidget" name="layoutWidget">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>2</y>
+             <width>332</width>
+             <height>151</height>
+            </rect>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_7">
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_15">
+                <property name="text">
+                 <string>Closest Obstacle Method:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="closestObstacleComboBox">
+                <item>
+                 <property name="text">
+                  <string>Brushfire</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>NearestNeighbor</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_16">
+                <property name="text">
+                 <string>Distance Method:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="distanceComboBox">
+                <item>
+                 <property name="text">
+                  <string>Manhattan</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Euclidean</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <item>
+               <widget class="QLabel" name="label_18">
+                <property name="text">
+                 <string>Compute MSE:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="obstaclePushButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777159</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="2" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <item>
+               <widget class="QLabel" name="label_14">
+                <property name="text">
+                 <string>Result:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="obstacleLabel">
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>0.0</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="page_2">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>360</width>
+            <height>601</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777212</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <attribute name="label">
+           <string>Feature Matching MSE</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QScrollArea" name="scrollArea">
+             <property name="minimumSize">
+              <size>
+               <width>333</width>
+               <height>580</height>
+              </size>
+             </property>
+             <property name="verticalScrollBarPolicy">
+              <enum>Qt::ScrollBarAsNeeded</enum>
+             </property>
+             <property name="horizontalScrollBarPolicy">
+              <enum>Qt::ScrollBarAsNeeded</enum>
+             </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QAbstractScrollArea::AdjustIgnored</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>340</width>
+                <height>581</height>
+               </rect>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <widget class="QWidget" name="layoutWidget_3">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>0</y>
+                 <width>311</width>
+                 <height>501</height>
+                </rect>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_5">
+                <item row="1" column="0">
+                 <layout class="QVBoxLayout" name="verticalLayout_2">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout">
+                    <item>
+                     <widget class="QLabel" name="label_8">
+                      <property name="text">
+                       <string>Compute MSE:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="featuresPushButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777159</width>
+                        <height>16777215</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_2">
+                    <item>
+                     <widget class="QLabel" name="label_7">
+                      <property name="text">
+                       <string>Result:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="featuresLabel">
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <weight>75</weight>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="autoFillBackground">
+                       <bool>false</bool>
+                      </property>
+                      <property name="text">
+                       <string>0.0</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+                <item row="0" column="0">
+                 <layout class="QVBoxLayout" name="verticalLayout_4">
+                  <item>
+                   <widget class="QLabel" name="label">
+                    <property name="text">
+                     <string>Map #1 PreProcessing</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_4">
+                    <item>
+                     <widget class="QCheckBox" name="gaussianBlurCheckBox1">
+                      <property name="text">
+                       <string>GaussianBlur (kernel size)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="gaussianBlurSpinBox1"/>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_5">
+                    <item>
+                     <widget class="QCheckBox" name="medianBlurCheckBox1">
+                      <property name="text">
+                       <string>MedianBlur (kernel size)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="medianBlurSpinBox1"/>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_2">
+                    <property name="text">
+                     <string>Map #2 PreProcessing</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_3">
+                    <item>
+                     <widget class="QCheckBox" name="gaussianBlurCheckBox2">
+                      <property name="text">
+                       <string>GaussianBlur (kernel size)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="gaussianBlurSpinBox2"/>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_6">
+                    <item>
+                     <widget class="QCheckBox" name="medianBlurCheckBox2">
+                      <property name="text">
+                       <string>MedianBlur (kernel size)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="medianBlurSpinBox2"/>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="scaleBrushfireCheckBox">
+                    <property name="text">
+                     <string>Scale Maps (Mean Brushfire Distance)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QGridLayout" name="gridLayout_3">
+                    <item row="0" column="0">
+                     <layout class="QVBoxLayout" name="verticalLayout_5">
+                      <item>
+                       <widget class="QLabel" name="label_4">
+                        <property name="text">
+                         <string>Feature Detector:</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="label_5">
+                        <property name="text">
+                         <string>Descriptor Extractor:</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="label_6">
+                        <property name="text">
+                         <string>Descriptor Matcher:</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="label_9">
+                        <property name="text">
+                         <string>Matching Method:</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="matchingRatioLabel">
+                        <property name="text">
+                         <string>2-NN matching ratio</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="ransaclLabel">
+                        <property name="text">
+                         <string>Ransac max reprojection error</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="0" column="1">
+                     <layout class="QVBoxLayout" name="verticalLayout_7">
+                      <item>
+                       <widget class="QComboBox" name="detectorComboBox">
+                        <item>
+                         <property name="text">
+                          <string>SIFT</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>SURF</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>FAST</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>STAR</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>ORB</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>BRISK</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>MSER</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>GFTT</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>HARRIS</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Dense</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>SimpleBlob</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QComboBox" name="descriptorComboBox">
+                        <item>
+                         <property name="text">
+                          <string>SIFT</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>SURF</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>BRIEF</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>BRISK</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>FREAK</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>ORB</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>RADIUS STATISTICS</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>CIRCLE INTERSECTIONS</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>MEAN RAYS</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>ALL CUSTOMS</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QComboBox" name="matcherComboBox">
+                        <item>
+                         <property name="text">
+                          <string>BruteForce</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>BruteForce-L1</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>BruteForce-Hamming</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>BruteForce-Hamming(2)</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>FlannBased</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QComboBox" name="matchingMethodComboBox">
+                        <item>
+                         <property name="text">
+                          <string>SIMPLE</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>RATIO</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>CROSSCHECK</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>K-NN</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QDoubleSpinBox" name="matchingRatioSpinBox"/>
+                      </item>
+                      <item>
+                       <widget class="QDoubleSpinBox" name="ransacSpinBox"/>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_3">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>351</width>
+            <height>598</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <attribute name="label">
+           <string>Graph Matching</string>
+          </attribute>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="alignmentTab">
+      <property name="enabled">
+       <bool>true</bool>
       </property>
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -348,450 +845,64 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <attribute name="label">
-       <string>Feature Matching MSE</string>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <attribute name="title">
+       <string>Maps Alignment</string>
       </attribute>
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>0</y>
-         <width>321</width>
-         <height>478</height>
+         <y>10</y>
+         <width>198</width>
+         <height>52</height>
         </rect>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_8">
+       <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Map #1 PreProcessing</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <item>
-             <widget class="QCheckBox" name="gaussianBlurCheckBox1">
-              <property name="text">
-               <string>GaussianBlur (kernel size)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="gaussianBlurSpinBox1"/>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
-             <widget class="QCheckBox" name="medianBlurCheckBox1">
-              <property name="text">
-               <string>MedianBlur (kernel size)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="medianBlurSpinBox1"/>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Map #2 PreProcessing</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <widget class="QCheckBox" name="gaussianBlurCheckBox2">
-              <property name="text">
-               <string>GaussianBlur (kernel size)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="gaussianBlurSpinBox2"/>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
-            <item>
-             <widget class="QCheckBox" name="medianBlurCheckBox2">
-              <property name="text">
-               <string>MedianBlur (kernel size)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="medianBlurSpinBox2"/>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="scaleBrushfireCheckBox">
-            <property name="text">
-             <string>Scale Maps (Mean Brushfire Distance)</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="0">
-             <layout class="QVBoxLayout" name="verticalLayout_5">
-              <item>
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>Feature Detector:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_5">
-                <property name="text">
-                 <string>Descriptor Extractor:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>Descriptor Matcher:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>Matching Method:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="matchingRatioLabel">
-                <property name="text">
-                 <string>2-NN matching ratio</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="ransaclLabel">
-                <property name="text">
-                 <string>Ransac max reprojection error</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="0" column="1">
-             <layout class="QVBoxLayout" name="verticalLayout_7">
-              <item>
-               <widget class="QComboBox" name="detectorComboBox">
-                <item>
-                 <property name="text">
-                  <string>SIFT</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>SURF</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>FAST</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>STAR</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>ORB</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>BRISK</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>MSER</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>GFTT</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>HARRIS</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Dense</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>SimpleBlob</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="descriptorComboBox">
-                <item>
-                 <property name="text">
-                  <string>SIFT</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>SURF</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>BRIEF</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>BRISK</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>FREAK</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>ORB</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>RADIUS STATISTICS</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>CIRCLE INTERSECTIONS</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>MEAN RAYS</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>ALL CUSTOMS</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="matcherComboBox">
-                <item>
-                 <property name="text">
-                  <string>BruteForce</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>BruteForce-L1</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>BruteForce-Hamming</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>BruteForce-Hamming(2)</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>FlannBased</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="matchingMethodComboBox">
-                <item>
-                 <property name="text">
-                  <string>SIMPLE</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>RATIO</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>CROSSCHECK</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>K-NN</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item>
-               <widget class="QDoubleSpinBox" name="matchingRatioSpinBox"/>
-              </item>
-              <item>
-               <widget class="QDoubleSpinBox" name="ransacSpinBox"/>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-         </layout>
+         <widget class="QCheckBox" name="binaryCheckBox">
+          <property name="text">
+           <string>Converts maps to binary</string>
+          </property>
+         </widget>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Compute MSE:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="featuresPushButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777159</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QLabel" name="label_7">
-              <property name="text">
-               <string>Result:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="featuresLabel">
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="autoFillBackground">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>0.0</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
+         <widget class="QCheckBox" name="manualAlignmentCheckBox">
+          <property name="text">
+           <string>Manual alignment</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
      </widget>
+     <widget class="QWidget" name="pathTab">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <attribute name="title">
+       <string>Path Validation</string>
+      </attribute>
+      <widget class="QWidget" name="gridLayoutWidget_3">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>321</width>
+         <height>391</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="pathGridLayout"/>
+      </widget>
+     </widget>
     </widget>
-   </widget>
-   <widget class="QWidget" name="alignmentTab">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <attribute name="title">
-     <string>Maps Alignment</string>
-    </attribute>
-    <widget class="QWidget" name="layoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>198</width>
-       <height>52</height>
-      </rect>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_6">
-      <item>
-       <widget class="QCheckBox" name="binaryCheckBox">
-        <property name="text">
-         <string>Converts maps to binary</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="manualAlignmentCheckBox">
-        <property name="text">
-         <string>Manual alignment</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="pathTab">
-    <attribute name="title">
-     <string>Path Validation</string>
-    </attribute>
-    <widget class="QWidget" name="gridLayoutWidget_3">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>321</width>
-       <height>391</height>
-      </rect>
-     </property>
-     <layout class="QGridLayout" name="pathGridLayout"/>
-    </widget>
-   </widget>
-  </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
