@@ -164,6 +164,22 @@ namespace ogm_gui
       @return void
       **/
       void drawGrid(QImage *img,float resolution);
+      
+      /**
+      @brief Wrapper for the draw vertices function of loader
+      @param img [QImage*] The image on which the vertices will be painted
+      @param vertices [std::vector<geometry_msgs::Point>*] The voronoi vertices
+      @return void
+      **/
+      void drawVertices(QImage *img, std::vector<geometry_msgs::Point>* vertices, bool groundTruth);
+ 
+      /**
+      @brief Wrapper for the draw voronoi function of loader
+      @param img [QImage*] The image on which the voronoi will be painted
+      @param vertices [std::vector<geometry_msgs::Point>*] The voronoi diagram
+      @return void
+      **/
+      void drawVoronoi(QImage *img, std::vector<geometry_msgs::Point>* voronoi, bool groundTruth);
 
       /**
       @brief Returns the CMapLoader object

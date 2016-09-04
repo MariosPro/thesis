@@ -191,6 +191,37 @@ namespace ogm_gui{
     }
     loader_.drawGrid(img,resolution);
   }
+  
+  /**
+  @brief Wrapper for the draw vertices function of loader
+  @param img [QImage*] The image on which the vertices will be painted
+  @param vertices [std::vector<geometry_msgs::Point>*] The voronoi vertices
+  @return void
+  **/
+  void CMapConnector::drawVertices(QImage *img, std::vector<geometry_msgs::Point>* vertices, bool groundTruth)
+  {
+    if ( ! map_initialized_ )
+    {
+      return;
+    }
+    loader_.drawVertices(img, vertices, groundTruth);
+  }
+ 
+  /**
+  @brief Wrapper for the draw voronoi function of loader
+  @param img [QImage*] The image on which the voronoi will be painted
+  @param voronoi [std::vector<geometry_msgs::Point>*] The voronoi diagram
+  @return void
+  **/
+  void CMapConnector::drawVoronoi(QImage *img, std::vector<geometry_msgs::Point>* voronoi,bool groundTruth)
+  {
+    if ( ! map_initialized_ )
+    {
+      return;
+    }
+    loader_.drawVoronoi(img, voronoi, groundTruth);
+  }
+
 
   /**
   @brief Emits the signalUpdateImage signal

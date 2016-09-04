@@ -59,7 +59,7 @@
       <string notr="true"/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="informationTab">
       <property name="sizePolicy">
@@ -219,7 +219,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page_1">
           <property name="geometry">
@@ -361,9 +361,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>360</width>
-            <height>601</height>
+            <y>-10</y>
+            <width>369</width>
+            <height>598</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -392,7 +392,7 @@
             <widget class="QScrollArea" name="scrollArea">
              <property name="minimumSize">
               <size>
-               <width>333</width>
+               <width>351</width>
                <height>580</height>
               </size>
              </property>
@@ -413,8 +413,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>340</width>
-                <height>581</height>
+                <width>349</width>
+                <height>578</height>
                </rect>
               </property>
               <property name="sizePolicy">
@@ -831,6 +831,9 @@
            <string>Graph Matching</string>
           </attribute>
           <widget class="QScrollArea" name="scrollArea_2">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -838,6 +841,12 @@
              <width>351</width>
              <height>591</height>
             </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>351</width>
+             <height>580</height>
+            </size>
            </property>
            <property name="widgetResizable">
             <bool>true</bool>
@@ -851,289 +860,277 @@
               <height>589</height>
              </rect>
             </property>
-            <widget class="QWidget" name="layoutWidget_2">
-             <property name="geometry">
-              <rect>
-               <x>10</x>
-               <y>340</y>
-               <width>145</width>
-               <height>103</height>
-              </rect>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_9">
-              <item>
-               <widget class="QLabel" name="label_19">
-                <property name="font">
-                 <font>
-                  <italic>true</italic>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Visualization:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="voronoiCheckBox">
-                <property name="text">
-                 <string>Voronoi </string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="verticesCheckBox">
-                <property name="text">
-                 <string>Voronoi Vertices</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="graphMatchingCheckBox">
-                <property name="text">
-                 <string>Graph Matching</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="layoutWidget_6">
-             <property name="geometry">
-              <rect>
-               <x>10</x>
-               <y>460</y>
-               <width>236</width>
-               <height>58</height>
-              </rect>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_10">
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_16">
-                <item>
-                 <widget class="QLabel" name="label_20">
-                  <property name="text">
-                   <string>Perform Graph Matching</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="graphMatchingPushButton">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777159</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_17">
-                <item>
-                 <widget class="QLabel" name="label_21">
-                  <property name="text">
-                   <string>Result:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="graphMatchingResultLabel">
-                  <property name="font">
-                   <font>
-                    <pointsize>12</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="autoFillBackground">
-                   <bool>false</bool>
-                  </property>
-                  <property name="text">
-                   <string>0.0</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="layoutWidget_4">
+            <widget class="QWidget" name="">
              <property name="geometry">
               <rect>
                <x>0</x>
                <y>1</y>
-               <width>342</width>
-               <height>312</height>
+               <width>344</width>
+               <height>487</height>
               </rect>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_3">
-              <item>
-               <widget class="QLabel" name="label_11">
-                <property name="font">
-                 <font>
-                  <italic>true</italic>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Voronoi Extraction Parameters:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_8">
+             <layout class="QGridLayout" name="gridLayout_11">
+              <item row="0" column="0">
+               <layout class="QVBoxLayout" name="verticalLayout_3">
                 <item>
-                 <widget class="QLabel" name="label_3">
+                 <widget class="QLabel" name="label_11">
+                  <property name="font">
+                   <font>
+                    <italic>true</italic>
+                   </font>
+                  </property>
                   <property name="text">
-                   <string>Map #1 PreProcessing</string>
+                   <string>Voronoi Extraction Parameters:</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_9">
+                 <layout class="QVBoxLayout" name="verticalLayout_8">
                   <item>
-                   <widget class="QCheckBox" name="gaussianBlurCheckBox1_2">
+                   <widget class="QLabel" name="label_3">
                     <property name="text">
-                     <string>GaussianBlur (kernel size)</string>
+                     <string>Map #1 PreProcessing</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QDoubleSpinBox" name="gaussianBlurSpinBox1_2"/>
+                   <layout class="QHBoxLayout" name="horizontalLayout_9">
+                    <item>
+                     <widget class="QCheckBox" name="gaussianBlurCheckBox1_2">
+                      <property name="text">
+                       <string>GaussianBlur (kernel size)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="gaussianBlurSpinBox1_2"/>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_10">
+                    <item>
+                     <widget class="QCheckBox" name="medianBlurCheckBox1_2">
+                      <property name="text">
+                       <string>MedianBlur (kernel size)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="medianBlurSpinBox1_2"/>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_10">
+                    <property name="text">
+                     <string>Map #2 PreProcessing</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_11">
+                    <item>
+                     <widget class="QCheckBox" name="gaussianBlurCheckBox2_2">
+                      <property name="text">
+                       <string>GaussianBlur (kernel size)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="gaussianBlurSpinBox2_2"/>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_12">
+                    <item>
+                     <widget class="QCheckBox" name="medianBlurCheckBox2_2">
+                      <property name="text">
+                       <string>MedianBlur (kernel size)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="medianBlurSpinBox2_2"/>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </item>
                 <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_10">
+                 <layout class="QHBoxLayout" name="horizontalLayout_13">
                   <item>
-                   <widget class="QCheckBox" name="medianBlurCheckBox1_2">
+                   <widget class="QCheckBox" name="morphOpeningCheckBox">
                     <property name="text">
-                     <string>MedianBlur (kernel size)</string>
+                     <string>Morph. Opening </string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QDoubleSpinBox" name="medianBlurSpinBox1_2"/>
+                   <widget class="QLabel" name="label_17">
+                    <property name="text">
+                     <string>Iterations: </string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QDoubleSpinBox" name="morphOpeningSpinBox"/>
                   </item>
                  </layout>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_10">
-                  <property name="text">
-                   <string>Map #2 PreProcessing</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_11">
+                 <layout class="QHBoxLayout" name="horizontalLayout_14">
                   <item>
-                   <widget class="QCheckBox" name="gaussianBlurCheckBox2_2">
+                   <widget class="QLabel" name="label_12">
                     <property name="text">
-                     <string>GaussianBlur (kernel size)</string>
+                     <string>Skeletonization Method:</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QDoubleSpinBox" name="gaussianBlurSpinBox2_2"/>
+                   <widget class="QComboBox" name="skeletonizationComboBox">
+                    <item>
+                     <property name="text">
+                      <string>medial_axis</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>thinning</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>zhangSuenThinning</string>
+                     </property>
+                    </item>
+                   </widget>
                   </item>
                  </layout>
                 </item>
                 <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_12">
+                 <layout class="QHBoxLayout" name="horizontalLayout_15">
                   <item>
-                   <widget class="QCheckBox" name="medianBlurCheckBox2_2">
+                   <widget class="QCheckBox" name="pruningCheckBox">
                     <property name="text">
-                     <string>MedianBlur (kernel size)</string>
+                     <string>Pruning </string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QDoubleSpinBox" name="medianBlurSpinBox2_2"/>
+                   <widget class="QLabel" name="label_13">
+                    <property name="text">
+                     <string>Iterations:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QDoubleSpinBox" name="pruningSpinBox"/>
                   </item>
                  </layout>
                 </item>
                </layout>
               </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_13">
-                <item>
-                 <widget class="QCheckBox" name="morphOpeningCheckBox">
+              <item row="1" column="0">
+               <layout class="QGridLayout" name="gridLayout_10">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_19">
+                  <property name="font">
+                   <font>
+                    <italic>true</italic>
+                   </font>
+                  </property>
                   <property name="text">
-                   <string>Morph. Opening </string>
+                   <string>Visualization:</string>
                   </property>
                  </widget>
                 </item>
-                <item>
-                 <widget class="QLabel" name="label_17">
+                <item row="1" column="0">
+                 <widget class="QCheckBox" name="voronoiCheckBox">
                   <property name="text">
-                   <string>Iterations: </string>
+                   <string>Voronoi </string>
                   </property>
                  </widget>
                 </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="morphOpeningSpinBox"/>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_14">
-                <item>
-                 <widget class="QLabel" name="label_12">
+                <item row="2" column="0">
+                 <widget class="QCheckBox" name="verticesCheckBox">
                   <property name="text">
-                   <string>Skeletonization Method:</string>
+                   <string>Voronoi Vertices</string>
                   </property>
                  </widget>
                 </item>
-                <item>
-                 <widget class="QComboBox" name="skeletonizationComboBox">
-                  <item>
-                   <property name="text">
-                    <string>medial_axis</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>thinning</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>zhangSuenThinning</string>
-                   </property>
-                  </item>
+                <item row="3" column="0">
+                 <widget class="QCheckBox" name="graphMatchingCheckBox">
+                  <property name="text">
+                   <string>Graph Matching</string>
+                  </property>
                  </widget>
                 </item>
                </layout>
               </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_15">
+              <item row="2" column="0">
+               <layout class="QVBoxLayout" name="verticalLayout_10">
                 <item>
-                 <widget class="QCheckBox" name="pruningCheckBox">
-                  <property name="text">
-                   <string>Pruning </string>
-                  </property>
-                 </widget>
+                 <layout class="QHBoxLayout" name="horizontalLayout_16">
+                  <item>
+                   <widget class="QLabel" name="label_20">
+                    <property name="text">
+                     <string>Perform Graph Matching</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="graphMatchingPushButton">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777159</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_13">
-                  <property name="text">
-                   <string>Iterations:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="pruningSpinBox"/>
+                 <layout class="QHBoxLayout" name="horizontalLayout_17">
+                  <item>
+                   <widget class="QLabel" name="label_21">
+                    <property name="text">
+                     <string>Result:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="graphMatchingResultLabel">
+                    <property name="font">
+                     <font>
+                      <pointsize>12</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="autoFillBackground">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>0.0</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </item>

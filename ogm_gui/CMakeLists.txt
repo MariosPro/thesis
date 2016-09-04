@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   ogm_communications
   ogm_server
   nav_msgs
+  geometry_msgs
   map_server
 )
 
@@ -60,6 +61,7 @@ catkin_package(
     ogm_server
     ogm_communications
     nav_msgs
+    geometry_msgs
     map_server
   INCLUDE_DIRS include
   LIBRARIES

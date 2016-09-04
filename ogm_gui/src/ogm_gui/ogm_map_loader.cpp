@@ -263,6 +263,44 @@ namespace ogm_gui
   }
 
   /**
+  @brief Draws voronoi diagram in the map
+  @param img [QImage*] The image for the diagram to be drawn on
+  @param voronoi [std::vector<geometry_msgs::Point>*] The voronoi diagram
+  @return void
+  **/
+  void CMapLoader::drawVoronoi(QImage *img, std::vector<geometry_msgs::Point>* voronoi, bool groundTruth)
+  {
+    QPainter painter(img);
+    if (groundTruth)
+      painter.setPen(QColor(255, 0, 0));
+    else
+      painter.setPen(QColor(0, 0, 255));
+    for (int i = 0; i < voronoi->size(); i++)
+      painter.drawPoint(voronoi->at(i).y, voronoi->at(i).x);
+  }
+ 
+  /**
+  @brief Draws voronoi vertices in the map
+  @param img [QImage*] The image for the vertices to be drawn on
+  @param voronoi [std::vector<geometry_msgs::Point>*] The voronoi vertices
+  @return void
+  **/
+  void CMapLoader::drawVertices(QImage *img, std::vector<geometry_msgs::Point>* vertices, bool groundTruth)
+  {
+    QPainter painter(img);
+    QPen pen;
+    if(groundTruth)
+       pen = QPen((QColor(0, 255, 0)));
+    else
+       pen = QPen((QColor(0, 255, 255)));
+    pen.setWidth(5);
+    painter.setPen(pen);
+    for (int i = 0; i < vertices->size(); i++)
+      painter.drawPoint(vertices->at(i).y, vertices->at(i).x);
+
+  }
+
+  /**
   @brief Returns the pos of the object to the scene
   @return QPointF : The pos to the scene
   **/
@@ -270,7 +308,7 @@ namespace ogm_gui
   {
     return ground_truth_map->pos();
   }
-  
+
   /**
   @brief Returns the rotation (z-axis) of the object to the scene
   @return qreal : The rotation to the scene
@@ -279,7 +317,7 @@ namespace ogm_gui
   {
     return ground_truth_map->rotation();
   }
-  
+
   /**
   @brief Returns the scaling of the object
   @return qreal : The scaling

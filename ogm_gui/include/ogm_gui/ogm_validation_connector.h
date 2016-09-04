@@ -95,6 +95,10 @@ namespace ogm_gui
 
       bool _pruning;
 
+      bool _voronoi;
+
+      bool _vertices;
+
       std::string _skeletonizationMethod;
 
       double _pruningIterations;
@@ -182,6 +186,10 @@ namespace ogm_gui
       bool pruning();
 
       bool morphOpen();
+
+      bool isVoronoiEnabled();
+
+      bool isVerticesEnabled();
     //------------------------------------------------------------------------//
     public Q_SLOTS:
 
@@ -249,6 +257,10 @@ namespace ogm_gui
       void morphOpeningCheckBoxChecked();
 
       void pruningCheckBoxChecked();
+
+      void voronoiCheckBoxChecked();
+
+      void verticesCheckBoxChecked();
 
       void pruningSpinBoxChanged(double t);
 

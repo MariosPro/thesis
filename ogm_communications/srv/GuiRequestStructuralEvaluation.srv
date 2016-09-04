@@ -13,6 +13,8 @@ float64 pruningIterations
 string skeletonizationMethod
 ---
 float64 result
-geometry_msgs/Point[] voronoi
-geometry_msgs/Point[] vertices
+geometry_msgs/Point[] voronoi1
+geometry_msgs/Point[] vertices1
+geometry_msgs/Point[] voronoi2
+geometry_msgs/Point[] vertices2
 

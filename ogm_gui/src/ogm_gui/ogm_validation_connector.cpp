@@ -166,6 +166,15 @@ namespace ogm_gui
    QObject::connect(
       loader.pruningCheckBox, SIGNAL(toggled(bool)),
       this, SLOT(pruningCheckBoxChecked()));
+   
+   QObject::connect(
+      loader.voronoiCheckBox, SIGNAL(toggled(bool)),
+      this, SLOT(voronoiCheckBoxChecked()));
+ 
+   QObject::connect(
+      loader.verticesCheckBox, SIGNAL(toggled(bool)),
+      this, SLOT(verticesCheckBoxChecked()));
+
 
    QObject::connect(
       loader.skeletonizationComboBox, SIGNAL(currentIndexChanged(const QString&)),
@@ -223,6 +232,8 @@ namespace ogm_gui
   _skeletonizationMethod = "medial_axis";
   _pruning = false;
   _morphOpen = false;
+  _voronoi = false;
+  _vertices = false;
     
   }
 
@@ -389,7 +400,13 @@ namespace ogm_gui
   void CValidationConnector::resetMapProperties()
   {
     loader.resetMapProperties();
+    _voronoi = false;
+    _vertices = false;
+    loader.voronoiCheckBox->setChecked(false);
+    loader.verticesCheckBox->setChecked(false);
   }
+
+  //void CValidationConnector::setVoronoiPoints()
 
   void CValidationConnector::obstacleTriggered()
   {
@@ -529,6 +546,16 @@ namespace ogm_gui
   {
     _pruning = !_pruning;
   }
+  
+  void CValidationConnector::voronoiCheckBoxChecked()
+  {
+    _voronoi = !_voronoi;
+  }
+
+  void CValidationConnector::verticesCheckBoxChecked()
+  {
+    _vertices = !_vertices;
+  }
 
   void CValidationConnector::skeletonizationComboBoxActivated(const QString& text)
   {
@@ -570,6 +597,16 @@ namespace ogm_gui
   std::string CValidationConnector::getSkeletonizationMethod()
   {
     return _skeletonizationMethod;
+  }
+
+  bool CValidationConnector::isVoronoiEnabled()
+  {
+    return _voronoi;
+  }
+ 
+  bool CValidationConnector::isVerticesEnabled()
+  {
+    return _vertices;
   }
 
    /**

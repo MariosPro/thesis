@@ -16,12 +16,17 @@ class GraphMatching:
  
     def extractTopologicalGraphs(self, parameters):
         start_time = timeit.default_timer()
-        self.graph1.extractTopologicalGraph(self.map1, parameters)
+        voronoiPoints1 = []
+        verticesPoints1 = []
+        voronoiPoints1, verticesPoints1 = self.graph1.extractTopologicalGraph(self.map1, parameters)
         elapsed = timeit.default_timer() - start_time
         print "Topological Graph 1 execution time (ms): ", elapsed * 1000
 
+        voronoiPoints2 = []
+        verticesPoints2 = []
         start_time = timeit.default_timer()
-        self.graph2.extractTopologicalGraph(self.map2, parameters)
+        voronoiPoints2, verticesPoints2 = self.graph2.extractTopologicalGraph(self.map2, parameters)
         elapsed = timeit.default_timer() - start_time
         print "Topological Graph 2 execution time (ms): ", elapsed * 1000
+        return voronoiPoints1, verticesPoints1, voronoiPoints2, verticesPoints2
  

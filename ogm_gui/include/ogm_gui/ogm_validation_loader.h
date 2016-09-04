@@ -80,7 +80,6 @@ namespace ogm_gui
       void showMapTransparency(double t);
 
       void resetMapProperties();
-
   };
 }
 

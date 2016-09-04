@@ -237,8 +237,11 @@ namespace ogm_server
     {
       ROS_INFO("[ogm_server] Structural Evaluation metric succesfully completed");
       res.result =  srv.response.result;
-      res.voronoi = srv.response.voronoi;
-      res.vertices = srv.response.vertices;
+      res.voronoi1 = srv.response.voronoi1;
+      res.vertices1 = srv.response.vertices1;
+      res.voronoi2 = srv.response.voronoi2;
+      res.vertices2 = srv.response.vertices2;
+
     }
     else
     {

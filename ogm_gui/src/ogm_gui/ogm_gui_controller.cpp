@@ -250,6 +250,10 @@ namespace ogm_gui
 
     validation_connector_.updateMapInfo(maps_);
     validation_connector_.resetMapProperties();
+    voronoi1_.clear();
+    voronoi2_.clear();
+    vertices1_.clear();
+    vertices2_.clear();
 
     map_connector_.resetMap();
 
@@ -340,6 +344,11 @@ namespace ogm_gui
     validation_connector_.updateMapInfo(maps_);
 
     validation_connector_.resetMapProperties();
+    voronoi1_.clear();
+    voronoi2_.clear();
+    vertices1_.clear();
+    vertices2_.clear();
+
     map_connector_.resetMap();
 
     elapsed_time_.start();
@@ -409,6 +418,19 @@ namespace ogm_gui
       map_connector_.drawGrid(&running_map_, maps_.groundTruthMap.info.resolution);
       map_connector_.drawGrid(&slam_map_, maps_.slamMap.info.resolution);
     }
+
+    if(validation_connector_.isVerticesEnabled())
+    {
+      map_connector_.drawVertices(&running_map_, &vertices1_, true);
+      map_connector_.drawVertices(&slam_map_, &vertices2_, false);
+    }
+
+    if(validation_connector_.isVoronoiEnabled())
+    {
+      map_connector_.drawVoronoi(&running_map_, &voronoi1_, true);
+      map_connector_.drawVoronoi(&slam_map_, &voronoi2_, false);
+    }
+
     map_connector_.updateImage(&slam_map_, false);
     map_connector_.updateImage(&running_map_, true);
 
@@ -567,6 +589,12 @@ namespace ogm_gui
     if (client.call(srv)) 
     {
       structuralEvaluationResult_ = srv.response.result;
+      voronoi1_ = srv.response.voronoi1;
+      voronoi2_ = srv.response.voronoi2;
+      vertices1_ = srv.response.vertices1;
+      vertices2_ = srv.response.vertices2;
+    /*  validation_connector_.setVoronoiPoints(srv.response.voronoi1, srv.response.voronoi2)*/
+      /*validation_connector_.setVerticesPoints(srv.response.vertices1, srv.response.vertices2)*/
       ROS_INFO_STREAM("[ogm_gui] Structural Evaluation completed");
     }
     else

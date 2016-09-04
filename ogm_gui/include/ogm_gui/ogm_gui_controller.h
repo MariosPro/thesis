@@ -26,6 +26,7 @@
 #include <boost/thread.hpp>
 
 #include "nav_msgs/OccupancyGrid.h"
+#include "geometry_msgs/Point.h"
 
 #include <QtCore/QThread>
 #include <QtCore/QTime>
@@ -116,6 +117,13 @@ namespace ogm_gui
       //!< structural evaluation result
       double structuralEvaluationResult_;
 
+      std::vector<geometry_msgs::Point> voronoi1_;
+
+      std::vector<geometry_msgs::Point> voronoi2_;
+
+      std::vector<geometry_msgs::Point> vertices1_;
+
+      std::vector<geometry_msgs::Point> vertices2_;
       //------------------------------------------------------------------------//
     public:
 

@@ -11,6 +11,6 @@
 
   <node name="structural_evaluation_node" type="main.py" pkg="structural_evaluation" output="screen"/>
   
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find structural_evaluation)/rviz/config.rviz"/>
+  <!--<node pkg="rviz" type="rviz" name="rviz" args="-d $(find structural_evaluation)/rviz/config.rviz"/>-->
 
 </launch>

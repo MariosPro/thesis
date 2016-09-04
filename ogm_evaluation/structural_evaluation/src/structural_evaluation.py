@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+from geometry_msgs.msg import Point
 from ogm_communications.srv import ServerRequestStructuralEvaluation
 from ogm_communications.srv import ServerRequestStructuralEvaluationResponse
 from graph_matching import GraphMatching
@@ -12,7 +13,7 @@ class StructuralEvaluation:
     def __init__(self):
 
         print "Created StructuralEvaluation instance"
-        structuralEval = rospy.Service('/structural_evaluation/map_evaluation', \
+        structuralEval = rospy.Service('/structural_evaluation/map_evaluation',
                                        ServerRequestStructuralEvaluation,
                                        self.callback)
 
@@ -37,8 +38,35 @@ class StructuralEvaluation:
         # Create graph matching instance
         self.graphMatching = GraphMatching(req.map1, req.map2)
         
+        res.voronoi1 = []
+        res.vertices1 = []
+        res.vertices2 = []
+        res.voronoi2 = []
         # Extract the TopologicalGraphs
-        self.graphMatching.extractTopologicalGraphs(parameters)
+        voronoi1, vertices1, voronoi2, vertices2 = self.graphMatching.extractTopologicalGraphs(parameters)
+        for v in voronoi1:
+            p = Point()
+            p.x = v[0]
+            p.y = v[1]
+            res.voronoi1.append(p)
+        
+        for v in voronoi2:
+            p = Point()
+            p.x = v[0]
+            p.y = v[1]
+            res.voronoi2.append(p)
+      
+        for v in vertices1:
+            p = Point()
+            p.x = v[0]
+            p.y = v[1]
+            res.vertices1.append(p)
+      
+        for v in vertices2:
+            p = Point()
+            p.x = v[0]
+            p.y = v[1]
+            res.vertices2.append(p)
 
         return res
 

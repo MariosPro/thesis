@@ -226,12 +226,13 @@ class TopologicalGraph:
         self.graph = Graph(directed = False)
 
     def extractTopologicalGraph(self, map, parameters):
-        visualization = Visualization(map.frame_id)
+        # visualization = Visualization(map.frame_id)
         print "TopologicalGraph instance Created %s" % (map.frame_id)
         
         # extract voronoi diagram
         start_time = timeit.default_timer()
-        self.voronoi = self.voronoiDiagram.extractVoronoi(map, parameters)
+        self.voronoi, voronoiPoints = self.voronoiDiagram.extractVoronoi(map, 
+                                                                         parameters)
         elapsed = timeit.default_timer() - start_time
         print "Voronoi Diagram execution time (ms): ", elapsed * 1000
         # self.voronoi = np.array(([0,1,1,1],
@@ -254,29 +255,34 @@ class TopologicalGraph:
         print "Neighbors execution time (ms): ", elapsed * 1000
         
         # visualize in rviz
-        vizPoints = []
+        # vizPoints = []
+        verticesPoints = []
         for i in xrange(voronoiVertices.shape[0]):
             for j in xrange(voronoiVertices.shape[1]):
                 if voronoiVertices[i][j] == 1:
-                    p = Point()
-                    p.x = j * map.resolution + map.origin['x']
-                    p.y = (map.height - i) * map.resolution + map.origin['y']
-                    vizPoints.append(p)
-        if map.frame_id == "visualization_map1":
-            ns = "map1/voronoiVertices"
-        else:
-            ns = "map2/voronoiVertices"
-        colors = [1.0, 0.0, 1.0, 0.0]
-        visualization.visualizeVertices(map.frame_id,
-                                        2,
-                                        0,
-                                        ns,
-                                        0.1,
-                                        colors,
-                                        vizPoints,
-                                        False)
+        #             p = Point()
+                    # p.x = j
+                    # p.y = map.height - i
+                    verticesPoints.append([i, j])
+#                     vp = Point()
+                    # vp.x = j * map.resolution + map.origin['x']
+                    # vp.y = (map.height - i) * map.resolution + map.origin['y']
+                    # vizPoints.append(vp)
+        # if map.frame_id == "visualization_map1":
+            # ns = "map1/voronoiVertices"
+        # else:
+            # ns = "map2/voronoiVertices"
+        # colors = [1.0, 0.0, 1.0, 0.0]
+        # visualization.visualizeVertices(map.frame_id,
+                                        # 2,
+                                        # 0,
+                                        # ns,
+                                        # 0.1,
+                                        # colors,
+                                        # vizPoints,
+                                        # False)
         # visualize the graph
-   #      for v in self.graph.vertices():
+        # for v in self.graph.vertices():
             # print  v
             # print "neighbors"
             # for n in v.all_neighbours():
@@ -285,11 +291,13 @@ class TopologicalGraph:
             # for e in v.all_edges():
                 # print e
 
-  #       graph_draw(self.graph, pos=self.graph.vp['pose'],
+        # graph_draw(self.graph, pos=self.graph.vp['pose'],
                    # vertex_text= self.graph.vertex_index,
                    # edge_text = self.graph.ep['label'],
                    # edge_pen_width = self.graph.ep['distance'],
                    # output_size=[4024, 4024])
+       
+        return voronoiPoints, verticesPoints
 
     def findVertices(self, voronoi):
 
@@ -349,7 +357,7 @@ class TopologicalGraph:
             for j in xrange(0, isVertice.shape[1]):
                 if isVertice[i][j] == 1:
                     verticesPoses.append((i, j))
-        
+
         self.graph.vertex_properties['pose'] = self.graph.new_vertex_property("vector<double>")
         self.graph.edge_properties['distance'] = self.graph.new_edge_property("double")
         # self.graph.edge_properties['label'] = self.graph.new_edge_property("string")

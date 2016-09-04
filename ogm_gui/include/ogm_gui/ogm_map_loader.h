@@ -23,6 +23,7 @@
 
 #include <QDebug>
 #include "ui_map.h"
+#include "geometry_msgs/Point.h"
 #include "ogm_gui/ogm_map_item.h"
 #include "ogm_gui/ogm_tools.h"
 
@@ -114,6 +115,10 @@ namespace ogm_gui
       **/
       void drawGrid(QImage *img,float resolution);
 
+      void drawVertices(QImage *img, std::vector<geometry_msgs::Point>* vertices, bool groundTruth);
+
+      void drawVoronoi(QImage *img, std::vector<geometry_msgs::Point>* voronoi, bool groundTruth);
+      
       void setMapXposition(double x);
 
       void setMapYposition(double y);

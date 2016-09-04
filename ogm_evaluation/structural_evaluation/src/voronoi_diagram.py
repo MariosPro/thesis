@@ -219,40 +219,42 @@ class VoronoiDiagram:
             elapsed = timeit.default_timer() - start_time
             print "Final pruning execution time (ms): ", elapsed * 1000
 
-        vizPoints = []
+        # vizPoints = []
+        voronoiPoints = []
         for i in range(skeleton.shape[0]):
             for j in range(skeleton.shape[1]):
                 if skeleton[i][j] == 1:
-                    p = Point()
-                    p.x = j
-                    p.y = map.height - i
-                    vp = Point()
-                    vp.x = j * map.resolution + map.origin['x']
-                    vp.y = (map.height - i) * map.resolution + map.origin['y']
-                    vizPoints.append(vp)
+#                     p = Point()
+                    # p.x = j
+                    # p.y = map.height - i
+                    voronoiPoints.append([i, j])
+#                     vp = Point()
+                    # vp.x = j * map.resolution + map.origin['x']
+                    # vp.y = (map.height - i) * map.resolution + map.origin['y']
+                    # vizPoints.append(vp)
 
-        print "Voronoi Diagram extracted"
+        # print "Voronoi Diagram extracted"
 
-        if map.frame_id == "visualization_map1":
-            colors = [1.0, 1.0, 0.0, 0.0]
-            ns = "map1/voronoiPoints"
-        else:
-            colors = [1.0, 0.0, 0.0, 1.0]
-            ns = "map2/voronoiPoints"
-        visualization.visualizePoints(map.frame_id,
-                                      8,
-                                      0,
-                                      ns,
-                                      0.02,
-                                      colors,
-                                      vizPoints,
-                                      True)
+        # if map.frame_id == "visualization_map1":
+            # colors = [1.0, 1.0, 0.0, 0.0]
+            # ns = "map1/voronoiPoints"
+        # else:
+            # colors = [1.0, 0.0, 0.0, 1.0]
+            # ns = "map2/voronoiPoints"
+        # visualization.visualizePoints(map.frame_id,
+                                      # 8,
+                                      # 0,
+                                      # ns,
+                                      # 0.02,
+                                      # colors,
+                                      # vizPoints,
+                                      # True)
 
-        return skeleton
+        return skeleton, voronoiPoints
 
     def skeletonization(self, binary, method):
         if method == "zhangSuenThinning":
-            skeleton = self.thinning(binary)
+            skeleton = self.zhangSuenThinning(binary)
         if method == "medial_axis":
             skeleton = medial_axis(binary)
         if method == "thinning":
@@ -320,18 +322,13 @@ class VoronoiDiagram:
         for k in xrange(1, len(removedBranches)):
             finalRemovedBranches = np.logical_or(finalRemovedBranches,
                                                  removedBranches[k]).astype(int)
- 
+
         prunedSkeleton = np.logical_and(skeleton,
                                         np.logical_not(finalRemovedBranches).
                                         astype(int)).astype(int)
-        
-        # start_time = timeit.default_timer()
-        # prunedSkeleton = self.skeletonization(prunedSkeleton, 'morphology')
-        # elapsed = timeit.default_timer() - start_time
-        # print "pruning thinning iteration execution time (ms): ", elapsed * 1000
 
         return prunedSkeleton
-    
+
     def finalPruning(self, skeleton):
         removedBranches = []
         prunedSkeleton = skeleton
