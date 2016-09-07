@@ -219,15 +219,15 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="page_1">
           <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>360</width>
-            <height>601</height>
+            <width>100</width>
+            <height>30</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -361,7 +361,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-10</y>
+            <y>0</y>
             <width>369</width>
             <height>598</height>
            </rect>
@@ -428,7 +428,7 @@
                 <rect>
                  <x>10</x>
                  <y>0</y>
-                 <width>311</width>
+                 <width>414</width>
                  <height>501</height>
                 </rect>
                </property>
@@ -860,7 +860,7 @@
               <height>589</height>
              </rect>
             </property>
-            <widget class="QWidget" name="">
+            <widget class="QWidget" name="layoutWidget">
              <property name="geometry">
               <rect>
                <x>0</x>
@@ -992,12 +992,12 @@
                    <widget class="QComboBox" name="skeletonizationComboBox">
                     <item>
                      <property name="text">
-                      <string>medial_axis</string>
+                      <string>thinning</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
-                      <string>thinning</string>
+                      <string>medial_axis</string>
                      </property>
                     </item>
                     <item>

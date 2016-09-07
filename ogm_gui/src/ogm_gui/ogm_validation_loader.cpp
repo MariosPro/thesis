@@ -148,23 +148,24 @@ namespace ogm_gui
     showMapYposition(0);
     showMapRotation(0);
     showMapScale(1.0);
-    showMapTransparency(0.5);
+    showMapTransparency(0.7);
     posxSpinBox->setValue(0);
     posySpinBox->setValue(0);
     rotationSpinBox->setValue(0);
     scaleSpinBox->setValue(1);
-    transSpinBox->setValue(0.5);
+    transSpinBox->setValue(0.7);
     matchingRatioSpinBox->setValue(0.7);
     ransacSpinBox->setValue(-1);
     gaussianBlurSpinBox1->setValue(3);
     gaussianBlurSpinBox2->setValue(3);
     medianBlurSpinBox1->setValue(3);
     medianBlurSpinBox2->setValue(3);
-    gaussianBlurSpinBox1_2->setValue(3);
-    gaussianBlurSpinBox2_2->setValue(3);
-    medianBlurSpinBox1_2->setValue(3);
-    medianBlurSpinBox2_2->setValue(3);
-
+    gaussianBlurSpinBox1_2->setValue(9);
+    gaussianBlurSpinBox2_2->setValue(9);
+    medianBlurSpinBox1_2->setValue(11);
+    medianBlurSpinBox2_2->setValue(11);
+    pruningSpinBox->setValue(20);
+    morphOpeningSpinBox->setValue(4);
   }
 }
 

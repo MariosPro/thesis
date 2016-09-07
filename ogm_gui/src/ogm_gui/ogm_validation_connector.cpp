@@ -174,7 +174,10 @@ namespace ogm_gui
    QObject::connect(
       loader.verticesCheckBox, SIGNAL(toggled(bool)),
       this, SLOT(verticesCheckBoxChecked()));
-
+   
+   QObject::connect(
+      loader.graphMatchingCheckBox, SIGNAL(toggled(bool)),
+      this, SLOT(graphMatchingCheckBoxChecked()));
 
    QObject::connect(
       loader.skeletonizationComboBox, SIGNAL(currentIndexChanged(const QString&)),
@@ -229,12 +232,12 @@ namespace ogm_gui
   //structural evaluation
   _morphOpenIterations = 4;
   _pruningIterations = 20;
-  _skeletonizationMethod = "medial_axis";
+  _skeletonizationMethod = "thinning";
   _pruning = false;
   _morphOpen = false;
   _voronoi = false;
   _vertices = false;
-  _graphMatching = true;
+  _graphMatching = false;
     
   }
 
@@ -556,6 +559,11 @@ namespace ogm_gui
   void CValidationConnector::verticesCheckBoxChecked()
   {
     _vertices = !_vertices;
+  }
+ 
+  void CValidationConnector::graphMatchingCheckBoxChecked()
+  {
+    _graphMatching = !_graphMatching;
   }
 
   void CValidationConnector::skeletonizationComboBoxActivated(const QString& text)

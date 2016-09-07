@@ -227,13 +227,14 @@ namespace ogm_gui{
   @param voronoi [std::vector<geometry_msgs::Point>*] The voronoi diagram
   @return void
   **/
-  void CMapConnector::drawMatchedVertices(QImage *img, std::vector<geometry_msgs::Point>* matchedVertices)
+  void CMapConnector::drawMatchedVertices(QImage *img, std::vector<geometry_msgs::Point>* matchedVertices,
+                                          bool groundTruth)
   {
     if ( ! map_initialized_ )
     {
       return;
     }
-    loader_.drawMatchedVertices(img, matchedVertices);
+    loader_.drawMatchedVertices(img, matchedVertices, groundTruth);
   }
 
 

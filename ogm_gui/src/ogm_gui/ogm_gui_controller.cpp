@@ -433,8 +433,8 @@ namespace ogm_gui
     
     if(validation_connector_.isGraphMatchingEnabled())
     {
-      map_connector_.drawMatchedVertices(&running_map_, &matchedVertices1_);
-      map_connector_.drawMatchedVertices(&slam_map_, &matchedVertices2_);
+      map_connector_.drawMatchedVertices(&running_map_, &matchedVertices1_, true);
+      map_connector_.drawMatchedVertices(&slam_map_, &matchedVertices2_, false);
 
     }
 

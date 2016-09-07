@@ -306,16 +306,19 @@ namespace ogm_gui
   @param voronoi [std::vector<geometry_msgs::Point>*] The voronoi vertices
   @return void
   **/
-  void CMapLoader::drawMatchedVertices(QImage *img, std::vector<geometry_msgs::Point>* matchedVertices)
+  void CMapLoader::drawMatchedVertices(QImage *img, std::vector<geometry_msgs::Point>* matchedVertices,
+                                       bool groundTruth)
   {
     QPainter painter(img);
     QPen pen;
-    pen = QPen((QColor(255, 255, 0)));
+    if(groundTruth)
+      pen = QPen((QColor(255, 255, 0)));
+    else
+      pen = QPen((QColor(255, 127, 0)));
     pen.setWidth(10);
     painter.setPen(pen);
     for (int i = 0; i < matchedVertices->size(); i++)
       painter.drawPoint(matchedVertices->at(i).y, matchedVertices->at(i).x);
-
   }
 
   /**

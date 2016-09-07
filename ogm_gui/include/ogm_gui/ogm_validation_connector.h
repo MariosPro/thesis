@@ -266,6 +266,8 @@ namespace ogm_gui
 
       void verticesCheckBoxChecked();
 
+      void graphMatchingCheckBoxChecked();
+
       void pruningSpinBoxChanged(double t);
 
       void morphOpeningSpinBoxChanged(double t);

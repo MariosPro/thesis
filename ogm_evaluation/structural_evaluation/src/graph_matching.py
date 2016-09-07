@@ -41,7 +41,7 @@ class GraphMatching:
         # self.graphMatching()
         return voronoiPoints1, verticesPoints1, voronoiPoints2, verticesPoints2
 
-    def graphMatching2(self):
+    def graphMatching(self):
       #       for v in self.graph1.graph.vertices():
             # print "vertice:", v
             # for e in v.out_neighbours():
@@ -69,19 +69,24 @@ class GraphMatching:
 
             subgraph1, vmap1, emap1 = GraphUtils.prune(filteredGraph1)
 
-            print "subgraph1: " + GraphUtils.format_vlist(subgraph1)
-            print "S1 -> G1: " + GraphUtils.format_vmap(vmap1)
-            for v in subgraph1.vertices():
-                print "Vertice", v, subgraph1.vp.pose[v].a
-                for e in v.out_neighbours():
-                    print "edge ", v, " ", e
+            print "subgraph1: V=", subgraph1.num_vertices(), "E=", \
+                subgraph1.num_edges()
 
-            vertexMapping = gt.subgraph_isomorphism(subgraph1,
-                                                    self.graph2.graph,
-                                                    induced=True, max_n = 10)
-            if len(vertexMapping) > 0:
-                print "found isomorphisms= ", len(vertexMapping), "number of vertices: ", visitLim
-                break
+  #           print "subgraph1: " + GraphUtils.format_vlist(subgraph1)
+            # print "S1 -> G1: " + GraphUtils.format_vmap(vmap1)
+#             for v in subgraph1.vertices():
+                # print "Vertice", v, subgraph1.vp.pose[v].a
+                # for e in v.out_neighbours():
+                    # print "edge ", v, " ", e
+
+            vm = gt.subgraph_isomorphism(subgraph1,
+                                         self.graph2.graph,
+                                         induced=True, max_n = 10)
+            if len(vm) > 0:
+                print "found isomorphisms= ", len(vm), "number of vertices: ", visitLim
+                vertexMapping = vm
+                subgraph12 = subgraph1.copy()
+                # break
         
         g = self.graph2.graph.copy()
         vMasks = []
@@ -89,7 +94,7 @@ class GraphMatching:
         for i in range(len(vertexMapping)):
             g.set_vertex_filter(None)
             g.set_edge_filter(None)
-            vmask, emask = gt.mark_subgraph(g, subgraph1, vertexMapping[i])
+            vmask, emask = gt.mark_subgraph(g, subgraph12, vertexMapping[i])
             vMasks.append(vmask)
             eMasks.append(emask)
     #         print ("VERTEX filter:", vmask.get_array())
@@ -101,6 +106,13 @@ class GraphMatching:
             print "vertice:", v
             for e in v.out_neighbours():
                 print "edge ", v, " ", e
+        for v in subgraph12.vertices():
+            print "sVertice", v, subgraph12.vp.pose[v].a
+            for e in v.out_neighbours():
+                print "sedge ", v, " ", e
+        print "subgraph2: V=", g.num_vertices(), "E=", g.num_edges()
+        print "subgraph1: V=", subgraph12.num_vertices(), "E=", \
+            subgraph12.num_edges()
 
         subgraphPoses2 = []
         for v in g.vertices():
@@ -114,8 +126,8 @@ class GraphMatching:
             subgraphPoints2.append(p)
       
         subgraphPoses1 = []
-        for v in subgraph1.vertices():
-                subgraphPoses1.append(subgraph1.vp.pose[v].a)
+        for v in subgraph12.vertices():
+                subgraphPoses1.append(subgraph12.vp.pose[v].a)
         
         subgraphPoints1 = []
         for pose in subgraphPoses1:
@@ -123,8 +135,8 @@ class GraphMatching:
             p.x = pose[0]
             p.y = pose[1]
             subgraphPoints1.append(p)
-        print len(subgraphPoints2)
-        print len(subgraphPoints1)
+        print "subgraph2 points: ", len(subgraphPoints2)
+        print "subgraph1 points: ", len(subgraphPoints1)
 
         return subgraphPoints1, subgraphPoints2
 
