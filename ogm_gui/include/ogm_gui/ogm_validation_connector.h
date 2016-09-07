@@ -99,6 +99,8 @@ namespace ogm_gui
 
       bool _vertices;
 
+      bool _graphMatching;
+
       std::string _skeletonizationMethod;
 
       double _pruningIterations;
@@ -190,6 +192,8 @@ namespace ogm_gui
       bool isVoronoiEnabled();
 
       bool isVerticesEnabled();
+
+      bool isGraphMatchingEnabled();
     //------------------------------------------------------------------------//
     public Q_SLOTS:
 

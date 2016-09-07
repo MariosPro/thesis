@@ -180,6 +180,14 @@ namespace ogm_gui
       @return void
       **/
       void drawVoronoi(QImage *img, std::vector<geometry_msgs::Point>* voronoi, bool groundTruth);
+ 
+      /**
+      @brief Wrapper for the draw voronoi function of loader
+      @param img [QImage*] The image on which the voronoi will be painted
+      @param vertices [std::vector<geometry_msgs::Point>*] The voronoi diagram
+      @return void
+      **/
+      void drawMatchedVertices(QImage *img, std::vector<geometry_msgs::Point>* matchedVertices);
 
       /**
       @brief Returns the CMapLoader object

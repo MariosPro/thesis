@@ -241,7 +241,8 @@ namespace ogm_server
       res.vertices1 = srv.response.vertices1;
       res.voronoi2 = srv.response.voronoi2;
       res.vertices2 = srv.response.vertices2;
-
+      res.matchedVertices1 = srv.response.matchedVertices1;
+      res.matchedVertices2 = srv.response.matchedVertices2;
     }
     else
     {

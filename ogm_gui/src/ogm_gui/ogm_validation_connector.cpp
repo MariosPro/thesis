@@ -234,6 +234,7 @@ namespace ogm_gui
   _morphOpen = false;
   _voronoi = false;
   _vertices = false;
+  _graphMatching = true;
     
   }
 
@@ -607,6 +608,11 @@ namespace ogm_gui
   bool CValidationConnector::isVerticesEnabled()
   {
     return _vertices;
+  }
+ 
+  bool CValidationConnector::isGraphMatchingEnabled()
+  {
+    return _graphMatching;
   }
 
    /**

@@ -299,6 +299,24 @@ namespace ogm_gui
       painter.drawPoint(vertices->at(i).y, vertices->at(i).x);
 
   }
+ 
+  /**
+  @brief Draws voronoi vertices in the map
+  @param img [QImage*] The image for the vertices to be drawn on
+  @param voronoi [std::vector<geometry_msgs::Point>*] The voronoi vertices
+  @return void
+  **/
+  void CMapLoader::drawMatchedVertices(QImage *img, std::vector<geometry_msgs::Point>* matchedVertices)
+  {
+    QPainter painter(img);
+    QPen pen;
+    pen = QPen((QColor(255, 255, 0)));
+    pen.setWidth(10);
+    painter.setPen(pen);
+    for (int i = 0; i < matchedVertices->size(); i++)
+      painter.drawPoint(matchedVertices->at(i).y, matchedVertices->at(i).x);
+
+  }
 
   /**
   @brief Returns the pos of the object to the scene

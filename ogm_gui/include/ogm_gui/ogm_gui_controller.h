@@ -124,6 +124,12 @@ namespace ogm_gui
       std::vector<geometry_msgs::Point> vertices1_;
 
       std::vector<geometry_msgs::Point> vertices2_;
+ 
+      std::vector<geometry_msgs::Point> matchedVertices1_;
+ 
+      std::vector<geometry_msgs::Point> matchedVertices2_;
+
+
       //------------------------------------------------------------------------//
     public:
 

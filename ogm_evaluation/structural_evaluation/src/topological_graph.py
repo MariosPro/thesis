@@ -408,7 +408,8 @@ class TopologicalGraph:
 
                                         # print v, " ", v1[0]
                                         # add the edge (compute the distance)
-                                        if not self.graph.edge(v, v1[0]):
+                                        if (not self.graph.edge(v, v1[0])) and \
+                                                (not self.graph.edge(v1[0],v)):
                                             e = self.graph.add_edge(v, v1[0])
                                             
                                             # add distance as edge property

@@ -44,6 +44,7 @@ class StructuralEvaluation:
         res.voronoi2 = []
         # Extract the TopologicalGraphs
         voronoi1, vertices1, voronoi2, vertices2 = self.graphMatching.extractTopologicalGraphs(parameters)
+        res.matchedVertices1, res.matchedVertices2 = self.graphMatching.graphMatching2()
         for v in voronoi1:
             p = Point()
             p.x = v[0]

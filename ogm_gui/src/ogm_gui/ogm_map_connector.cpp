@@ -221,6 +221,20 @@ namespace ogm_gui{
     }
     loader_.drawVoronoi(img, voronoi, groundTruth);
   }
+  /**
+  @brief Wrapper for the draw voronoi function of loader
+  @param img [QImage*] The image on which the voronoi will be painted
+  @param voronoi [std::vector<geometry_msgs::Point>*] The voronoi diagram
+  @return void
+  **/
+  void CMapConnector::drawMatchedVertices(QImage *img, std::vector<geometry_msgs::Point>* matchedVertices)
+  {
+    if ( ! map_initialized_ )
+    {
+      return;
+    }
+    loader_.drawMatchedVertices(img, matchedVertices);
+  }
 
 
   /**

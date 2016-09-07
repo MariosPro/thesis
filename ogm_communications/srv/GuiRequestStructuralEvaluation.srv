@@ -17,4 +17,5 @@ geometry_msgs/Point[] voronoi1
 geometry_msgs/Point[] vertices1
 geometry_msgs/Point[] voronoi2
 geometry_msgs/Point[] vertices2
-
+geometry_msgs/Point[] matchedVertices1
+geometry_msgs/Point[] matchedVertices2

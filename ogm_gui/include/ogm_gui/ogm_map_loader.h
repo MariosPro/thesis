@@ -119,6 +119,8 @@ namespace ogm_gui
 
       void drawVoronoi(QImage *img, std::vector<geometry_msgs::Point>* voronoi, bool groundTruth);
       
+      void drawMatchedVertices(QImage *img, std::vector<geometry_msgs::Point>* matchedVertices);
+      
       void setMapXposition(double x);
 
       void setMapYposition(double y);
