@@ -42,6 +42,13 @@ target_link_libraries(ogm_map_loader
 )
 
 add_library(ogm_map_server src/map_server.cpp)
+
+add_dependencies(ogm_map_server ogm_communications_gencpp 
+  ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+  ${catkin_EXPORTED_TARGETS}
+)
+
+#   wait for ogm_communications to be build
 target_link_libraries(ogm_map_server
     ogm_map_loader
     ${catkin_LIBRARIES}
