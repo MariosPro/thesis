@@ -10,136 +10,6 @@ from skimage.morphology import medial_axis
 from visualization import Visualization
 import numpy as np
 
-# structuring elements for morphological operations
-
-pruningHitKernel = []
-pruningMissKernel = []
-finalPruningKernel = []
-
-# pruning structuring elements
-pruningHitKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 0],
-    [0, 0, 0])))
-
-pruningMissKernel.append(np.array((
-    [1, 1, 0],
-    [1, 0, 0],
-    [1, 1, 1])))
-
-pruningHitKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 0],
-    [0, 0, 0])))
-
-pruningMissKernel.append(np.array((
-    [1, 1, 1],
-    [1, 0, 0],
-    [1, 1, 0])))
-
-pruningHitKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 0],
-    [0, 0, 0])))
-
-pruningMissKernel.append(np.array((
-    [0, 0, 1],
-    [1, 0, 1],
-    [1, 1, 1])))
-
-pruningHitKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 0],
-    [0, 0, 0])))
-
-pruningMissKernel.append(np.array((
-    [1, 0, 0],
-    [1, 0, 1],
-    [1, 1, 1])))
-
-pruningHitKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 0],
-    [0, 0, 0])))
-
-pruningMissKernel.append(np.array((
-    [1, 1, 1],
-    [1, 0, 1],
-    [1, 0, 0])))
-
-pruningHitKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 0],
-    [0, 0, 0])))
-
-pruningMissKernel.append(np.array((
-    [1, 1, 1],
-    [1, 0, 1],
-    [0, 0, 1])))
-
-pruningHitKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 0],
-    [0, 0, 0])))
-
-pruningMissKernel.append(np.array((
-    [1, 1, 1],
-    [0, 0, 1],
-    [0, 1, 1])))
-
-pruningHitKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 0],
-    [0, 0, 0])))
-
-pruningMissKernel.append(np.array((
-    [0, 1, 1],
-    [0, 0, 1],
-    [1, 1, 1])))
-
-# final pruning structuring elements
-
-finalPruningKernel.append(np.array((
-    [1, 1, 0],
-    [0, 1, 0],
-    [0, 0, 0])))
-
-finalPruningKernel.append(np.array((
-    [0, 0, 1],
-    [0, 1, 1],
-    [0, 0, 0])))
-
-finalPruningKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 0],
-    [0, 1, 1])))
-
-finalPruningKernel.append(np.array((
-    [0, 0, 0],
-    [1, 1, 0],
-    [1, 0, 0])))
-
-finalPruningKernel.append(np.array((
-    [0, 1, 1],
-    [0, 1, 0],
-    [0, 0, 0])))
-
-finalPruningKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 1],
-    [0, 0, 1])))
-
-finalPruningKernel.append(np.array((
-    [0, 0, 0],
-    [0, 1, 0],
-    [1, 1, 0])))
-
-finalPruningKernel.append(np.array((
-    [1, 0, 0],
-    [1, 1, 0],
-    [0, 0, 0])))
-
-
 class VoronoiDiagram:
 
     def extractVoronoi(self, map, parameters):
@@ -204,7 +74,7 @@ class VoronoiDiagram:
         # pruning of the skeleton
         if parameters['pruning']:
             start_time = timeit.default_timer()
-            for i in range(0, parameters['pruningIterations']):
+            for i in xrange(0, parameters['pruningIterations']):
                 skeleton = self.pruning(skeleton)
             elapsed = timeit.default_timer() - start_time
             print "Pruning execution time (ms): ", elapsed * 1000
@@ -219,16 +89,12 @@ class VoronoiDiagram:
             elapsed = timeit.default_timer() - start_time
             print "Final pruning execution time (ms): ", elapsed * 1000
 
-        # vizPoints = []
-        voronoiPoints = []
-        for i in range(skeleton.shape[0]):
-            for j in range(skeleton.shape[1]):
-                if skeleton[i][j] == 1:
-#                     p = Point()
-                    # p.x = j
-                    # p.y = map.height - i
-                    voronoiPoints.append([i, j])
-#                     vp = Point()
+        voronoiPoints = np.argwhere(skeleton == 1).tolist()      
+     #    print vizPoints
+        # for i in range(skeleton.shape[0]):
+            # for j in range(skeleton.shape[1]):
+                # if skeleton[i][j] == 1:
+                    #  vp = Point()
                     # vp.x = j * map.resolution + map.origin['x']
                     # vp.y = (map.height - i) * map.resolution + map.origin['y']
                     # vizPoints.append(vp)
@@ -308,40 +174,164 @@ class VoronoiDiagram:
         return dst * 255
 
     def pruning(self, skeleton):
+        pruningHitKernel = []
+        pruningMissKernel = []
+
+        # pruning structuring elements
+        pruningHitKernel.append(np.array((
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0])))
+
+        pruningMissKernel.append(np.array((
+            [1, 1, 0],
+            [1, 0, 0],
+            [1, 1, 1])))
+
+        pruningHitKernel.append(np.array((
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0])))
+
+        pruningMissKernel.append(np.array((
+            [1, 1, 1],
+            [1, 0, 0],
+            [1, 1, 0])))
+
+        pruningHitKernel.append(np.array((
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0])))
+
+        pruningMissKernel.append(np.array((
+            [0, 0, 1],
+            [1, 0, 1],
+            [1, 1, 1])))
+
+        pruningHitKernel.append(np.array((
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0])))
+
+        pruningMissKernel.append(np.array((
+            [1, 0, 0],
+            [1, 0, 1],
+            [1, 1, 1])))
+
+        pruningHitKernel.append(np.array((
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0])))
+
+        pruningMissKernel.append(np.array((
+            [1, 1, 1],
+            [1, 0, 1],
+            [1, 0, 0])))
+
+        pruningHitKernel.append(np.array((
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0])))
+
+        pruningMissKernel.append(np.array((
+            [1, 1, 1],
+            [1, 0, 1],
+            [0, 0, 1])))
+
+        pruningHitKernel.append(np.array((
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0])))
+
+        pruningMissKernel.append(np.array((
+            [1, 1, 1],
+            [0, 0, 1],
+            [0, 1, 1])))
+
+        pruningHitKernel.append(np.array((
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0])))
+
+        pruningMissKernel.append(np.array((
+            [0, 1, 1],
+            [0, 0, 1],
+            [1, 1, 1])))
+
         prunedSkeleton = skeleton
 
         removedBranches = []
-        for i in xrange(0, len(pruningHitKernel)):
-            removedBranches.append(ndimage.binary_hit_or_miss(prunedSkeleton,
-                                                              structure1 =
-                                                              pruningHitKernel[i],
-                                                              structure2 =
-                                                              pruningMissKernel[i]).astype(int))
-        finalRemovedBranches = removedBranches[0]
-
-        for k in xrange(1, len(removedBranches)):
-            finalRemovedBranches = np.logical_or(finalRemovedBranches,
-                                                 removedBranches[k]).astype(int)
-
+        removedBranches = [ndimage.binary_hit_or_miss(prunedSkeleton,
+                                                      structure1 =
+                                                      pruningHitKernel[i],
+                                                      structure2 =
+                                                      pruningMissKernel[i]).astype(int)
+                           for i in xrange(0, len(pruningHitKernel))]
+       
+        finalRemovedBranches = reduce(lambda x, y: x+y, removedBranches)
+       
         prunedSkeleton = np.logical_and(skeleton,
-                                        np.logical_not(finalRemovedBranches).
-                                        astype(int)).astype(int)
+                                    np.logical_not(finalRemovedBranches).
+                                    astype(int)).astype(int)
 
         return prunedSkeleton
 
     def finalPruning(self, skeleton):
+
+        # final pruning structuring elements
+
+        finalPruningKernel = []
+
+        finalPruningKernel.append(np.array((
+            [1, 1, 0],
+            [0, 1, 0],
+            [0, 0, 0])))
+
+        finalPruningKernel.append(np.array((
+            [0, 0, 1],
+            [0, 1, 1],
+            [0, 0, 0])))
+
+        finalPruningKernel.append(np.array((
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 1, 1])))
+
+        finalPruningKernel.append(np.array((
+            [0, 0, 0],
+            [1, 1, 0],
+            [1, 0, 0])))
+
+        finalPruningKernel.append(np.array((
+            [0, 1, 1],
+            [0, 1, 0],
+            [0, 0, 0])))
+
+        finalPruningKernel.append(np.array((
+            [0, 0, 0],
+            [0, 1, 1],
+            [0, 0, 1])))
+
+        finalPruningKernel.append(np.array((
+            [0, 0, 0],
+            [0, 1, 0],
+            [1, 1, 0])))
+
+        finalPruningKernel.append(np.array((
+            [1, 0, 0],
+            [1, 1, 0],
+            [0, 0, 0])))
+
         removedBranches = []
         prunedSkeleton = skeleton
-        for i in xrange(0, len(finalPruningKernel)):
-            removedBranches.append(ndimage.binary_hit_or_miss(prunedSkeleton,
-                                                              finalPruningKernel[i]).astype(int))
-        finalRemovedBranches = removedBranches[0]
-        for i in xrange(1, len(removedBranches)):
-            finalRemovedBranches = np.logical_or(finalRemovedBranches,
-                                                 removedBranches[i]).astype(int)
-
+        removedBranches = [ndimage.binary_hit_or_miss(prunedSkeleton,
+                                                      finalPruningKernel[i]).astype(int)
+                           for i in xrange(0, len(finalPruningKernel))]
+        
+        finalRemovedBranches = reduce(lambda x, y: x+y, removedBranches)
+ 
         prunedSkeleton = np.logical_and(skeleton,
-                                       np.logical_not(finalRemovedBranches).astype(int)).astype(int)
+                                        np.logical_not(finalRemovedBranches).astype(int)).astype(int)
 
         return prunedSkeleton
 
