@@ -33,21 +33,13 @@ class TopologicalGraph:
                                                                          parameters)
         elapsed = timeit.default_timer() - start_time
         print "Voronoi Diagram execution time (ms): ", elapsed * 1000
-  #       self.voronoi = np.array(([0,1,1,1],
-                                # [0,1,0,0],
-                                # [0,1,0,0],
-                                # [0,1,1,1],
-                                # [0,1,0,0]))
+        
         # detect voronoi vertices
         start_time = timeit.default_timer()
         voronoiVertices = self.findVertices(self.voronoi)
         elapsed = timeit.default_timer() - start_time
         print "Vertices execution time (ms): ", elapsed * 1000
- #        voronoiVertices = np.array(([0,0,0,1],
-                                # [0,0,0,0],
-                                # [0,0,0,0],
-                                # [0,0,0,1],
-                                # [0,1,0,0]))
+        
         # detect vertices neighbors (in order to construct the topology graph)
         start_time = timeit.default_timer()
         verticesPoses = self.detectVerticesNeighbors(self.voronoi, voronoiVertices)
@@ -58,12 +50,15 @@ class TopologicalGraph:
         start_time = timeit.default_timer()
         self.graph.vp['pose'] = self.graph.new_vertex_property("vector<double>")
         self.graph.ep['distance'] = self.graph.new_edge_property("double")
+        self.graph.vp['exits'] = self.graph.new_vertex_property("int")
         self.graph.add_vertex(len(verticesPoses))
         self.graph.add_edge_list(np.asarray(self.edges))
         for v1, v2 in izip(self.graph.vertices(), verticesPoses):
             self.graph.vp.pose[v1] = v2
         for e, d in izip(self.graph.edges(), self.distance):
             self.graph.ep.distance[e] = d
+        for v1, v2 in izip(self.graph.vertices(), self.exits):
+            self.graph.vp.exits[v1] = v2
         elapsed = timeit.default_timer() - start_time
         print "Graph construction execution time (ms): ", elapsed * 1000
         print "Vertices=", self.graph.num_vertices()
@@ -71,16 +66,25 @@ class TopologicalGraph:
         # add angle of edges as graph edge property
         # self.findAngleOfEdges()
 
-#         for e in self.graph.edges():
+ #        print "edges"
+        # for e in self.graph.edges():
             # print e.source(), " ", e.target()
-        
+        # print "vertices"
         # for v in self.graph.vertices():
             # print v
-        
+        # print "poses"
         # for v in self.graph.vertices():
             # print self.graph.vp.pose[v].a
 
-        # for e in self.graph.edges():
+        # print "exits"
+        # for v in self.graph.vertices():
+            # print self.graph.vp.exits[v]
+
+    #     for v in self.graph.vertices():
+            # print self.graph.vp.angleDiff[v].a
+            # print self.graph.vp.theta[v].a
+
+        # # for e in self.graph.edges():
             # print self.graph.ep.distance[e]
 
  #        print self.graph.vp.angle.get_2d_array(range(0,
@@ -368,6 +372,7 @@ class TopologicalGraph:
     def findAngleOfEdges(self):
         self.graph.vp['angle'] = self.graph.new_vertex_property("vector<int>")
         self.graph.vp['theta'] = self.graph.new_vertex_property("vector<int>")
+        self.graph.vp['angleDiff'] = self.graph.new_vertex_property("vector<int>")
 
         poses = []
         for v in self.graph.vertices():
@@ -411,8 +416,13 @@ class TopologicalGraph:
                     # a = 12
                 angle.append(a)
 
+            thetadiff = []
+            for i in xrange(len(theta)-1):
+                thetadiff.append(abs(theta[i] - theta[i+1]))
+            angleMaxMinDiff  = [max(thetadiff), min(thetadiff)]
             self.graph.vp['theta'][v] = theta
             self.graph.vp['angle'][v] = angle
+            self.graph.vp['angleDiff'][v] = angleMaxMinDiff
         
   #       self.graph.edge_properties['angle'] = self.graph.new_edge_property("int")
         # self.graph.edge_properties['theta'] = self.graph.new_edge_property("int")
@@ -461,6 +471,7 @@ class TopologicalGraph:
         verticesPoses = np.argwhere(isVertice == 1).tolist() 
         self.edges = []
         self.distance = []
+        self.exits = []
         [self.findVertexNeighbours(v, verticesPoses,
                                    isOnVoronoi, isVertice) 
          for v in verticesPoses]
@@ -472,6 +483,7 @@ class TopologicalGraph:
         brush = np.full(isVertice.shape, -1)
         brush[isVertice > 0] = 0
         current = []
+        edges = []
         current.append(v)
         _next = []
         expanded = True
@@ -480,6 +492,7 @@ class TopologicalGraph:
             expanded = False
             counter += 1
             for c in current:
+                found = False
                 for m in moves:
                     x = c[0] + m[0]
                     y = c[1] + m[1]
@@ -495,13 +508,26 @@ class TopologicalGraph:
                                 # add this node as neighbor with
                                 # distance as edge weight
                                 p = [x, y]
+                                foundNeigh = p
+                                found = True
                                 e = [verticesPoses.index(v), 
                                      verticesPoses.index(p)]
-                                if e not in self.edges:
-                                    self.edges.append(e)
-                                    self.distance.append(counter + 1)
+                                edges.append(e)
+                                self.distance.append(counter + 1)
+                            if len(edges) == 1:
+                                self.exits.append(len(current))
+                if found:
+                    for n in _next:
+                        for m in moves:
+                            x = n[0] + m[0]
+                            y = n[1] + m[1]
+                            if x >= 0 and x < isVertice.shape[0] \
+                              and y >= 0 and y < isVertice.shape[1]:
+                                  if foundNeigh ==  [x, y]:
+                                    _next.remove(n)
             current = _next
             _next = []
+        self.edges.extend(edges)
 
 
 
