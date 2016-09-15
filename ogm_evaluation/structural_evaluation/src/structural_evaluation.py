@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import timeit
 import rospy
 from geometry_msgs.msg import Point
 from ogm_communications.srv import ServerRequestStructuralEvaluation
@@ -42,9 +43,20 @@ class StructuralEvaluation:
         res.vertices1 = []
         res.vertices2 = []
         res.voronoi2 = []
+        res.matchedVertices1 = []
+        res.matchedVertices2 = []
+        
         # Extract the TopologicalGraphs
+        start_time = timeit.default_timer()
         voronoi1, vertices1, voronoi2, vertices2 = self.graphMatching.extractTopologicalGraphs(parameters)
-        res.matchedVertices1, res.matchedVertices2 = self.graphMatching.graphMatching()
+        elapsed = timeit.default_timer() - start_time
+        print "Topological Graphs extraction execution time (ms): ", elapsed * 1000
+        
+        start_time = timeit.default_timer()
+        matchedVertices1, matchedVertices2 = self.graphMatching.graphMatching()
+        elapsed = timeit.default_timer() - start_time
+        print " Graph Matching execution time (ms): ", elapsed * 1000
+
         for v in voronoi1:
             p = Point()
             p.x = v[0]
@@ -68,6 +80,18 @@ class StructuralEvaluation:
             p.x = v[0]
             p.y = v[1]
             res.vertices2.append(p)
+
+        for v in matchedVertices1:
+            p = Point()
+            p.x = v[0]
+            p.y = v[1]
+            res.matchedVertices1.append(p)
+
+        for v in matchedVertices2:
+            p = Point()
+            p.x = v[0]
+            p.y = v[1]
+            res.matchedVertices2.append(p)
 
         return res
 
