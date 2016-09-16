@@ -59,7 +59,7 @@ class GraphMatching:
         # subgraph12 = gt.Graph(directed=False)
         candidateSubgraphs = []
         subgraphsVertices = []
-        count = []
+        vM = []
         for i in xrange(0, self.graph1.graph.num_vertices()):
             touched_v = self.graph1.graph.new_vp("bool", val=False)
             touched_e = self.graph1.graph.new_ep("bool", val=False)
@@ -111,8 +111,8 @@ class GraphMatching:
                     if visitLim > maxSubgraphVertices:
                         vM = vm
                         subgraph12 = subgraph1.copy()
-                        print "found max subgpraphs isomorphisms= ", len(vm), "start vertex: ", \
-                        i, "number of vertices: ", visitLim
+     #                    print "found max subgpraphs isomorphisms= ", len(vm), "start vertex: ", \
+                        # i, "number of vertices: ", visitLim
             candidateSubgraphs.append(subgraph12)
             subgraphsVertices.append(subgraph12.num_vertices())
             vertexMapping.append(vM)

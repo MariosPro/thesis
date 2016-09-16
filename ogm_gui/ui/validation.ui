@@ -992,17 +992,17 @@
                    <widget class="QComboBox" name="skeletonizationComboBox">
                     <item>
                      <property name="text">
+                      <string>guoHallThinning</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
                       <string>thinning</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
                       <string>medial_axis</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>zhangSuenThinning</string>
                      </property>
                     </item>
                    </widget>

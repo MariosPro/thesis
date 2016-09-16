@@ -7,6 +7,8 @@ from scipy import weave
 from geometry_msgs.msg import Point
 from skimage.morphology import skeletonize
 from skimage.morphology import medial_axis
+import thinning
+import mahotas as mh
 from visualization import Visualization
 import numpy as np
 
@@ -74,8 +76,9 @@ class VoronoiDiagram:
         # pruning of the skeleton
         if parameters['pruning']:
             start_time = timeit.default_timer()
-            for i in xrange(0, parameters['pruningIterations']):
-                skeleton = self.pruning(skeleton)
+          #   for i in xrange(0, parameters['pruningIterations']):
+                # skeleton = self.pruning(skeleton)
+            skeleton = self.pruning2(skeleton, parameters['pruningIterations'])
             elapsed = timeit.default_timer() - start_time
             print "Pruning execution time (ms): ", elapsed * 1000
             # prunedskeletonImage = np.zeros(skeleton.shape)
@@ -119,60 +122,42 @@ class VoronoiDiagram:
         return skeleton, voronoiPoints
 
     def skeletonization(self, binary, method):
-        if method == "zhangSuenThinning":
-            skeleton = self.zhangSuenThinning(binary)
+        if method == "guoHallThinning":
+            skeleton = thinning.guo_hall_thinning(binary)
         if method == "medial_axis":
             skeleton = medial_axis(binary)
         if method == "thinning":
             skeleton = skeletonize(binary)
         return skeleton
+    
+    def endPoints(self, skel):
+        endpoint1=np.array([[0, 0, 0],[0, 1, 0],[2, 1, 2]])
+        endpoint2=np.array([[0, 0, 0],[0, 1, 2],[0, 2, 1]])
+        endpoint3=np.array([[0, 0, 2],[0, 1, 1],[0, 0, 2]])
+        endpoint4=np.array([[0, 2, 1],[0, 1, 2],[0, 0, 0]])
+        endpoint5=np.array([[2, 1, 2],[0, 1, 0],[0, 0, 0]])
+        endpoint6=np.array([[1, 2, 0],[2, 1, 0],[0, 0, 0]])
+        endpoint7=np.array([[2, 0, 0],[1, 1, 0],[2, 0, 0]])
+        endpoint8=np.array([[0, 0, 0],[2, 1, 0],[1, 2, 0]])
+        ep1=mh.morph.hitmiss(skel,endpoint1)
+        ep2=mh.morph.hitmiss(skel,endpoint2)
+        ep3=mh.morph.hitmiss(skel,endpoint3)
+        ep4=mh.morph.hitmiss(skel,endpoint4)
+        ep5=mh.morph.hitmiss(skel,endpoint5)
+        ep6=mh.morph.hitmiss(skel,endpoint6)
+        ep7=mh.morph.hitmiss(skel,endpoint7)
+        ep8=mh.morph.hitmiss(skel,endpoint8)
+        ep = ep1+ep2+ep3+ep4+ep5+ep6+ep7+ep8
+        return ep
 
-    def thinningIteration(self, im, iter):
-        I, M = im, np.zeros(im.shape, np.uint8)
-        expr = """
-        for (int i = 1; i < NI[0]-1; i++) {
-            for (int j = 1; j < NI[1]-1; j++) {
-                int p2 = I2(i-1, j);
-                int p3 = I2(i-1, j+1);
-                int p4 = I2(i, j+1);
-                int p5 = I2(i+1, j+1);
-                int p6 = I2(i+1, j);
-                int p7 = I2(i+1, j-1);
-                int p8 = I2(i, j-1);
-                int p9 = I2(i-1, j-1);
-                int A  = (p2 == 0 && p3 == 1) + (p3 == 0 && p4 == 1) +
-                         (p4 == 0 && p5 == 1) + (p5 == 0 && p6 == 1) +
-                         (p6 == 0 && p7 == 1) + (p7 == 0 && p8 == 1) +
-                         (p8 == 0 && p9 == 1) + (p9 == 0 && p2 == 1);
-                int B  = p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9;
-                int m1 = iter == 0 ? (p2 * p4 * p6) : (p2 * p4 * p8);
-                int m2 = iter == 0 ? (p4 * p6 * p8) : (p2 * p6 * p8);
-                if (A == 1 && B >= 2 && B <= 6 && m1 == 0 && m2 == 0) {
-                    M2(i,j) = 1;
-                }
-            }
-        } 
-        """
+    def pruning2(self, skeleton, size):
 
-        weave.inline(expr, ["I", "iter", "M"])
-        return (I & ~M)
-
-
-    def zhangSuenThinning(self, src):
-        dst = src.copy() / 255
-        prev = np.zeros(src.shape[:2], np.uint8)
-        diff = None
-
-        while True:
-            dst = self.thinningIteration(dst, 0)
-            dst = self.thinningIteration(dst, 1)
-            diff = np.absolute(dst - prev)
-            prev = dst.copy()
-            if np.sum(diff) == 0:
-                break
-
-        return dst * 255
-
+        for i in xrange(0, size):
+            endpoints = self.endPoints(skeleton)
+            endpoints = np.logical_not(endpoints)
+            skeleton = np.logical_and(skeleton,endpoints)
+        return skeleton
+  
     def pruning(self, skeleton):
         pruningHitKernel = []
         pruningMissKernel = []

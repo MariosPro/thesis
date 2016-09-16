@@ -5,6 +5,7 @@ import timeit
 import math
 import numpy as np
 from itertools import izip
+import mahotas as mh
 from scipy import ndimage
 from voronoi_diagram import VoronoiDiagram
 from visualization import Visualization
@@ -36,7 +37,7 @@ class TopologicalGraph:
         
         # detect voronoi vertices
         start_time = timeit.default_timer()
-        voronoiVertices = self.findVertices(self.voronoi)
+        voronoiVertices = self.findVertices2(self.voronoi)
         elapsed = timeit.default_timer() - start_time
         print "Vertices execution time (ms): ", elapsed * 1000
         
@@ -118,6 +119,64 @@ class TopologicalGraph:
                                         # False)
            
         return voronoiPoints, verticesPoints
+      
+    def endPoints(self, skel):
+        endpoint1=np.array([[1, 0, 0],[0, 1, 0],[0, 0, 0]])
+        endpoint2=np.array([[0, 1, 0],[0, 1, 0],[0, 0, 0]])
+        endpoint3=np.array([[0, 0, 1],[0, 1, 0],[0, 0, 0]])
+        endpoint4=np.array([[0, 0, 0],[0, 1, 1],[0, 0, 0]])
+        endpoint5=np.array([[0, 0, 0],[1, 1, 0],[0, 0, 0]])
+        endpoint6=np.array([[0, 0, 0],[0, 1, 0],[1, 0, 0]])
+        endpoint7=np.array([[0, 0, 0],[0, 1, 0],[0, 1, 0]])
+        endpoint8=np.array([[0, 0, 0],[0, 1, 0],[0, 0, 1]])
+        ep1=mh.morph.hitmiss(skel,endpoint1)
+        ep2=mh.morph.hitmiss(skel,endpoint2)
+        ep3=mh.morph.hitmiss(skel,endpoint3)
+        ep4=mh.morph.hitmiss(skel,endpoint4)
+        ep5=mh.morph.hitmiss(skel,endpoint5)
+        ep6=mh.morph.hitmiss(skel,endpoint6)
+        ep7=mh.morph.hitmiss(skel,endpoint7)
+        ep8=mh.morph.hitmiss(skel,endpoint8)
+        ep = ep1+ep2+ep3+ep4+ep5+ep6+ep7+ep8
+        return ep
+ 
+    def junctions(self, skel):
+        junction1=np.array([[2, 1, 2],[2, 1, 2],[1, 2, 1]])
+        junction2=np.array([[1, 2, 2],[2, 1, 1],[1, 2, 2]])
+        junction3=np.array([[1, 2, 1],[2, 1, 2],[2, 1, 2]])
+        junction4=np.array([[2, 2, 1],[1, 1, 2],[2, 2, 1]])
+        junction5=np.array([[1, 2, 2],[2, 1, 2],[1, 2, 1]])
+        junction6=np.array([[1, 2, 1],[2, 1, 2],[1, 2, 2]])
+        junction7=np.array([[1, 2, 1],[2, 1, 2],[2, 2, 1]])
+        junction8=np.array([[2, 2, 1],[2, 1, 2],[1, 2, 1]])
+        junction9=np.array([[2, 0, 1],[1, 1, 0],[2, 1, 2]])
+        junction10=np.array([[2, 1, 2],[1, 1, 0],[2, 0, 1]])
+        junction11=np.array([[2, 1, 2],[0, 1, 1],[1, 0, 2]])
+        junction12=np.array([[1, 0, 2],[0, 1, 1],[2, 1, 2]])
+
+        ep1=mh.morph.hitmiss(skel,junction1)
+        ep2=mh.morph.hitmiss(skel,junction2)
+        ep3=mh.morph.hitmiss(skel,junction3)
+        ep4=mh.morph.hitmiss(skel,junction4)
+        ep5=mh.morph.hitmiss(skel,junction5)
+        ep6=mh.morph.hitmiss(skel,junction6)
+        ep7=mh.morph.hitmiss(skel,junction7)
+        ep8=mh.morph.hitmiss(skel,junction8)
+        ep9=mh.morph.hitmiss(skel,junction9)
+        ep10=mh.morph.hitmiss(skel,junction10)
+        ep11=mh.morph.hitmiss(skel,junction11)
+        ep12=mh.morph.hitmiss(skel,junction12)
+
+        ep = ep1+ep2+ep3+ep4+ep5+ep6+ep7+ep8+ep9+ep10+ep11+ep12
+        return ep
+
+
+    def findVertices2(self, voronoi):
+        voronoi = voronoi
+        endpoints = self.endPoints(voronoi)
+        junctions = self.junctions(voronoi)
+        voronoiVertices = np.logical_or(endpoints,  junctions)
+        return voronoiVertices
 
     def findVertices(self, voronoi):
 
@@ -166,46 +225,7 @@ class TopologicalGraph:
             [0, 0, 0],
             [0, 1, 0],
             [0, 0, 1]), np.uint8))
-        edgesHitKernel.append(np.array((
-            [0, 0, 0],
-            [0, 1, 0],
-            [0, 0, 0])))
-
-        edgesMissKernel.append(np.array((
-            [0, 0, 0],
-            [1, 0, 1],
-            [1, 1, 1])))
-
-        edgesHitKernel.append(np.array((
-            [0, 0, 0],
-            [0, 1, 0],
-            [0, 0, 0])))
-
-        edgesMissKernel.append(np.array((
-            [1, 1, 0],
-            [1, 0, 0],
-            [1, 1, 0])))
-
-        edgesHitKernel.append(np.array((
-            [0, 0, 0],
-            [0, 1, 0],
-            [0, 0, 0])))
-
-        edgesMissKernel.append(np.array((
-            [1, 1, 1],
-            [1, 0, 1],
-            [0, 0, 0])))
-
-        edgesHitKernel.append(np.array((
-            [0, 0, 0],
-            [0, 1, 0],
-            [0, 0, 0])))
-
-        edgesMissKernel.append(np.array((
-            [0, 1, 1],
-            [0, 0, 1],
-            [0, 1, 1])))
-
+      
         junctionsHitKernel.append(np.array((
             [0, 0, 1],
             [1, 1, 0],

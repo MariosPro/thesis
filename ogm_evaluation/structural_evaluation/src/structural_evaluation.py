@@ -39,13 +39,14 @@ class StructuralEvaluation:
         # Create graph matching instance
         self.graphMatching = GraphMatching(req.map1, req.map2)
         
-        res.voronoi1 = []
-        res.vertices1 = []
-        res.vertices2 = []
-        res.voronoi2 = []
-        res.matchedVertices1 = []
-        res.matchedVertices2 = []
-        
+        voronoi1 = []
+        vertices1 = []
+        vertices2 = []
+        voronoi2 = []
+        matchedVertices1 = []
+        matchedVertices2 = []
+             
+
         # Extract the TopologicalGraphs
         start_time = timeit.default_timer()
         voronoi1, vertices1, voronoi2, vertices2 = self.graphMatching.extractTopologicalGraphs(parameters)

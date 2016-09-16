@@ -232,7 +232,7 @@ namespace ogm_gui
   //structural evaluation
   _morphOpenIterations = 4;
   _pruningIterations = 20;
-  _skeletonizationMethod = "thinning";
+  _skeletonizationMethod = "guoHallThinning";
   _pruning = false;
   _morphOpen = false;
   _voronoi = false;
