@@ -39,7 +39,6 @@ class GraphMatching:
         voronoiPoints2, verticesPoints2 = self.graph2.extractTopologicalGraph(self.map2, parameters)
         elapsed = timeit.default_timer() - start_time
         print "Topological Graph 2 execution time (ms): ", elapsed * 1000
-        # self.graphMatching()
         return voronoiPoints1, verticesPoints1, voronoiPoints2, verticesPoints2
 
     def graphMatching(self):
@@ -161,8 +160,9 @@ class GraphMatching:
         # for v in subgraph12.vertices():
             # print "subgraph1 theta: ", subgraph12.vp.theta[v].a
 
-        subgraphPoses2 = [g.vp.pose[v].a.tolist() for v in g.vertices()]
-        subgraphPoses1 = [subgraph12.vp.pose[v].a.tolist() for v in subgraph12.vertices()]
-
-        return subgraphPoses1, subgraphPoses2 
+        subgraphPoses1 = subgraph12.vp.pose.get_2d_array(range(0,2)).transpose()
+        subgraphPoses2 = g.vp.pose.get_2d_array(range(0, 2)).transpose()
+        subgraphPoses1 += [self.map1.limits['min_x'], self.map1.limits['min_y']]
+        subgraphPoses2 += [self.map2.limits['min_x'], self.map2.limits['min_y']]
+        return subgraphPoses1.tolist(), subgraphPoses2.tolist()
 

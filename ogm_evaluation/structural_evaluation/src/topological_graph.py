@@ -93,8 +93,9 @@ class TopologicalGraph:
         # print self.graph.vp.theta.get_2d_array(range(0,
                                                      # self.graph.num_vertices()))
 
-        verticesPoints = np.argwhere(voronoiVertices == 1).tolist()   
-       
+        verticesPoints = np.argwhere(voronoiVertices == 1)   
+        verticesPoints += [map.limits['min_x'], map.limits['min_y']]
+
        # visualize in rviz
         # vizPoints = []
       #   for i in xrange(voronoiVertices.shape[0]):
@@ -118,7 +119,7 @@ class TopologicalGraph:
                                         # vizPoints,
                                         # False)
            
-        return voronoiPoints, verticesPoints
+        return voronoiPoints, verticesPoints.tolist()
       
     def endPoints(self, skel):
         endpoint1=np.array([[1, 0, 0],[0, 1, 0],[0, 0, 0]])
@@ -519,12 +520,11 @@ class TopologicalGraph:
                     if x >= 0 and x < isVertice.shape[0] \
                        and y >= 0 and y < isVertice.shape[1]:
                         if brush.item((x,y))== -1 and isOnVoronoi.item((x,y)) == 1:
-                            brush[x][y] = counter + 1
+                            brush.itemset((x, y), counter + 1) 
                             _next.append([x, y])
                             expanded = True
                         if brush.item((x,y)) == 0 and isVertice.item((x,y))== 1:
-                            if not(v[0] == x and 
-                                   v[1] == y):
+                            if  v != [x, y]:
                                 # add this node as neighbor with
                                 # distance as edge weight
                                 foundNeigh = [x, y]

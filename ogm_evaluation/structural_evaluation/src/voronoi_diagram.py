@@ -9,15 +9,16 @@ from skimage.morphology import skeletonize
 from skimage.morphology import medial_axis
 import thinning
 import mahotas as mh
+from _cpp_functions import ffi, lib
+from map import Map
 from visualization import Visualization
 import numpy as np
-
+import scipy.misc
 class VoronoiDiagram:
 
     def extractVoronoi(self, map, parameters):
 
         visualization = Visualization(map.frame_id)
-
         smoothedImage = map.mapImage
         if map.frame_id == "visualization_map1" \
                 and parameters['gaussianBlur1']:
@@ -53,13 +54,18 @@ class VoronoiDiagram:
             smoothedBinary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel,
                                               parameters['morphOpenIterations'])
         
-        #  smoothedBinaryImage = np.zeros(smoothedBinary.shape, np.uint8)
+        # smoothedBinaryImage = np.zeros(smoothedBinary.shape, np.uint8)
         # smoothedBinaryImage[smoothedBinary > 0] = 255
-        # # cv2.imshow("binaryImage", binaryImage)
-        # cv2.imshow("smoothedMap", smoothedBinaryImage)
-        # # cv2.imshow("Map", map.mapImage)
-# #         cv2.imshow("smoothedImage", smoothedImage)
-        # cv2.waitKey(1000)
+        # scipy.misc.imsave('/home/bitch/Desktop/test3.png', smoothedBinaryImage)
+        
+        #find useful map limits
+        start_time = timeit.default_timer()
+        map.findUsefulBoundaries(smoothedBinary)
+        smoothedBinary = smoothedBinary[map.limits['min_x']:map.limits['max_x'],
+                                        map.limits['min_y']:map.limits['max_y']]
+        smoothedBinary = np.asarray(smoothedBinary, order='C')
+        elapsed = timeit.default_timer() - start_time
+        print "Find useful map limits execution time (ms): ", elapsed * 1000
 
         # perform skeletonization
         start_time = timeit.default_timer()
@@ -68,12 +74,8 @@ class VoronoiDiagram:
         elapsed = timeit.default_timer() - start_time
         print "Skeletonization via ", parameters['skeletonizationMethod'], \
             " execution time (ms): ", elapsed * 1000
-
-        # skeletonImage = np.zeros(skeleton.shape)
-        # skeletonImage[skeleton > 0] = 255
-        # cv2.imshow("skeletonImage", skeletonImage)
-        # cv2.waitKey(1000)
-        # pruning of the skeleton
+   
+         # pruning of the skeleton
         if parameters['pruning']:
             start_time = timeit.default_timer()
           #   for i in xrange(0, parameters['pruningIterations']):
@@ -81,18 +83,16 @@ class VoronoiDiagram:
             skeleton = self.pruning2(skeleton, parameters['pruningIterations'])
             elapsed = timeit.default_timer() - start_time
             print "Pruning execution time (ms): ", elapsed * 1000
-            # prunedskeletonImage = np.zeros(skeleton.shape)
-            # prunedskeletonImage[skeleton > 0] = 255
-            # cv2.imshow("prunedskeletonImage", prunedskeletonImage)
-            # cv2.waitKey(1000)
-
+            
             # # final pruning of the skeleton
             start_time = timeit.default_timer()
             skeleton = self.finalPruning(skeleton)
             elapsed = timeit.default_timer() - start_time
             print "Final pruning execution time (ms): ", elapsed * 1000
 
-        voronoiPoints = np.argwhere(skeleton == 1).tolist()      
+         
+        voronoiPoints = np.argwhere(skeleton == 1)
+        voronoiPoints += [map.limits['min_x'], map.limits['min_y']]
      #    print vizPoints
         # for i in range(skeleton.shape[0]):
             # for j in range(skeleton.shape[1]):
@@ -119,7 +119,7 @@ class VoronoiDiagram:
                                       # vizPoints,
                                       # True)
 
-        return skeleton, voronoiPoints
+        return skeleton, voronoiPoints.tolist()
 
     def skeletonization(self, binary, method):
         if method == "guoHallThinning":
