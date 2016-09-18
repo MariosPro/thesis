@@ -518,20 +518,19 @@ class TopologicalGraph:
                     y = c[1] + m[1]
                     if x >= 0 and x < isVertice.shape[0] \
                        and y >= 0 and y < isVertice.shape[1]:
-                        if brush[x][y] == -1 and isOnVoronoi[x][y] == 1:
+                        if brush.item((x,y))== -1 and isOnVoronoi.item((x,y)) == 1:
                             brush[x][y] = counter + 1
                             _next.append([x, y])
                             expanded = True
-                        if brush[x][y] == 0 and isVertice[x][y] == 1:
+                        if brush.item((x,y)) == 0 and isVertice.item((x,y))== 1:
                             if not(v[0] == x and 
                                    v[1] == y):
                                 # add this node as neighbor with
                                 # distance as edge weight
-                                p = [x, y]
-                                foundNeigh = p
+                                foundNeigh = [x, y]
                                 found = True
                                 e = [verticesPoses.index(v), 
-                                     verticesPoses.index(p)]
+                                     verticesPoses.index(foundNeigh)]
                                 edges.append(e)
                                 self.distance.append(counter + 1)
                             if len(edges) == 1:
