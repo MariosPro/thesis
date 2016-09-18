@@ -75,7 +75,7 @@ class VoronoiDiagram:
         print "Skeletonization via ", parameters['skeletonizationMethod'], \
             " execution time (ms): ", elapsed * 1000
    
-         # pruning of the skeleton
+        # pruning of the skeleton
         if parameters['pruning']:
             start_time = timeit.default_timer()
           #   for i in xrange(0, parameters['pruningIterations']):

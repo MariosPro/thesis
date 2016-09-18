@@ -54,7 +54,6 @@ class StructuralEvaluation:
         print "Topological Graphs extraction execution time (ms): ", elapsed * 1000
         
         start_time = timeit.default_timer()
-        matchedVertices1, matchedVertices2 = self.graphMatching.graphMatching()
         elapsed = timeit.default_timer() - start_time
         print " Graph Matching execution time (ms): ", elapsed * 1000
 

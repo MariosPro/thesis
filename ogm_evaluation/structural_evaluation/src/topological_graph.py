@@ -12,6 +12,7 @@ from visualization import Visualization
 from geometry_msgs.msg import Point
 from graph_tool import *
 from graph_tool import util
+from graph_tool import topology
 
 
 # Class for extracting Topological Graph from OGM
@@ -60,6 +61,8 @@ class TopologicalGraph:
             self.graph.ep.distance[e] = d
         for v1, v2 in izip(self.graph.vertices(), self.exits):
             self.graph.vp.exits[v1] = v2
+        l = topology.label_largest_component(self.graph)
+        self.graph= GraphView(self.graph, vfilt=l)
         elapsed = timeit.default_timer() - start_time
         print "Graph construction execution time (ms): ", elapsed * 1000
         print "Vertices=", self.graph.num_vertices()
@@ -93,7 +96,7 @@ class TopologicalGraph:
         # print self.graph.vp.theta.get_2d_array(range(0,
                                                      # self.graph.num_vertices()))
 
-        verticesPoints = np.argwhere(voronoiVertices == 1)   
+        verticesPoints = self.graph.vp.pose.get_2d_array(range(0,2)).transpose()
         verticesPoints += [map.limits['min_x'], map.limits['min_y']]
 
        # visualize in rviz
