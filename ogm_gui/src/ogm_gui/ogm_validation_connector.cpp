@@ -220,10 +220,10 @@ namespace ogm_gui
   _binary = false;
   _manual_alignment = false;
   _scaleMapsBrushfire = false;
-  _gaussianBlur1 = false;
-  _gaussianBlur2 = false;
-  _medianBlur1 = false;
-  _medianBlur2 = false;
+  _gaussianBlur1 = true;
+  _gaussianBlur2 = true;
+  _medianBlur1 = true;
+  _medianBlur2 = true;
   _gaussianKernel1 = 3;
   _gaussianKernel2 = 3;
   _medianKernel1 = 3;
@@ -234,7 +234,7 @@ namespace ogm_gui
   _pruningIterations = 20;
   _skeletonizationMethod = "guoHallThinning";
   _pruning = false;
-  _morphOpen = false;
+  _morphOpen = true;
   _voronoi = false;
   _vertices = false;
   _graphMatching = false;
@@ -406,8 +406,11 @@ namespace ogm_gui
     loader.resetMapProperties();
     _voronoi = false;
     _vertices = false;
+    _graphMatching = false;
     loader.voronoiCheckBox->setChecked(false);
     loader.verticesCheckBox->setChecked(false);
+    loader.graphMatchingCheckBox->setChecked(false);
+    
   }
 
   //void CValidationConnector::setVoronoiPoints()

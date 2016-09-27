@@ -254,6 +254,8 @@ namespace ogm_gui
     voronoi2_.clear();
     vertices1_.clear();
     vertices2_.clear();
+    matchedVertices1_.clear();
+    matchedVertices2_.clear();
 
     map_connector_.resetMap();
 
@@ -348,6 +350,8 @@ namespace ogm_gui
     voronoi2_.clear();
     vertices1_.clear();
     vertices2_.clear();
+    matchedVertices1_.clear();
+    matchedVertices2_.clear();
 
     map_connector_.resetMap();
 

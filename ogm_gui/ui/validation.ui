@@ -426,7 +426,7 @@
               <widget class="QWidget" name="layoutWidget_3">
                <property name="geometry">
                 <rect>
-                 <x>10</x>
+                 <x>0</x>
                  <y>0</y>
                  <width>414</width>
                  <height>501</height>
@@ -839,7 +839,7 @@
              <x>0</x>
              <y>0</y>
              <width>351</width>
-             <height>591</height>
+             <height>581</height>
             </rect>
            </property>
            <property name="minimumSize">
@@ -857,7 +857,7 @@
               <x>0</x>
               <y>0</y>
               <width>349</width>
-              <height>589</height>
+              <height>579</height>
              </rect>
             </property>
             <widget class="QWidget" name="layoutWidget">
@@ -897,8 +897,14 @@
                    <layout class="QHBoxLayout" name="horizontalLayout_9">
                     <item>
                      <widget class="QCheckBox" name="gaussianBlurCheckBox1_2">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
                       <property name="text">
                        <string>GaussianBlur (kernel size)</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -913,6 +919,9 @@
                      <widget class="QCheckBox" name="medianBlurCheckBox1_2">
                       <property name="text">
                        <string>MedianBlur (kernel size)</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -935,6 +944,9 @@
                       <property name="text">
                        <string>GaussianBlur (kernel size)</string>
                       </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
                      </widget>
                     </item>
                     <item>
@@ -948,6 +960,9 @@
                      <widget class="QCheckBox" name="medianBlurCheckBox2_2">
                       <property name="text">
                        <string>MedianBlur (kernel size)</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -964,6 +979,9 @@
                    <widget class="QCheckBox" name="morphOpeningCheckBox">
                     <property name="text">
                      <string>Morph. Opening </string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>

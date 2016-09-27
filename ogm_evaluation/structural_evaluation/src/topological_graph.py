@@ -504,7 +504,7 @@ class TopologicalGraph:
     def findVertexNeighbours(self, v, verticesPoses, isOnVoronoi, isVertice):
         moves = [[-1, -1], [-1, 0], [-1, 1], [0, -1],
                  [0, 1], [1, -1], [1, 0], [1, 1]]
-        brush = np.full(isVertice.shape, -1)
+        brush = np.full(isVertice.shape, -1, np.int)
         brush[isVertice > 0] = 0
         current = []
         edges = []

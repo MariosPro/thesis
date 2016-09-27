@@ -9,7 +9,7 @@ from skimage.morphology import skeletonize
 from skimage.morphology import medial_axis
 import thinning
 import mahotas as mh
-from _cpp_functions import ffi, lib
+# from _cpp_functions import ffi, lib
 from map import Map
 from visualization import Visualization
 import numpy as np
@@ -20,6 +20,8 @@ class VoronoiDiagram:
 
         visualization = Visualization(map.frame_id)
         smoothedImage = map.mapImage
+        scipy.misc.imsave('/home/marios/Desktop/original.png', smoothedImage)
+
         if map.frame_id == "visualization_map1" \
                 and parameters['gaussianBlur1']:
             kernel = parameters['gaussianKernel1']
@@ -40,23 +42,23 @@ class VoronoiDiagram:
             kernel = parameters['medianKernel2']
             smoothedImage = cv2.medianBlur(smoothedImage, 
                                            kernel)
-
+      
         binary = np.ones(map.mapImage.shape, np.uint8)
         binary[smoothedImage < 255] = 0
         smoothedBinary = binary
-
+ 
         # binaryImage = np.zeros(map.ogm.shape)
         # binaryImage[binary > 0] = 255
 
-        kernel = np.ones((4, 4), np.uint8)
+        kernel = np.ones((8, 8), np.uint8)
         if parameters['morphOpen']:
             # smoothedBinary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, 4)
             smoothedBinary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel,
                                               parameters['morphOpenIterations'])
         
-        # smoothedBinaryImage = np.zeros(smoothedBinary.shape, np.uint8)
-        # smoothedBinaryImage[smoothedBinary > 0] = 255
-        # scipy.misc.imsave('/home/bitch/Desktop/test3.png', smoothedBinaryImage)
+        smoothedBinaryImage = np.zeros(smoothedBinary.shape, np.uint8)
+        smoothedBinaryImage[smoothedBinary > 0] = 255
+        scipy.misc.imsave('/home/marios/Desktop/test3.png', smoothedBinaryImage)
         
         #find useful map limits
         start_time = timeit.default_timer()
