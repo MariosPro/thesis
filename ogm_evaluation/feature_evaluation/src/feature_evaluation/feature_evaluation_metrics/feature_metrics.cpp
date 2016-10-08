@@ -272,8 +272,10 @@ namespace feature_evaluation
 /*    estimateTransform(groundTruthMatchedCoords, slamMatchedCoords,*/
                        //1000, _ransacReprjError, 3, mask, T, best_error);
 
-    estimateAffine2D(groundTruthMatchedCoords, slamMatchedCoords, T, mask, params.ransacReprjError);
+  /*  int valid = estimateAffine2D(groundTruthMatchedCoords, slamMatchedCoords, T, mask, params.ransacReprjError);*/
+    int valid = estimateAffinePartial2D(groundTruthMatchedCoords, slamMatchedCoords, T, mask, params.ransacReprjError);
 
+    std::cout << "ransac result=" << valid << std::endl; 
 
     std::cout << "H = "<< std::endl << " "  << T << std::endl << std::endl;
 
@@ -323,6 +325,17 @@ namespace feature_evaluation
    cv::Mat image1(_slamMap.size(), _slamMap.type(), 127);
    
    std::cout << "H.type=" << T.type() << std::endl;
+
+ /*  double a =T.at<double>(0, 0);*/
+   //double b = T.at<double>(0, 1);
+   //double c = T.at<double>(0, 2);
+   //double d = T.at<double>(1, 0);
+   //cv::Mat_< double > M(2, 3);
+   //M << a, -b, c,
+        //b,  a, d;
+   //std::cout << "M.type=" << M.type() << std::endl;
+   /*std::cout << "M = "<< std::endl << " "  << M << std::endl << std::endl;*/
+
    cv::warpAffine(_groundTruthMap, image, T, image.size(), cv::INTER_NEAREST, IPL_BORDER_CONSTANT, cv::Scalar::all(127));
   
    for (int i = 0; i < image1.rows; i++)

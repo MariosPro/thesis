@@ -34,6 +34,7 @@
 #include "feature_evaluation/feature_evaluation_descriptors/descriptor_factory.h"
 #include "feature_evaluation/feature_evaluation_metrics/omse.h"
 #include "feature_evaluation/feature_evaluation_utils/affine2DEstimator.h"
+#include "feature_evaluation/feature_evaluation_utils/affine2DPartialEstimator.h"
 #include "feature_evaluation/feature_evaluation_utils/maps_alignment.h"
 #include "feature_evaluation/feature_evaluation_utils/map_utils.h"
 

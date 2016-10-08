@@ -62,7 +62,7 @@ namespace feature_evaluation
     if(_groundTruthObstaclePoints.size() == 0 || _slamObstaclePoints.size() == 0)
     {
       ROS_ERROR("No Obstacle Points detected in one or neither maps");
-      exit(0);
+      //exit(0);
     }
     if(params.closestPointMethod == "Brushfire")
     {

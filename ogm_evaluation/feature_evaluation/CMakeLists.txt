@@ -38,6 +38,7 @@ catkin_package(
 ######################### Metrics ######################################
 add_library(${PROJECT_NAME}_utils
             src/${PROJECT_NAME}/feature_evaluation_utils/affine2DEstimator.cpp
+            src/${PROJECT_NAME}/feature_evaluation_utils/affine2DPartialEstimator.cpp
             src/${PROJECT_NAME}/feature_evaluation_utils/map_utils.cpp)
 add_dependencies(${PROJECT_NAME}_utils 
                 ogm_communications_gencpp 
