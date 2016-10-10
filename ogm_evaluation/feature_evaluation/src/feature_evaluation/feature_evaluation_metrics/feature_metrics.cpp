@@ -274,12 +274,17 @@ namespace feature_evaluation
 
   /*  int valid = estimateAffine2D(groundTruthMatchedCoords, slamMatchedCoords, T, mask, params.ransacReprjError);*/
     int valid = estimateAffinePartial2D(groundTruthMatchedCoords, slamMatchedCoords, T, mask, params.ransacReprjError);
+    if (!valid)
+    {
+      ROS_WARN("Cannot find transform");
+      return;
+    }
 
     std::cout << "ransac result=" << valid << std::endl; 
 
     std::cout << "H = "<< std::endl << " "  << T << std::endl << std::endl;
 
-   if(T.empty() || std::count( mask.begin(), mask.end(), 1) < 3)
+   if(T.empty() || std::count( mask.begin(), mask.end(), 1) < 2)
    {
      ROS_WARN("H contain no data, cannot find valid transformation");
      return;
@@ -310,37 +315,38 @@ namespace feature_evaluation
       cv::waitKey(1000);
     }
 
-   /*H = cv::estimateRigidTransform(inliersCoords2, inliersCoords1, false);*/
-
-   //if(H.empty())
-   //{
-     //ROS_WARN("H contain no data, cannot find valid transformation");
-     //return;
-   /*}*/
- 
-  
-    //}
-    
    cv::Mat image(_slamMap.size(), _slamMap.type());
-   cv::Mat image1(_slamMap.size(), _slamMap.type(), 127);
-   
+   cv::Mat image1(_slamMap.size(), _slamMap.type(), cv::Scalar(127));
+   //image1 = _slamMap;
    std::cout << "H.type=" << T.type() << std::endl;
 
- /*  double a =T.at<double>(0, 0);*/
-   //double b = T.at<double>(0, 1);
-   //double c = T.at<double>(0, 2);
-   //double d = T.at<double>(1, 0);
-   //cv::Mat_< double > M(2, 3);
-   //M << a, -b, c,
-        //b,  a, d;
-   //std::cout << "M.type=" << M.type() << std::endl;
-   /*std::cout << "M = "<< std::endl << " "  << M << std::endl << std::endl;*/
-
    cv::warpAffine(_groundTruthMap, image, T, image.size(), cv::INTER_NEAREST, IPL_BORDER_CONSTANT, cv::Scalar::all(127));
-  
+    
+  // keep only overlapping slamMap region;
+  cv::Size s = _groundTruthMap.size();
+  std::vector<cv::Point2f> vertices;
+  vertices.push_back(cv::Point2f(0, 0));
+  vertices.push_back(cv::Point2f(0, s.height-1));
+  vertices.push_back(cv::Point2f(s.width-1, s.height-1));
+  vertices.push_back(cv::Point2f(s.width-1, 0));
+  cv::transform(vertices, vertices, T);
+  cv::RotatedRect rotatedRect = cv::minAreaRect(vertices);
+  cv::Mat maskImage = cv::Mat(image.size(), CV_8U, cv::Scalar(0));
+  for(int i = 0; i < image.rows; ++i)
+  {
+      for(int j = 0; j < image.cols; ++j)
+      {
+          cv::Point p = cv::Point(j,i);   // pay attention to the cordination
+          if(_mapUtils.isInROI(p,vertices))
+          {
+              maskImage.at<uchar>(i,j) = 255;
+          }
+      }
+  }   
+ 
    for (int i = 0; i < image1.rows; i++)
      for (int j = 0; j < image1.cols; j++)
-      if(image.at<unsigned char>(i, j) != 127)
+      //if(maskImage.at<unsigned char>(i, j) == 255)
         image1.at<unsigned char>(i, j) = _slamMap.at<unsigned char>(i, j);
   if(!params.benchmarking)
   {
@@ -348,13 +354,15 @@ namespace feature_evaluation
     cv::imshow ("SLamMap Cropped", image1);
     cv::waitKey(1000);
   }
+    std::cout << "image1 type " << image1.type() << " " << image1.channels() <<  " " << image1.size() << std::endl;
+    std::cout << "image type " << image.type() << " " << image.channels() <<  " " << image.size() << std::endl;
+
+    //!< compute OMSE metric only on overlapping regions
     _omseMetric =  new OmseMetric(image, image1);
     params.closestPointMethod = "Brushfire";
     _omseMetric->calculateMetric(params);
  
-    std::cout << "image1 type " << image1.type() << " " << image1.channels() << std::endl;
-    std::cout << "image type " << image.type() << " " << image.channels() << std::endl;
-    
+     
     //!< blend slamMap onto the transformed groundTruthMap
     addWeighted(image, .5, slamMap, .5, 0.0, image);
      std::cout << "image type " << image.type() << " " << image.channels() << std::endl;
@@ -373,12 +381,12 @@ namespace feature_evaluation
       //std::cout << (int)mask[i]<<std::endl;
       if( int(mask[i]) == 1)
       {
-      /*ROS_INFO( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  --Distance %f  \n", i, filteredMatches[i].queryIdx, filteredMatches[i].trainIdx, filteredMatches[i].distance );*/
+ /*     ROS_INFO( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  --Distance %f  \n", i, filteredMatches[i].queryIdx, filteredMatches[i].trainIdx, filteredMatches[i].distance );*/
       /*counter++;*/
       }
     }
 
-    //std::cout << counter << std::endl;
+    std::cout << counter << std::endl;
     _result = _omseMetric->getResult();
     //_result = 0;
 }

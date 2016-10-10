@@ -64,7 +64,10 @@ namespace feature_evaluation
       @return double the avg distance
       **/
       double meanBrushfireDistance(const cv::Mat& map, int** brushfire);
+      
+      bool isInROI(cv::Point p, std::vector<cv::Point2f> roi);
 
+      double computeProduct(cv::Point p, cv::Point2f a, cv::Point2f b);
 
     private:
   };

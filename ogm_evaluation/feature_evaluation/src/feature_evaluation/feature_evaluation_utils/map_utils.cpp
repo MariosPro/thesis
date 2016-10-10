@@ -101,4 +101,32 @@ namespace feature_evaluation
       }
     return sum/frees;
   }
+  /** decide whether point p is in the ROI.
+  *** The ROI is a rotated rectangle whose 4 corners are stored in roi[] 
+  **/
+  bool MapUtils::isInROI(cv::Point p, std::vector<cv::Point2f> roi)
+  {
+      double pro[4];
+      for(int i=0; i<4; ++i)
+      {
+          pro[i] = computeProduct(p, roi[i], roi[(i+1)%4]);
+      }
+      if(pro[0]*pro[2]<0 && pro[1]*pro[3]<0)
+      {
+          return true;
+      }
+      return false;
+  }
+
+  /** function pro = kx-y+j, take two points a and b,
+  *** compute the line argument k and j, then return the pro value
+  *** so that can be used to determine whether the point p is on the left or right
+  *** of the line ab
+  **/
+  double MapUtils::computeProduct(cv::Point p, cv::Point2f a, cv::Point2f b)
+  {
+      double k = (a.y-b.y) / (a.x-b.x);
+      double j = a.y - k*a.x;
+      return k*p.x - p.y + j;
+  }
 }  // namespace feature_evaluation

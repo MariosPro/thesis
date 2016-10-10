@@ -54,23 +54,45 @@ namespace feature_evaluation
          /*}*/
      //_alignment.ICP(map1, map2, 5);
      //_alignment.ICP(_groundTruthMap, _slamMap, 5);
-    _groundTruthObstaclePoints = extractObstaclePoints(_groundTruthMap);
-    _slamObstaclePoints = extractObstaclePoints(_slamMap);
-    ROS_INFO_STREAM("GROUND POINTS= " << _groundTruthObstaclePoints.size());
-    ROS_INFO_STREAM("SLAM POINTS= " << _slamObstaclePoints.size());
+     std::vector<cv::Point> map1Points, map2Points;
 
-    if(_groundTruthObstaclePoints.size() == 0 || _slamObstaclePoints.size() == 0)
+    map1Points = extractObstaclePoints(_groundTruthMap);
+    map2Points = extractObstaclePoints(_slamMap);
+ 
+    if(map1Points.size() == 0 || map2Points.size() == 0)
     {
       ROS_ERROR("No Obstacle Points detected in one or neither maps");
       //exit(0);
     }
+
+    cv::Mat map1, map2;
+   
+    if(map1Points.size() > map2Points.size())
+    {
+      _groundTruthMap.copyTo(map1);
+      _slamMap.copyTo(map2);
+      _groundTruthObstaclePoints.insert(_groundTruthObstaclePoints.end(), map1Points.begin(), map1Points.end());
+      _slamObstaclePoints.insert(_slamObstaclePoints.end(), map2Points.begin(), map2Points.end());
+    }
+    else
+    {
+      _groundTruthMap.copyTo(map2);
+      _slamMap.copyTo(map1);
+    _groundTruthObstaclePoints.insert(_groundTruthObstaclePoints.end(), map2Points.begin(), map2Points.end());
+      _slamObstaclePoints.insert(_slamObstaclePoints.end(), map1Points.begin(), map1Points.end());
+    }
+ 
+    ROS_INFO_STREAM("GROUND POINTS= " << _groundTruthObstaclePoints.size());
+    ROS_INFO_STREAM("SLAM POINTS= " << _slamObstaclePoints.size());
+
     if(params.closestPointMethod == "Brushfire")
     {
-      _brushfire = new int*[_groundTruthMap.rows];
-      for(int i = 0; i < _groundTruthMap.rows; i++)
-        _brushfire[i] = new int[_groundTruthMap.cols];
-      _mapUtils.brushfireSearch(_groundTruthMap, _brushfire);
-      double dist = _mapUtils.meanBrushfireDistance(_groundTruthMap, _brushfire);
+      _brushfire = new int*[map1.rows];
+      for(int i = 0; i < map1.rows; i++)
+        _brushfire[i] = new int[map1.cols];
+      _mapUtils.brushfireSearch(map1, _brushfire);
+      double dist = _mapUtils.meanBrushfireDistance(map1, _brushfire);
+      ROS_INFO("ERE");
     }
 
     for (int i = 0; i < _slamObstaclePoints.size(); i++)
@@ -94,7 +116,7 @@ namespace feature_evaluation
  
     if(params.closestPointMethod == "Brushfire")
     {
-      for (int i = 0; i < _groundTruthMap.rows; i++)
+      for (int i = 0; i < map1.rows; i++)
         delete[] _brushfire[i];
       delete[] _brushfire;
     }

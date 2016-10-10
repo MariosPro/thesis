@@ -82,7 +82,7 @@ int Affine2DPartialEstimator::RANSACUpdateNumIters(double p, double ep, int mode
  
     int Affine2DPartialEstimator::findInliers(const cv::Mat& m1, const cv::Mat& m2, 
                     const cv::Mat& model, cv::Mat& err,
-                    cv::Mat& mask, double thresh)
+                    cv::Mat& mask, double thresh, float* totalError)
 
     {
         computeError(m1, m2, model, err);
@@ -93,12 +93,16 @@ int Affine2DPartialEstimator::RANSACUpdateNumIters(double p, double ep, int mode
         uchar* maskptr = mask.ptr<uchar>();
         float t = (float)(thresh*thresh);
         int i, n = (int)err.total(), nz = 0;
+        *totalError = 0;
         for( i = 0; i < n; i++ )
         {
             int f = errptr[i] <= t;
+            if(f)
+              *totalError += errptr[i];
             maskptr[i] = (uchar)f;
             nz += f;
         }
+        *totalError /=nz; 
         return nz;
     }
 
@@ -202,6 +206,9 @@ int Affine2DPartialEstimator::RANSACUpdateNumIters(double p, double ep, int mode
             return true;
         }
 
+        float totalError, bestError;
+        bestError = std::numeric_limits<double>::infinity();
+
         for( iter = 0; iter < niters; iter++ )
         {
             int i, nmodels;
@@ -225,17 +232,21 @@ int Affine2DPartialEstimator::RANSACUpdateNumIters(double p, double ep, int mode
             for( i = 0; i < nmodels; i++ )
             {
                 cv::Mat model_i = model.rowRange( i*modelSize.height, (i+1)*modelSize.height );
-                int goodCount = findInliers( m1, m2, model_i, err, mask, threshold );
+                int goodCount = findInliers( m1, m2, model_i, err, mask, threshold, &totalError);
 
-                if( goodCount > MAX(maxGoodCount, modelPoints-1) )
+                if( goodCount > MAX(maxGoodCount, modelPoints-1))
                 {
+                    if(totalError < bestError)
+                      bestError = totalError;
                     std::swap(mask, bestMask);
                     model_i.copyTo(bestModel);
                     maxGoodCount = goodCount;
-                    niters = RANSACUpdateNumIters( confidence, (double)(count - goodCount)/count, modelPoints, niters );
+                    niters = RANSACUpdateNumIters(confidence, (double)(count - goodCount)/count, modelPoints, niters);
                 }
             }
         }
+
+        std::cout << bestError << std::endl;
 
         if( maxGoodCount > 0 )
         {
@@ -283,7 +294,7 @@ int Affine2DPartialEstimator::RANSACUpdateNumIters(double p, double ep, int mode
 
     bool Affine2DPartialEstimator::checkSubset(cv::InputArray _ms1, cv::InputArray _ms2, int count) 
     {
-        const float threshold = 0.996f;
+        const float t = 0.996f;
         cv::Mat ms1 = _ms1.getMat(), ms2 = _ms2.getMat();
 
         for( int inp = 1; inp <= 2; inp++ )
@@ -307,7 +318,7 @@ int Affine2DPartialEstimator::RANSACUpdateNumIters(double p, double ep, int mode
                     float denom = (d2.x*d2.x + d2.y*d2.y)*n1;
                     float num = d1.x*d2.x + d1.y*d2.y;
 
-                    if( num*num > threshold*threshold*denom )
+                    if( num*num > t*t*denom )
                         return false;
                 }
             }

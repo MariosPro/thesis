@@ -76,7 +76,7 @@ namespace feature_evaluation
     _params.scaleMapsBrushfire = req.scaleMapsBrushfire;
     _params.binary = req.binary;
     _params.manualAlignment = req.manualAlignment;
-    _params.benchmarking = true;
+    _params.benchmarking = false;
     _params.gaussianBlur1 = req.gaussianBlur1;
     _params.gaussianBlur2 = req.gaussianBlur2;
     _params.medianBlur1 = req.medianBlur1;

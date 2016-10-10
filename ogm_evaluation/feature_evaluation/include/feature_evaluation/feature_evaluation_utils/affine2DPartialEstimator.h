@@ -49,7 +49,7 @@ public:
     
     int findInliers(const cv::Mat& m1, const cv::Mat& m2, 
                     const cv::Mat& model, cv::Mat& err,
-                    cv::Mat& mask, double thresh);
+                    cv::Mat& mask, double thresh, float* totalError);
 
     void computeError(cv::InputArray _m1, cv::InputArray _m2, 
                     cv::InputArray _model, cv::OutputArray _err); 
