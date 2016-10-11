@@ -100,28 +100,35 @@ namespace ogm_gui
 
   void CMapLoader::displayMatchingImage(QImage* img)
   {
-    newDims = checkDimensions(img->width(), img->height(),
+   if(!img->isNull())
+   {
+      newDims = checkDimensions(img->width(), img->height(),
                                this->stackedWidget->width(), this->stackedWidget->height() - 20, false);
 
-    matchingLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
+       matchingLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
                 Qt::IgnoreAspectRatio,
                 Qt::SmoothTransformation));
-    matchingLabel->resize(newDims.first, newDims.second);
+      matchingLabel->resize(newDims.first, newDims.second);
 
-    _matched = true;
+      _matched = true;
+    }
   }
  
   void CMapLoader::displayMergedImage(QImage* img)
   {
-   newDims = checkDimensions(img->width(), img->height(),
-                               this->stackedWidget->width(), this->stackedWidget->height() - 20, false);
+   if(!img->isNull())
+   {
 
-    mergedLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
-                Qt::IgnoreAspectRatio,
-                Qt::SmoothTransformation));
-    mergedLabel->resize(newDims.first, newDims.second);
-    
-    _merged = true;
+     newDims = checkDimensions(img->width(), img->height(),
+                                 this->stackedWidget->width(), this->stackedWidget->height() - 20, false);
+
+      mergedLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
+                  Qt::IgnoreAspectRatio,
+                  Qt::SmoothTransformation));
+      mergedLabel->resize(newDims.first, newDims.second);
+      
+      _merged = true;
+    }
   }
 
   /**
