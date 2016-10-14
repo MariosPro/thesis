@@ -44,7 +44,7 @@ namespace feature_evaluation
       float x, y;
       cv::Mat img;
       cv::cvtColor(image, img, CV_GRAY2RGB);
-      cv::Mat desc = cv::Mat(keypoints.size(), 6, CV_32FC1);
+      cv::Mat desc = cv::Mat(keypoints.size(), 24, CV_32FC1);
       std::vector<float> rowFeatures;
       for (int k = 0; k < keypoints.size(); k++)
       {
@@ -53,36 +53,39 @@ namespace feature_evaluation
         for (int l = 0; l < 6; l++)
         {
           radius+= 25;
-          intersections = 0;
-          crosses = 0;
-          for (int theta = 0; theta < 360; theta++)
+          for (int startAngle = 0; startAngle < 360; startAngle = startAngle + 90)
           {
-            x = (int) round((radius * cos(theta * M_PI / 180)) + keypoints[k].pt.x);
-            y = (int) round((radius * sin(theta * M_PI / 180)) + keypoints[k].pt.y);
-
-            // check if circle points are inside image boundaries
-            if(x >= 0 && x < image.cols && y >= 0 && y < image.rows )
+            intersections = 0;
+            crosses = 0;
+            for (int theta = startAngle; theta < startAngle + 90; theta++)
             {
-              if( (image.at<unsigned char>(y, x) == 0 || image.at<unsigned char>(y, x) == 127) && crosses == 0)
+              x = (int) round((radius * cos(theta * M_PI / 180)) + keypoints[k].pt.x);
+              y = (int) round((radius * sin(theta * M_PI / 180)) + keypoints[k].pt.y);
+
+              // check if circle points are inside image boundaries
+              if(x >= 0 && x < image.cols && y >= 0 && y < image.rows)
               {
-                 crosses ++;
-              }
-              if(image.at<unsigned char>(y, x) == 255 && crosses == 1)
-              {
-                intersections ++;
-                crosses = 0;
+                if( (image.at<unsigned char>(y, x) == 0 || image.at<unsigned char>(y, x) == 127) && crosses == 0)
+                {
+                   crosses ++;
+                }
+                if(image.at<unsigned char>(y, x) == 255 && crosses == 1)
+                {
+                  intersections ++;
+                  crosses = 0;
+                }
               }
             }
+            rowFeatures.push_back((float) intersections);
+            cv::circle(img, keypoints[k].pt, radius, cv::Scalar(255, 0, 0), 1, 8);
           }
-          rowFeatures.push_back((float) intersections);
-          cv::circle(img, keypoints[k].pt, radius, cv::Scalar(255, 0, 0), 1, 8);
-        }
+        } 
        /* if(k == 100)*/
         /*{*/
           for (int i = 0; i < rowFeatures.size(); i++)
           {
             desc.at<float>(k, i) = rowFeatures[i];
-            //std::cout << rowFeatures[i] << " ";
+            std::cout << rowFeatures[i] << " ";
           }
         //}
       }

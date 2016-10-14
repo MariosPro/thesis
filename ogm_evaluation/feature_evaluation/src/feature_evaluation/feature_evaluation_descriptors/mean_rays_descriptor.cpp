@@ -44,7 +44,7 @@ namespace feature_evaluation
       float x, y;
       cv::Mat img;
       cv::cvtColor(image, img, CV_GRAY2RGB);
-      cv::Mat desc = cv::Mat(keypoints.size(), 6, CV_32FC1);
+      cv::Mat desc = cv::Mat(keypoints.size(), 24, CV_32FC1);
       std::vector<float> rowFeatures;
       int sumOfRays, thetaIncrement;
       bool outOfBounds;
@@ -54,6 +54,7 @@ namespace feature_evaluation
       int maxRadius;
       cv::RNG rng(12345);
       cv::Scalar color;
+      int radiusIncrement = std::min(image.rows, image.cols)/20;
       for (int k = 0; k < keypoints.size(); k++)
       {
         maxRadius = 0;
@@ -61,79 +62,83 @@ namespace feature_evaluation
 
         for (int l = 0; l < 6; l++)
         {
-          sumOfRays = 0;
-          maxRadius += 25;
-          p.clear();
-          for (int theta = 0; theta < 360; theta = theta + thetaIncrement)
+          maxRadius += radiusIncrement;
+
+          for (int startAngle = 0;  startAngle < 360; startAngle = startAngle + 90)
           {
-            outOfBounds = false;
-            radius = 0;
-
-            for(;;)
+            sumOfRays = 0;
+            p.clear();
+            for (int theta = startAngle; theta < startAngle + 90; theta = theta + thetaIncrement)
             {
-              radius ++;
-              x = (int) round((radius * cos(theta * M_PI / 180)) + keypoints[k].pt.x);
-              y = (int) round((radius * sin(theta * M_PI / 180)) + keypoints[k].pt.y);
-              if(x < 0)
-              {
-                x = 0;
-                outOfBounds = true;
-              }
+              outOfBounds = false;
+              radius = 0;
 
-              if(y < 0)
+              for(;;)
               {
-                y = 0;
-                outOfBounds = true;
-              }
+                radius ++;
+                x = (int) round((radius * cos(theta * M_PI / 180)) + keypoints[k].pt.x);
+                y = (int) round((radius * sin(theta * M_PI / 180)) + keypoints[k].pt.y);
+                if(x < 0)
+                {
+                  x = 0;
+                  outOfBounds = true;
+                }
 
-              if(y > image.rows - 1)
-              {
-                y = image.rows -1;
-                outOfBounds = true;
-              }
+                if(y < 0)
+                {
+                  y = 0;
+                  outOfBounds = true;
+                }
 
-              if(x > image.cols -1)
-              {
-                x = image.cols - 1;
-                outOfBounds = true;
-              }
+                if(y > image.rows - 1)
+                {
+                  y = image.rows -1;
+                  outOfBounds = true;
+                }
 
-              if(image.at<unsigned char>(y, x) == 0 || image.at<unsigned char>(y, x) == 127 )
-              {
-                sumOfRays += radius;
-                p.push_back(cv::Point(x, y));
-                rays.push_back(radius);
-                break;
-              }
-              
-              if( outOfBounds || radius >= maxRadius)
-              {
-                  break; 
+                if(x > image.cols -1)
+                {
+                  x = image.cols - 1;
+                  outOfBounds = true;
+                }
+
+                if(image.at<unsigned char>(y, x) == 0 || image.at<unsigned char>(y, x) == 127 )
+                {
+                  sumOfRays += radius;
+                  p.push_back(cv::Point(x, y));
+                  rays.push_back(radius);
+                  break;
+                }
+                
+                if( outOfBounds || radius >= maxRadius)
+                {
+                    break; 
+                }
               }
             }
+
+           desc.at<float>(k, l) = (float)sumOfRays / (360 / thetaIncrement);
+           color = cv::Scalar(rng.uniform(0,255), rng.uniform(0, 255), rng.uniform(0, 255));
+           //std::cout<< "sumOfRays=" << sumOfRays << std::endl;
+          //if(k == 12){
+          for (int i = 0; i < p.size(); i++)
+          {
+
+            cv::line(img, keypoints[k].pt, p[i], color, 1, 8);
+          /*  std::cout << p[i] << " ";*/
+            /*std::cout << rays[i] << " ";*/
           }
-
-         desc.at<float>(k, l) = (float)sumOfRays / (360 / thetaIncrement);
-         color = cv::Scalar(rng.uniform(0,255), rng.uniform(0, 255), rng.uniform(0, 255));
-         //std::cout<< "sumOfRays=" << sumOfRays << std::endl;
-        //if(k == 12){
-        for (int i = 0; i < p.size(); i++)
-        {
-
-          cv::line(img, keypoints[k].pt, p[i], color, 1, 8);
-        /*  std::cout << p[i] << " ";*/
-          /*std::cout << rays[i] << " ";*/
+          //std::cout << std::endl;
+   /*     cv::imshow("MeanRays Descriptors", img);*/
+        /*cv::waitKey(0);*/
         }
-        //std::cout << std::endl;
- /*     cv::imshow("MeanRays Descriptors", img);*/
-      /*cv::waitKey(0);*/
       }
     }
-     /* ROS_INFO_STREAM("DESC=" << desc.rows << " " << desc.cols);*/
-      /*std::cout << "Desc = "<< std::endl << " "  << desc << std::endl << std::endl;*/
+      ROS_INFO_STREAM("DESC=" << desc.rows << " " << desc.cols);
+      std::cout << "Desc = "<< std::endl << " "  << desc << std::endl << std::endl;
       desc.copyTo(*descriptors);
-      cv::imshow("MeanRays Descriptors", img);
-      cv::waitKey(1000);
+    /*  cv::imshow("MeanRays Descriptors", img);*/
+      /*cv::waitKey(1000);*/
 
     }
 } // namespace feature_evaluation
