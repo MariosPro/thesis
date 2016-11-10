@@ -8,6 +8,7 @@ string distNorm
 float64 matchingRatio
 float64 ransacReprjError
 bool scaleMapsBrushfire
+bool morphologicalFiltering
 bool binary
 bool manualAlignment
 bool gaussianBlur1
@@ -23,5 +24,11 @@ nav_msgs/OccupancyGrid groundTruthMap
 nav_msgs/OccupancyGrid slamMap
 ---
 float64 result
-sensor_msgs/Image matchedImage
+float64 acceptance
+float64 overlapArea
+float64 quality
+float64 meanExTime
+int64 matches
+sensor_msgs/Image initialMatchedImage
+sensor_msgs/Image finalMatchedImage
 sensor_msgs/Image mergedImage

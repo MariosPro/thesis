@@ -75,6 +75,8 @@ namespace ogm_gui
 
       double _gaussianKernel2;
 
+      bool _morphFiltering;
+
       bool _binary;
 
       bool _manual_alignment;
@@ -164,6 +166,8 @@ namespace ogm_gui
 
       bool thresholdMaps();
 
+      bool morphFiltering();
+
       bool manualAlignMaps();
 
       bool scaleMapsBrushfire();
@@ -240,6 +244,8 @@ namespace ogm_gui
       void distanceComboBoxActivated(const QString& text);
 
       void binaryMapsChecked();
+
+      void morphFilteringChecked();
 
       void manualAlignmentChecked();
 

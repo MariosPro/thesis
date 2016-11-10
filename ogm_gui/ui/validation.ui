@@ -226,8 +226,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>360</width>
-            <height>601</height>
+            <width>100</width>
+            <height>30</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -360,8 +360,8 @@
          <widget class="QWidget" name="page_2">
           <property name="geometry">
            <rect>
-            <x>0</x>
-            <y>-10</y>
+            <x>-22</x>
+            <y>0</y>
             <width>369</width>
             <height>598</height>
            </rect>
@@ -426,10 +426,10 @@
               <widget class="QWidget" name="layoutWidget_3">
                <property name="geometry">
                 <rect>
-                 <x>10</x>
+                 <x>20</x>
                  <y>0</y>
                  <width>311</width>
-                 <height>501</height>
+                 <height>506</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_5">
@@ -574,6 +574,13 @@
                    <widget class="QCheckBox" name="scaleBrushfireCheckBox">
                     <property name="text">
                      <string>Scale Maps (Mean Brushfire Distance)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="morphFilteringCheckBox">
+                    <property name="text">
+                     <string>Morphological Filtering</string>
                     </property>
                    </widget>
                   </item>
@@ -725,12 +732,22 @@
                         </item>
                         <item>
                          <property name="text">
+                          <string>ANNULAR STATISTICS</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
                           <string>CIRCLE INTERSECTIONS</string>
                          </property>
                         </item>
                         <item>
                          <property name="text">
                           <string>MEAN RAYS</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>ANNULAR+RAYS</string>
                          </property>
                         </item>
                         <item>
@@ -817,8 +834,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>360</width>
-            <height>601</height>
+            <width>100</width>
+            <height>30</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -860,7 +877,7 @@
               <height>589</height>
              </rect>
             </property>
-            <widget class="QWidget" name="">
+            <widget class="QWidget" name="layoutWidget">
              <property name="geometry">
               <rect>
                <x>0</x>

@@ -113,11 +113,14 @@ namespace ogm_gui{
     Q_EMIT mapTransparencyChanged(t);
   }
 
-  void CMapConnector::displayMatchingImage(QImage* img)
+  void CMapConnector::displayInitialMatchingImage(QImage* img)
   {
-    loader_.displayMatchingImage(img);
+    loader_.displayInitialMatchingImage(img);
   }
- 
+  void CMapConnector::displayFinalMatchingImage(QImage* img)
+  {
+    loader_.displayFinalMatchingImage(img);
+  }
   void CMapConnector::displayMergedImage(QImage* img)
   {
     loader_.displayMergedImage(img);

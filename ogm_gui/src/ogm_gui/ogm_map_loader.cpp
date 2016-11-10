@@ -50,7 +50,8 @@ namespace ogm_gui
     mapGraphicsView->fitInView(scene->sceneRect());
     mapGraphicsView->setInteractive(true);
     transparency = 0.5;
-    _matched = false;
+    _initialMatched = false;
+    _finalMatched = false;
     _merged = false;
     //mapGraphicsView->show();
   }
@@ -98,22 +99,38 @@ namespace ogm_gui
     transparency = t;
   }
 
-  void CMapLoader::displayMatchingImage(QImage* img)
+  void CMapLoader::displayInitialMatchingImage(QImage* img)
   {
    if(!img->isNull())
    {
       newDims = checkDimensions(img->width(), img->height(),
                                this->stackedWidget->width(), this->stackedWidget->height() - 20, false);
 
-       matchingLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
+       initialMatchingLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
                 Qt::IgnoreAspectRatio,
                 Qt::SmoothTransformation));
-      matchingLabel->resize(newDims.first, newDims.second);
+      initialMatchingLabel->resize(newDims.first, newDims.second);
 
-      _matched = true;
+      _initialMatched = true;
     }
   }
- 
+  
+  void CMapLoader::displayFinalMatchingImage(QImage* img)
+  {
+   if(!img->isNull())
+   {
+      newDims = checkDimensions(img->width(), img->height(),
+                               this->stackedWidget->width(), this->stackedWidget->height() - 20, false);
+
+       finalMatchingLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
+                Qt::IgnoreAspectRatio,
+                Qt::SmoothTransformation));
+      finalMatchingLabel->resize(newDims.first, newDims.second);
+
+      _finalMatched = true;
+    }
+  }
+
   void CMapLoader::displayMergedImage(QImage* img)
   {
    if(!img->isNull())
@@ -208,15 +225,26 @@ namespace ogm_gui
       ground_truth_map->setPixmap(pixmap);
     }
     
-    if(_matched)
+    if(_initialMatched)
     {
-      newDims = checkDimensions(matchingLabel->pixmap()->width(), matchingLabel->pixmap()->height(),
+      newDims = checkDimensions(initialMatchingLabel->pixmap()->width(), initialMatchingLabel->pixmap()->height(),
                              this->stackedWidget->width(), this->stackedWidget->height() - 20, false);
 
-      matchingLabel->setPixmap(matchingLabel->pixmap()->scaled(newDims.first,newDims.second,
+      initialMatchingLabel->setPixmap(initialMatchingLabel->pixmap()->scaled(newDims.first,newDims.second,
               Qt::IgnoreAspectRatio,
               Qt::SmoothTransformation));
-      matchingLabel->resize(newDims.first, newDims.second);
+      initialMatchingLabel->resize(newDims.first, newDims.second);
+    }
+ 
+    if(_finalMatched)
+    {
+      newDims = checkDimensions(finalMatchingLabel->pixmap()->width(), finalMatchingLabel->pixmap()->height(),
+                             this->stackedWidget->width(), this->stackedWidget->height() - 20, false);
+
+      finalMatchingLabel->setPixmap(finalMatchingLabel->pixmap()->scaled(newDims.first,newDims.second,
+              Qt::IgnoreAspectRatio,
+              Qt::SmoothTransformation));
+      finalMatchingLabel->resize(newDims.first, newDims.second);
     }
 
     if(_merged)

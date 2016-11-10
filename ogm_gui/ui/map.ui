@@ -32,7 +32,12 @@
      </item>
      <item>
       <property name="text">
-       <string>Feature Matching</string>
+       <string>Initial Feature Matching</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Final Feature Matching (after RANSAC)</string>
       </property>
      </item>
      <item>
@@ -77,14 +82,38 @@
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="matching">
+     <widget class="QWidget" name="initialMatching">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <widget class="QLabel" name="matchingLabel">
+      <widget class="QLabel" name="initialMatchingLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>361</width>
+         <height>211</height>
+        </rect>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="finalMatching">
+      <widget class="QLabel" name="finalMatchingLabel">
        <property name="geometry">
         <rect>
          <x>10</x>

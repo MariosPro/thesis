@@ -506,6 +506,7 @@ namespace ogm_gui
       srv.request.matchingRatio = validation_connector_.getMatchingRatio();
       srv.request.ransacReprjError = validation_connector_.getRansacReprjError();
       srv.request.binary = validation_connector_.thresholdMaps();
+      srv.request.morphologicalFiltering = validation_connector_.morphFiltering();
       srv.request.manualAlignment = validation_connector_.manualAlignMaps();
       srv.request.scaleMapsBrushfire = validation_connector_.scaleMapsBrushfire();
       srv.request.gaussianBlur1 = validation_connector_.gaussianBlur1();
@@ -540,13 +541,18 @@ namespace ogm_gui
 
       if(metricMethod == "FEATURES")
       {
-        QImage matchingImage( &srv.response.matchedImage.data[0], srv.response.matchedImage.width,
-            srv.response.matchedImage.height, srv.response.matchedImage.step, QImage::Format_RGB888);
-        QImage temp = matchingImage;
+        QImage initialMatchingImage( &srv.response.initialMatchedImage.data[0], srv.response.initialMatchedImage.width,
+            srv.response.initialMatchedImage.height, srv.response.initialMatchedImage.step, QImage::Format_RGB888);
+        QImage temp = initialMatchingImage;
+        QImage finalMatchingImage( &srv.response.finalMatchedImage.data[0], srv.response.finalMatchedImage.width,
+            srv.response.finalMatchedImage.height, srv.response.finalMatchedImage.step, QImage::Format_RGB888);
+        QImage temp2 = finalMatchingImage;
         QImage mergedImage( &srv.response.mergedImage.data[0], srv.response.mergedImage.width,
             srv.response.mergedImage.height, srv.response.mergedImage.step, QImage::Format_Indexed8);
         QImage temp1 = mergedImage;
-        map_connector_.displayMatchingImage(&temp);
+        
+        map_connector_.displayInitialMatchingImage(&temp);
+        map_connector_.displayFinalMatchingImage(&temp2);
         map_connector_.displayMergedImage(&temp1);
       }
     }

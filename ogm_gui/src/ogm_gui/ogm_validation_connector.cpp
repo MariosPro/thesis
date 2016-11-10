@@ -113,7 +113,11 @@ namespace ogm_gui
    QObject::connect(
       loader.binaryCheckBox, SIGNAL(toggled(bool)),
       this, SLOT(binaryMapsChecked()));
- 
+  
+   QObject::connect(
+      loader.morphFilteringCheckBox, SIGNAL(toggled(bool)),
+      this, SLOT(morphFilteringChecked()));
+
    QObject::connect(
       loader.manualAlignmentCheckBox, SIGNAL(toggled(bool)),
       this, SLOT(manualAlignmentChecked()));
@@ -215,6 +219,7 @@ namespace ogm_gui
   _matchingRatio = 0.7;
   _ransacReprjError = 5;
   _binary = false;
+  _morphFiltering = false;
   _manual_alignment = false;
   _scaleMapsBrushfire = false;
   _gaussianBlur1 = false;
@@ -467,6 +472,12 @@ namespace ogm_gui
   {
     _binary = !_binary;
   }
+ 
+  void CValidationConnector::morphFilteringChecked()
+  {
+    _morphFiltering = !_morphFiltering;
+  }
+
 
   void CValidationConnector::manualAlignmentChecked()
   {
@@ -499,7 +510,11 @@ namespace ogm_gui
     _medianBlur2 = !_medianBlur2;
   }
 
-
+ 
+  bool CValidationConnector::morphFiltering()
+  {
+    return _morphFiltering;
+  }
 
   bool CValidationConnector::thresholdMaps()
   {

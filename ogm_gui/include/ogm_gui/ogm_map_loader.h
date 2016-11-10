@@ -62,7 +62,7 @@ namespace ogm_gui
 
       std::pair<int,int> newDims;
 
-      bool _matched, _merged;
+      bool _initialMatched, _finalMatched, _merged;
 
       /**
       @brief Return the dimensions according to the container size
@@ -129,7 +129,9 @@ namespace ogm_gui
 
       void setMapTransparency(double t);
 
-      void displayMatchingImage(QImage* img);
+      void displayFinalMatchingImage(QImage* img);
+ 
+      void displayInitialMatchingImage(QImage* img);
 
       void displayMergedImage(QImage* img);
 
