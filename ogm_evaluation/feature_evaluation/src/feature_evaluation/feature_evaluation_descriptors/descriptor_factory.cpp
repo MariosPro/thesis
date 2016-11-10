@@ -21,6 +21,7 @@
 #include <string>
 #include "feature_evaluation/feature_evaluation_descriptors/descriptor_factory.h"
 #include "feature_evaluation/feature_evaluation_descriptors/radius_statistics_descriptor.h"
+#include "feature_evaluation/feature_evaluation_descriptors/annular_statistics_descriptor.h"
 #include "feature_evaluation/feature_evaluation_descriptors/circle_intersection_descriptor.h"
 #include "feature_evaluation/feature_evaluation_descriptors/mean_rays_descriptor.h"
 
@@ -33,6 +34,7 @@ namespace feature_evaluation
   DescriptorExtractor* DescriptorFactory::create(std::string name)
   {
     if (name == "RADIUS STATISTICS") return new RadiusStatisticsDescriptor();
+    else if (name == "ANNULAR STATISTICS") return new AnnularStatisticsDescriptor();
     else if (name == "CIRCLE INTERSECTIONS") return new CircleIntersectionDescriptor();
     else if (name == "MEAN RAYS") return new MeanRaysDescriptor();
 

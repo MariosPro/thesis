@@ -28,7 +28,7 @@ namespace feature_evaluation
     **/ 
     MeanRaysDescriptor::MeanRaysDescriptor():DescriptorExtractor()
     {
-        ROS_INFO_STREAM("Created MeanRaysDescriptor instance");
+        //ROS_INFO_STREAM("Created MeanRaysDescriptor instance");
     }
     
     /**
@@ -40,40 +40,55 @@ namespace feature_evaluation
     **/
     void MeanRaysDescriptor::compute(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat* descriptors)
     {
-      int radius;
+      float previousRadius, initialRadius, radius, nextRadius;
+      int r;
+      int numRings = 8;
       float x, y;
-      cv::Mat img;
+      cv::Mat img,temp;
       cv::cvtColor(image, img, CV_GRAY2RGB);
-      cv::Mat desc = cv::Mat(keypoints.size(), 6, CV_32FC1);
+      cv::Mat desc = cv::Mat(keypoints.size(), numRings, CV_32FC1);
       std::vector<float> rowFeatures;
       int sumOfRays, thetaIncrement;
       bool outOfBounds;
       std::vector<cv::Point> p;
       std::vector<int> rays;
+      float radiusRatio = 1.1;
+      float totalLength = std::min(image.rows, image.cols)/5;
+      float factor = 0;
+      for (int i = 0; i < numRings; i++)
+      {
+        factor += std::pow(radiusRatio, i);
+      }
+
+      initialRadius = totalLength  / factor;
+
+
       thetaIncrement = 1;
       int maxRadius;
       cv::RNG rng(12345);
       cv::Scalar color;
       for (int k = 0; k < keypoints.size(); k++)
       {
-        maxRadius = 0;
-        rays.clear();
+        //maxRadius = 0;
+        sumOfRays = 0;
+        previousRadius = 0;
+        radius = initialRadius;
+        //rays.clear();
 
-        for (int l = 0; l < 6; l++)
+        for (int l = 0; l < numRings; l++)
         {
-          sumOfRays = 0;
-          maxRadius += 25;
-          p.clear();
+          //maxRadius += 25;
+          //p.clear();
           for (int theta = 0; theta < 360; theta = theta + thetaIncrement)
           {
             outOfBounds = false;
-            radius = 0;
-
+            r = 0; //radius;
+            nextRadius = radiusRatio *(radius - previousRadius) + radius;
             for(;;)
             {
-              radius ++;
-              x = (int) round((radius * cos(theta * M_PI / 180)) + keypoints[k].pt.x);
-              y = (int) round((radius * sin(theta * M_PI / 180)) + keypoints[k].pt.y);
+              r++;
+              x = (int) round((r * cos(theta * M_PI / 180)) + keypoints[k].pt.x);
+              y = (int) round((r * sin(theta * M_PI / 180)) + keypoints[k].pt.y);
               if(x < 0)
               {
                 x = 0;
@@ -100,13 +115,13 @@ namespace feature_evaluation
 
               if(image.at<unsigned char>(y, x) == 0 || image.at<unsigned char>(y, x) == 127 )
               {
-                sumOfRays += radius;
-                p.push_back(cv::Point(x, y));
-                rays.push_back(radius);
+                sumOfRays += r;
+                //p.push_back(cv::Point(x, y));
+                //rays.push_back(r);
                 break;
               }
               
-              if( outOfBounds || radius >= maxRadius)
+              if( outOfBounds || r >= nextRadius)
               {
                   break; 
               }
@@ -114,26 +129,29 @@ namespace feature_evaluation
           }
 
          desc.at<float>(k, l) = (float)sumOfRays / (360 / thetaIncrement);
-         color = cv::Scalar(rng.uniform(0,255), rng.uniform(0, 255), rng.uniform(0, 255));
+         //color = cv::Scalar(rng.uniform(0,255), rng.uniform(0, 255), rng.uniform(0, 255));
          //std::cout<< "sumOfRays=" << sumOfRays << std::endl;
         //if(k == 12){
-        for (int i = 0; i < p.size(); i++)
-        {
+/*        for (int i = 0; i < p.size(); i++)*/
+        //{
 
-          cv::line(img, keypoints[k].pt, p[i], color, 1, 8);
-        /*  std::cout << p[i] << " ";*/
-          /*std::cout << rays[i] << " ";*/
-        }
+          //cv::line(img, keypoints[k].pt, p[i], color, 1, 8);
+        //[>  std::cout << p[i] << " ";<]
+          //[>std::cout << rays[i] << " ";<]
+        /*}*/
         //std::cout << std::endl;
- /*     cv::imshow("MeanRays Descriptors", img);*/
+/*      cv::imshow("MeanRays Descriptors", img);*/
       /*cv::waitKey(0);*/
+        previousRadius = radius;
+        radius = nextRadius;
+
       }
     }
      /* ROS_INFO_STREAM("DESC=" << desc.rows << " " << desc.cols);*/
       /*std::cout << "Desc = "<< std::endl << " "  << desc << std::endl << std::endl;*/
       desc.copyTo(*descriptors);
-      cv::imshow("MeanRays Descriptors", img);
-      cv::waitKey(1000);
+  /*    cv::imshow("MeanRays Descriptors", img);*/
+      /*cv::waitKey(1000);*/
 
     }
 } // namespace feature_evaluation

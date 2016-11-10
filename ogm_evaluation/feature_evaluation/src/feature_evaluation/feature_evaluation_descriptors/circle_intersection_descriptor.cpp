@@ -28,7 +28,7 @@ namespace feature_evaluation
     **/ 
     CircleIntersectionDescriptor::CircleIntersectionDescriptor():DescriptorExtractor()
     {
-        ROS_INFO_STREAM("Created CircleIntersectionDescriptor instance");
+        //ROS_INFO_STREAM("Created CircleIntersectionDescriptor instance");
     }
     
     /**
@@ -40,17 +40,32 @@ namespace feature_evaluation
     **/
     void CircleIntersectionDescriptor::compute(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat* descriptors)
     {
-      int radius, intersections, crosses;
+      int intersections, crosses;
+      int numRings = 8;
+      float previousRadius, initialRadius, radius, nextRadius;
       float x, y;
       cv::Mat img;
       cv::cvtColor(image, img, CV_GRAY2RGB);
-      cv::Mat desc = cv::Mat(keypoints.size(), 6, CV_32FC1);
+      cv::Mat desc = cv::Mat(0, numRings, CV_32FC1);
+      cv::Mat temp;       
       std::vector<float> rowFeatures;
+      float radiusRatio = 1.1;
+      float totalLength = std::min(image.rows, image.cols)/5;
+      float factor = 0;
+      for (int i = 0; i < numRings; i++)
+      {
+         factor += std::pow(radiusRatio, i);
+      }
+      
+      initialRadius = totalLength  / factor;
+
       for (int k = 0; k < keypoints.size(); k++)
       {
-        radius = 0;
+        previousRadius = 0;
+        radius = initialRadius;
+        nextRadius = 0;
         rowFeatures.clear();
-        for (int l = 0; l < 6; l++)
+        for (int l = 0; l < numRings; l++)
         {
           radius+= 25;
           intersections = 0;
@@ -63,7 +78,7 @@ namespace feature_evaluation
             // check if circle points are inside image boundaries
             if(x >= 0 && x < image.cols && y >= 0 && y < image.rows )
             {
-              if( (image.at<unsigned char>(y, x) == 0 || image.at<unsigned char>(y, x) == 127) && crosses == 0)
+              if( (image.at<unsigned char>(y, x) == 0 && crosses == 0) || image.at<unsigned char>(y, x) == 127) 
               {
                  crosses ++;
               }
@@ -75,20 +90,28 @@ namespace feature_evaluation
             }
           }
           rowFeatures.push_back((float) intersections);
-          cv::circle(img, keypoints[k].pt, radius, cv::Scalar(255, 0, 0), 1, 8);
+          temp.release();
+          temp = cv::Mat(1, numRings, CV_32FC1);
+          memcpy(temp.data, rowFeatures.data(), rowFeatures.size()*sizeof(CV_32FC1));
+          //cv::circle(img, keypoints[k].pt, radius, cv::Scalar(255, 0, 0), 1, 8);
+          nextRadius = radiusRatio *(radius - previousRadius) + radius;
+          previousRadius = radius;
+          radius = nextRadius;
         }
+        desc.push_back(temp);
+
        /* if(k == 100)*/
         /*{*/
-          for (int i = 0; i < rowFeatures.size(); i++)
-          {
-            desc.at<float>(k, i) = rowFeatures[i];
-            //std::cout << rowFeatures[i] << " ";
-          }
+      /*    for (int i = 0; i < rowFeatures.size(); i++)*/
+          //{
+            //desc.push_back(rowFeatures[i]);
+            ////std::cout << rowFeatures[i] << " ";
+          /*}*/
         //}
       }
-      cv::imshow("Radius Descriptors", img);
-      cv::waitKey(1000);
-      ROS_INFO_STREAM("DESC=" <<desc.rows << " " << desc.cols);
+/*      cv::imshow("Radius Descriptors", img);*/
+      /*cv::waitKey(1000);*/
+      //ROS_INFO_STREAM("DESC=" <<desc.rows << " " << desc.cols);
       desc.copyTo(*descriptors);
     }
 } // namespace feature_evaluation
