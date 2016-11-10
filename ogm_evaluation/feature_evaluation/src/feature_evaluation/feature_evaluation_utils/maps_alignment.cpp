@@ -110,7 +110,7 @@ namespace feature_evaluation
     refPointsMat = refPointsMat.reshape(1);
     double error = RMSE(targetPointsMat, refPointsMat);
 
-     std::cout << "RMSE=" << error << std::endl;
+    std::cout << "RMSE=" << error << std::endl;
 
     std::cout << "refPointsMat=" << refPointsMat.size() << refPointsMat.type() << std::endl;
     std::cout << "targetPointsMat=" << targetPointsMat.size() << targetPointsMat.type() << std::endl;

@@ -46,9 +46,10 @@ namespace feature_evaluation
       @brief Default destructor
       @return void
       **/
-      virtual ~MapUtils(void) 
+       ~MapUtils(void) 
       {
-      }
+        //std::cout << "destroying MapUtils Instance" << std::endl;
+      };
 
       /**
       @brief Calculates the minimum distance of all free and unknown cells from the closest       occupied cells
@@ -68,6 +69,12 @@ namespace feature_evaluation
       bool isInROI(cv::Point p, std::vector<cv::Point2f> roi);
 
       double computeProduct(cv::Point p, cv::Point2f a, cv::Point2f b);
+      
+      void findUsefulBoundaries(cv::Mat& map);
+
+      void morphologicalFiltering(cv::Mat& src);
+
+     int maxBrushfireDistance(const cv::Mat& map, int** brushfire);
 
     private:
   };

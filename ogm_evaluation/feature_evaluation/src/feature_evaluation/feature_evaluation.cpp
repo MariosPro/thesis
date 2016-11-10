@@ -41,15 +41,19 @@ namespace feature_evaluation
     {
       _groundTruthMap = mapToMat(req.groundTruthMap);
       _slamMap = mapToMat(req.slamMap);
-      ROS_INFO_STREAM("GROUND TRUTH MAP SIZE=" << _groundTruthMap.size() << "type=" << _groundTruthMap.type() << "channels="<< _groundTruthMap.channels());
-      ROS_INFO_STREAM("SLAM MAP SIZE=" << _slamMap.size()<<  "type=" << _slamMap.type() << "channels=" <<_slamMap.channels());
+/*      ROS_INFO_STREAM("GROUND TRUTH MAP SIZE=" << _groundTruthMap.size() << "type=" << _groundTruthMap.type() << "channels="<< _groundTruthMap.channels());*/
+      /*ROS_INFO_STREAM("SLAM MAP SIZE=" << _slamMap.size()<<  "type=" << _slamMap.type() << "channels=" <<_slamMap.channels());*/
       _transform = req.transform;
     if (req.manualAlignment)
     {
       _alignment.alignMaps(_transform, _groundTruthMap, _slamMap);
     }
+
     bool s = req.manualAlignment;
-    ROS_INFO_STREAM("manual alignment=" << s);
+    //ROS_INFO_STREAM("manual alignment=" << s);
+
+    _mapUtils->findUsefulBoundaries(_groundTruthMap);
+    _mapUtils->findUsefulBoundaries(_slamMap);
 
     if (req.binary)
     {
@@ -77,21 +81,42 @@ namespace feature_evaluation
     _params.binary = req.binary;
     _params.manualAlignment = req.manualAlignment;
     _params.benchmarking = false;
+    _params.morphologicalFiltering = req.morphologicalFiltering;
     _params.gaussianBlur1 = req.gaussianBlur1;
     _params.gaussianBlur2 = req.gaussianBlur2;
     _params.medianBlur1 = req.medianBlur1;
+    _params.medianBlur2 = req.medianBlur2;
     _params.gaussianKernel1 = req.gaussianKernel1;
     _params.gaussianKernel2 = req.gaussianKernel2;
     _params.medianKernel1 = req.medianKernel1;
     _params.medianKernel2 = req.medianKernel2;
     _metric =  _metric_factory.createMetricInstance(req.method, _groundTruthMap, _slamMap);
-    _metric->calculateMetric(_params);
+
+    double totaltime = 0;
+    for (int i = 0; i < 1; i++)
+    {
+      auto start = std::chrono::steady_clock::now();
+      _metric->calculateMetric(_params);
+      auto finish = std::chrono::steady_clock::now();
+      double elapsed = std::chrono::duration_cast<std::chrono::duration<double> >(finish - start).count();
+      totaltime += elapsed;
+    }
+    double meantime = totaltime /3;
+   ROS_INFO_STREAM("EXECUTION TIME:" << meantime);
     res.result = _metric->getResult();
+    //std::cout << "result" << res.result << std::endl;
     if(req.method == "FEATURES")
     {
-      res.matchedImage = _metric->getMatchedImage();
+      res.initialMatchedImage = _metric->getInitialMatchedImage();
+      res.finalMatchedImage = _metric->getFinalMatchedImage();
       res.mergedImage = _metric->getMergedImage();
+      res.matches = _metric->getMatches();
+      res.acceptance = _metric->getAcceptance();
+      res.quality = _metric->getQuality();
+      res.overlapArea = _metric->getOverlap();
+      res.meanExTime = meantime;
     }
+
     return true;
   }
 

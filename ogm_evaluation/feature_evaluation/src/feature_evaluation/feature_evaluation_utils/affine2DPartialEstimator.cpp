@@ -175,7 +175,7 @@ int Affine2DPartialEstimator::RANSACUpdateNumIters(double p, double ep, int mode
         int d1 = m1.channels() > 1 ? m1.channels() : m1.cols;
         int d2 = m2.channels() > 1 ? m2.channels() : m2.cols;
         int count = m1.checkVector(d1), count2 = m2.checkVector(d2), maxGoodCount = 0;
-
+        //std::cout << "count=" << count  << std::endl;
         cv::RNG rng((uint64)-1);
 
         CV_Assert( confidence > 0 && confidence < 1 );
@@ -200,7 +200,10 @@ int Affine2DPartialEstimator::RANSACUpdateNumIters(double p, double ep, int mode
         if( count == modelPoints )
         {
             if( runKernel(m1, m2, bestModel) <= 0 )
+            {
+                std::cout << "runkernel didnt find transform" << std::endl;
                 return false;
+            }
             bestModel.copyTo(_model);
             bestMask.setTo(cv::Scalar::all(1));
             return true;
@@ -211,12 +214,14 @@ int Affine2DPartialEstimator::RANSACUpdateNumIters(double p, double ep, int mode
 
         for( iter = 0; iter < niters; iter++ )
         {
+            //std::cout << "iter=" << iter << std::endl;
             int i, nmodels;
             if( count > modelPoints )
             {
                 bool found = getSubset( m1, m2, ms1, ms2, rng, 10000 );
                 if( !found )
                 {
+                  std::cout << "Not found subset" << std::endl;
                     if( iter == 0 )
                         return false;
                     break;
@@ -242,11 +247,13 @@ int Affine2DPartialEstimator::RANSACUpdateNumIters(double p, double ep, int mode
                     model_i.copyTo(bestModel);
                     maxGoodCount = goodCount;
                     niters = RANSACUpdateNumIters(confidence, (double)(count - goodCount)/count, modelPoints, niters);
+                    //std::cout << "niterS=" << niters << std::endl;
+
                 }
             }
         }
 
-        std::cout << bestError << std::endl;
+        //std::cout << bestError << std::endl;
 
         if( maxGoodCount > 0 )
         {

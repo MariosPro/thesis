@@ -19,6 +19,7 @@
 #ifndef FEATURE_EVALUATION_H
 #define FEATURE_EVALUATION_H
 
+#include <chrono>
 #include <vector>
 #include <string>
 #include <math.h> 
@@ -29,6 +30,7 @@
 #include "feature_evaluation/feature_evaluation_metrics/parameters.h"
 #include "feature_evaluation/feature_evaluation_metrics/metric_base.h"
 #include "feature_evaluation/feature_evaluation_utils/maps_alignment.h"
+#include "feature_evaluation/feature_evaluation_utils/map_utils.h"
 #include "feature_evaluation/feature_metric_factory.h"
 /**
 @namespace feature_evaluation
@@ -91,13 +93,16 @@ namespace feature_evaluation
         MetricFactory _metric_factory;
 
         //!< Pointer to the Metric used
-        Metric* _metric;
+
+        boost::shared_ptr<Metric> _metric;
 
         //!< The maps Alignment instance
         Alignment _alignment;
 
         //!< the Parameters instance
         Parameters _params;
+
+        MapUtils* _mapUtils;
   };
 }
 #endif

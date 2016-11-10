@@ -34,9 +34,36 @@ namespace feature_evaluation
     _groundTruthMap = groundTruthMap;
     _slamMap = slamMap;
   }
+  Metric::~Metric(void) 
+  {
+     //std::cout << "Destroying Metric Base" << std::endl;  
+  };
 
   double Metric::getResult()
   {
     return _result;
   }
+
+  int Metric::getMatches()
+  {
+    return _inliers;
+  }
+
+  double Metric::getAcceptance()
+  {
+    return _acceptance;
+  }
+ 
+  double Metric::getQuality()
+  {
+    return _quality;
+  }
+ 
+  double Metric::getOverlap()
+  {
+    return _overlap;
+  }
+
+
+
 } // namespace feature_evaluation

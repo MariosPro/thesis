@@ -42,7 +42,7 @@ namespace feature_evaluation
   **/
   void OmseMetric::calculateMetric(Parameters params)
   {
-     _result = 0;
+     _result = 0; //std::numeric_limits<double>::max();
    /*  cv::Mat map1 = cv::Mat::zeros(10,10, CV_8UC1);*/
      //cv::Mat map2 = cv::Mat::zeros(10,10, CV_8UC1);
      //for(int i =0; i < map1.rows; i++)
@@ -62,37 +62,36 @@ namespace feature_evaluation
     if(map1Points.size() == 0 || map2Points.size() == 0)
     {
       ROS_ERROR("No Obstacle Points detected in one or neither maps");
-      //exit(0);
+      _result = std::numeric_limits<double>::max();
+      return; 
     }
 
     cv::Mat map1, map2;
    
-    if(map1Points.size() > map2Points.size())
+    //if(map1Points.size() > map2Points.size())
     {
       _groundTruthMap.copyTo(map1);
       _slamMap.copyTo(map2);
       _groundTruthObstaclePoints.insert(_groundTruthObstaclePoints.end(), map1Points.begin(), map1Points.end());
       _slamObstaclePoints.insert(_slamObstaclePoints.end(), map2Points.begin(), map2Points.end());
     }
-    else
-    {
-      _groundTruthMap.copyTo(map2);
-      _slamMap.copyTo(map1);
-    _groundTruthObstaclePoints.insert(_groundTruthObstaclePoints.end(), map2Points.begin(), map2Points.end());
-      _slamObstaclePoints.insert(_slamObstaclePoints.end(), map1Points.begin(), map1Points.end());
-    }
+ /*   else*/
+    //{
+      //_groundTruthMap.copyTo(map2);
+      //_slamMap.copyTo(map1);
+    //_groundTruthObstaclePoints.insert(_groundTruthObstaclePoints.end(), map2Points.begin(), map2Points.end());
+      //_slamObstaclePoints.insert(_slamObstaclePoints.end(), map1Points.begin(), map1Points.end());
+    /*}*/
  
-    ROS_INFO_STREAM("GROUND POINTS= " << _groundTruthObstaclePoints.size());
-    ROS_INFO_STREAM("SLAM POINTS= " << _slamObstaclePoints.size());
+  /*  ROS_INFO_STREAM("GROUND POINTS= " << _groundTruthObstaclePoints.size());*/
+    /*ROS_INFO_STREAM("SLAM POINTS= " << _slamObstaclePoints.size());*/
 
     if(params.closestPointMethod == "Brushfire")
     {
       _brushfire = new int*[map1.rows];
       for(int i = 0; i < map1.rows; i++)
         _brushfire[i] = new int[map1.cols];
-      _mapUtils.brushfireSearch(map1, _brushfire);
-      double dist = _mapUtils.meanBrushfireDistance(map1, _brushfire);
-      ROS_INFO("ERE");
+      _mapUtils->brushfireSearch(map1, _brushfire);
     }
 
     for (int i = 0; i < _slamObstaclePoints.size(); i++)
@@ -114,6 +113,7 @@ namespace feature_evaluation
     }
     _result = _result / _slamObstaclePoints.size();
  
+    //std::cout << "result(inside) " << _result << std::endl;
     if(params.closestPointMethod == "Brushfire")
     {
       for (int i = 0; i < map1.rows; i++)
@@ -181,7 +181,11 @@ namespace feature_evaluation
     return dst;
   }
 
-  sensor_msgs::Image OmseMetric::getMatchedImage()
+  sensor_msgs::Image OmseMetric::getInitialMatchedImage()
+  {
+
+  }
+  sensor_msgs::Image OmseMetric::getFinalMatchedImage()
   {
 
   }

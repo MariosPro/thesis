@@ -35,12 +35,15 @@ namespace feature_evaluation
     public:
       Alignment();
 
+      ~Alignment(){};
+
       void alignMaps(const ogm_communications::MapPose& _transform,
                      cv::Mat& _groundTruthMap,
                      cv::Mat& _slamMap);
 
       void ICP(const cv::Mat& target, const cv::Mat& reference, int iterations);
 
+      double RMSE(const cv::Mat& targetPointsMat, const cv::Mat& refPointsMat);
     private:
       MapUtils _mapUtils;
       
@@ -51,7 +54,6 @@ namespace feature_evaluation
       
       void applyTransformation(const cv::Mat& refPointsMat, cv::Mat& newRefPointsMat, const cv::Mat& transform);
 
-      double RMSE(const cv::Mat& targetPointsMat, const cv::Mat& refPointsMat);
   };
 }
 #endif

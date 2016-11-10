@@ -48,7 +48,11 @@ namespace feature_evaluation
   **/
   void FeatureMetrics::calculateMetric(Parameters params)
   {
-     _result = 0;
+     _result = std::numeric_limits<double>::max();
+     _inliers = 0;
+     _acceptance = 0;
+     _quality = 0;
+     _overlap = 0;
      cv::initModule_nonfree();
 
      cv::Mat slamMap, groundTruthMap;
@@ -59,17 +63,22 @@ namespace feature_evaluation
     if(params.gaussianBlur2)
       cv::GaussianBlur(slamMap, slamMap, cv::Size(params.gaussianKernel2, params.gaussianKernel2), 0, 0);
     if(params.medianBlur2)
-      cv::medianBlur(slamMap, slamMap, params.medianBlur2);
+      cv::medianBlur(slamMap, slamMap, params.medianKernel2);
     if(params.gaussianBlur1)
       cv::GaussianBlur(groundTruthMap, groundTruthMap, cv::Size(params.gaussianKernel1, params.gaussianKernel1), 0, 0 );
     if(params.medianBlur1)
-      cv::medianBlur(groundTruthMap, groundTruthMap, params.medianBlur1);
-
-     if(params.benchmarking)
+      cv::medianBlur(groundTruthMap, groundTruthMap, params.medianKernel1);
+    if(params.benchmarking)
      {
        _package_path = ros::package::getPath("ogm_server");
        _results_dir = _package_path + "/benchmarking_results/";
      }
+
+     if(params.morphologicalFiltering)
+    {
+       _mapUtils->morphologicalFiltering(_groundTruthMap);
+       _mapUtils->morphologicalFiltering(_slamMap);
+    }
 
      _featureDetector =  cv::FeatureDetector::create(params.detector);
 
@@ -80,11 +89,17 @@ namespace feature_evaluation
     if(params.descriptor == "ALL CUSTOMS")
     {
       _customDescriptorExtractor.reserve(3);
-      _customDescriptorExtractor.push_back(_descriptorFactory[0].create("RADIUS STATISTICS"));
-
+      _customDescriptorExtractor.push_back(_descriptorFactory[0].create("ANNULAR STATISTICS"));
       _customDescriptorExtractor.push_back(_descriptorFactory[1].create("CIRCLE INTERSECTIONS"));
-
       _customDescriptorExtractor.push_back(_descriptorFactory[2].create("MEAN RAYS"));
+    }
+
+    else if(params.descriptor == "ANNULAR+RAYS")
+    {
+      _customDescriptorExtractor.reserve(2);
+      _customDescriptorExtractor.push_back(_descriptorFactory[0].create("ANNULAR STATISTICS"));
+      _customDescriptorExtractor.push_back(_descriptorFactory[2].create("MEAN RAYS"));
+
     }
 
     else
@@ -97,42 +112,68 @@ namespace feature_evaluation
 
     //!< scale the two Maps
     double slamMeanDist, groundTruthMeanDist;
+   if(params.scaleMapsBrushfire)  
+   {
+      int** brushfire = new int*[groundTruthMap.rows];
+        for(int i = 0; i < groundTruthMap.rows; i++)
+          brushfire[i] = new int[groundTruthMap.cols];
 
-    int** brushfire = new int*[groundTruthMap.rows];
-      for(int i = 0; i < groundTruthMap.rows; i++)
-        brushfire[i] = new int[groundTruthMap.cols];
+      int** brushfire1 = new int*[slamMap.rows];
+        for(int i = 0; i < slamMap.rows; i++)
+          brushfire1[i] = new int[slamMap.cols];
 
-    int** brushfire1 = new int*[slamMap.rows];
-      for(int i = 0; i < slamMap.rows; i++)
-        brushfire1[i] = new int[slamMap.cols];
-
-    if(params.scaleMapsBrushfire)  
-    {
-      _mapUtils.brushfireSearch(_groundTruthMap, brushfire);
-      groundTruthMeanDist = _mapUtils.meanBrushfireDistance(_groundTruthMap, brushfire);
-      _mapUtils.brushfireSearch(_slamMap, brushfire1);
-      slamMeanDist = _mapUtils.meanBrushfireDistance(_slamMap, brushfire1);
+       _mapUtils->brushfireSearch(_groundTruthMap, brushfire);
+      groundTruthMeanDist = _mapUtils->meanBrushfireDistance(_groundTruthMap, brushfire);
+      _mapUtils->brushfireSearch(_slamMap, brushfire1);
+      slamMeanDist = _mapUtils->meanBrushfireDistance(_slamMap, brushfire1);
 
       double scalingFactor = groundTruthMeanDist / slamMeanDist;
 
-      // resize slam produced map using meanBrushfireDistance
-      cv::resize(_slamMap, _slamMap, cv::Size(), scalingFactor, scalingFactor, cv::INTER_NEAREST);
-      cv::resize(slamMap, slamMap, cv::Size(), scalingFactor, scalingFactor, cv::INTER_NEAREST);
+    for (int i = 0; i <groundTruthMap.rows; i++)
+        delete[] brushfire[i];
+      delete[] brushfire;
 
-      ROS_INFO_STREAM("SCALING FACTOR=" << scalingFactor);
-      std::cout << "SLAM AFTER RESIZE=" << slamMap.size() << std::endl;
+    std::cout << "delete1" << std::endl;
+   for (int i = 0; i <slamMap.rows; i++)
+        delete[] brushfire1[i];
+      delete[] brushfire1;
+
+    std::cout << "delete2" << std::endl;
+    // resize slam produced map using meanBrushfireDistance
+    cv::resize(_slamMap, _slamMap, cv::Size(), scalingFactor, scalingFactor, cv::INTER_NEAREST);
+    cv::resize(slamMap, slamMap, cv::Size(), scalingFactor, scalingFactor, cv::INTER_NEAREST);
+
+    ROS_INFO_STREAM("SCALING FACTOR=" << scalingFactor);
+    std::cout << "SLAM AFTER RESIZE=" << slamMap.size() << std::endl;
+
     }
 
-    //!< detect _slamKeypoints
+    //!< detect Keypoints
     _featureDetector->detect(groundTruthMap, _groundTruthKeypoints);
     _featureDetector->detect(slamMap, _slamKeypoints);
+    if(_slamKeypoints.size() == 0  || _groundTruthKeypoints.size() == 0)
+    {
+      ROS_WARN("No keypoints extracted in one or neither of maps");
+      return;
+    }
+
+  /*    float repeatability;*/
+    //int correspCount;
+    //cv::Mat H1to2;
+    //std::vector<cv::Point2f> srcPoints,refPoints;
+    //cv::KeyPoint::convert(_groundTruthKeypoints, srcPoints);
+    //cv::KeyPoint::convert(_slamKeypoints, refPoints);
+    //H1to2 = cv::findHomography( srcPoints, refPoints, CV_RANSAC, 1 );
+    //cv::evaluateFeatureDetector(groundTruthMap, slamMap, H1to2, &_groundTruthKeypoints, &_slamKeypoints, repeatability, correspCount, _featureDetector);
+    //std::cout<<"repeatability="<<repeatability<<" correspCount="<<correspCount<<" Keypoint 1st="
+             /*<<_groundTruthKeypoints.size()<<" Keypoint 2st=" <<_slamKeypoints.size() << std::endl;*/
 
     //!< extract Descriptors for each detected keypoint
     if(params.descriptor == "SIFT" || params.descriptor == "SURF" || params.descriptor == "BRIEF" ||
        params.descriptor == "BRISK" || params.descriptor == "FREAK" || params.descriptor == "ORB")
     {
-      _descriptorExtractor->compute(groundTruthMap, _groundTruthKeypoints, _groundTruthDescriptors);
-      _descriptorExtractor->compute(slamMap, _slamKeypoints, _slamDescriptors);
+      _descriptorExtractor->compute(_groundTruthMap, _groundTruthKeypoints, _groundTruthDescriptors);
+      _descriptorExtractor->compute(_slamMap, _slamKeypoints, _slamDescriptors);
     }
 
     else
@@ -142,16 +183,18 @@ namespace feature_evaluation
 
       for(int i = 0; i < _customDescriptorExtractor.size(); i++)
       {
-        _customDescriptorExtractor[i]->compute(slamMap, _slamKeypoints, &slamDescriptors[i]);
-        _customDescriptorExtractor[i]->compute(groundTruthMap, _groundTruthKeypoints, &groundTruthDescriptors[i]);
-        ROS_INFO_STREAM("SLAM DESCRIPTORS[" <<i<<"]="<<slamDescriptors[i].size());
+        _customDescriptorExtractor[i]->compute(_slamMap, _slamKeypoints, &slamDescriptors[i]);
+        _customDescriptorExtractor[i]->compute(_groundTruthMap, _groundTruthKeypoints, &groundTruthDescriptors[i]);
+        //ROS_INFO_STREAM("SLAM DESCRIPTORS[" <<i<<"]="<<slamDescriptors[i].size());
       }
 
       // Descriptors Concatenation
       cv::hconcat(slamDescriptors, _slamDescriptors);
       cv::hconcat(groundTruthDescriptors, _groundTruthDescriptors);
-   }
+      cv::normalize(_slamDescriptors, _slamDescriptors, 0, 1, cv::NORM_MINMAX, CV_32F);
+      cv::normalize(_groundTruthDescriptors, _groundTruthDescriptors, 0, 1, cv::NORM_MINMAX, CV_32F);
 
+   }
     std::vector<std::vector<cv::DMatch> > matches12, matches21, matches;
     std::vector<cv::DMatch> crossCheckedMatches;
     std::vector< cv::DMatch > filteredMatches;//, matches;
@@ -160,15 +203,21 @@ namespace feature_evaluation
     ROS_INFO_STREAM("SLAM DESCRIPTORS=" << _slamDescriptors.rows << " "  << _slamDescriptors.cols << " " << _slamDescriptors.type());
     ROS_INFO_STREAM("GROUND TRUTH KEYPOINTS= " << _groundTruthKeypoints.size());
     ROS_INFO_STREAM("GROUND TRUTH DESCRIPTORS=" << _groundTruthDescriptors.rows << " "  << _groundTruthDescriptors.cols << " " << _groundTruthDescriptors.type());
-    ROS_INFO_STREAM("MATCHING RATIO=" << _matchingRatio);
+    /*ROS_INFO_STREAM("MATCHING RATIO=" << _matchingRatio);*/
 
    //!< draw Keypoints
    cv::Mat img_keypoints_1, img_keypoints_2;
    cv::drawKeypoints( groundTruthMap, _groundTruthKeypoints, img_keypoints_1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
    cv::drawKeypoints( slamMap, _slamKeypoints, img_keypoints_2, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
-   imshow("Keypoints 1", img_keypoints_1);
-   imshow("Keypoints 2", img_keypoints_2);
-   cv::waitKey(1000);
+    if(!params.benchmarking)
+    {
+
+      imshow("Keypoints 1", img_keypoints_1);
+      imshow("Keypoints 2", img_keypoints_2);
+      cv::imwrite("/home/marios/keypoints1.png", img_keypoints_1);
+      cv::imwrite("/home/marios/keypoints2.png", img_keypoints_2);
+      cv::waitKey(1000);
+    }
 
     std::vector<cv::KeyPoint> slamMatchedKeyPoints, groundTruthMatchedKeyPoints;
     std::vector<cv::Point2f>  slamMatchedCoords, groundTruthMatchedCoords;
@@ -200,10 +249,14 @@ namespace feature_evaluation
     cv::drawMatches( slamMap, _slamKeypoints, groundTruthMap, _groundTruthKeypoints,
                    filteredMatches, imgmatches1, cv::Scalar::all(-1), cv::Scalar::all(-1));
 
+   _initialMatchedImage = imgmatches1.clone();
     //!< Show detected matches
-/*    imshow("Initial Matches", imgmatches1);*/
-    /*cv::waitKey(1000);*/
-
+    if(!params.benchmarking)
+    {
+      imshow("Initial Matches", imgmatches1);
+      cv::waitKey(1000);
+      //imwrite("/home/marios/wrongMatches.png", imgmatches1);
+    }
     std::vector<int> queryIdxs( filteredMatches.size() ), trainIdxs( filteredMatches.size() );
     for( size_t i = 0; i < filteredMatches.size(); i++ )
     {
@@ -250,23 +303,23 @@ namespace feature_evaluation
     /*}*/
 
 
-    ROS_INFO_STREAM("MATCHED KEYPOINTS=" << slamMatchedKeyPoints.size() << " " << groundTruthMatchedKeyPoints.size() << " " << filteredMatches.size());
-    ROS_INFO_STREAM("MATCHED COORDS=" << slamMatchedCoords.size() << " " << groundTruthMatchedCoords.size());
+ /*   ROS_INFO_STREAM("MATCHED KEYPOINTS=" << slamMatchedKeyPoints.size() << " " << groundTruthMatchedKeyPoints.size() << " " << filteredMatches.size());*/
+    /*ROS_INFO_STREAM("MATCHED COORDS=" << slamMatchedCoords.size() << " " << groundTruthMatchedCoords.size());*/
        //ROS_INFO_STREAM("MATCHED EVALUATED KEYPOINTS=" << evalfil1.size() << " " << evalfil2.size() << " " << evalmatches.size());
 
-    ROS_INFO_STREAM("MAX RANSAC REPROJECTION ERROR=" << params.ransacReprjError);
+    //ROS_INFO_STREAM("MAX RANSAC REPROJECTION ERROR=" << params.ransacReprjError);
 /*for (int i = 0; i < slamMatchedCoords.size(); i++){*/
       //std::cout << "coords " << slamMatchedCoords[i] << " " << groundTruthMatchedCoords[i] << " ";
       //std::cout << "keypoints " << slamMatchedKeyPoints[i].pt << " " << groundTruthMatchedKeyPoints[i].pt << " ";}
         /*std::cout << std::endl;*/
 
     std::vector<uchar> mask;
-    if(slamMatchedCoords.size() < 3)
+    if(slamMatchedCoords.size() < 2)
     {
-      ROS_WARN("affine transform needs at least 3 points to be computed");
+      ROS_WARN("similarity transform needs at least 2 points to be computed");
       return;
     }
-    double best_error;
+    //double best_error;
     cv::Mat T;
 
 /*    estimateTransform(groundTruthMatchedCoords, slamMatchedCoords,*/
@@ -280,9 +333,9 @@ namespace feature_evaluation
       return;
     }
 
-    std::cout << "ransac result=" << valid << std::endl; 
+ /*   std::cout << "ransac result=" << valid << std::endl; */
 
-    std::cout << "H = "<< std::endl << " "  << T << std::endl << std::endl;
+    /*std::cout << "H = "<< std::endl << " "  << T << std::endl << std::endl;*/
 
    if(T.empty() || std::count( mask.begin(), mask.end(), 1) < 2)
    {
@@ -290,24 +343,27 @@ namespace feature_evaluation
      return;
    }
 
-
-   std::cout << " RANSAC inliers = " << std::accumulate(mask.begin(), mask.end(), 0) << std::endl;
- /*  std::vector<cv::Point2f> inliersCoords1, inliersCoords2;*/
-   //for (int i = 0; i < mask.size(); i++)
-   //{
-     //if((int)mask[i] == 1)
-     //{
+   //std::cout << " RANSAC inliers = " <<  std::accumulate(mask.begin(), mask.end(), 0) << std::endl;
+   //std::vector<cv::Point2f> inliersCoords1, inliersCoords2;
+   int inliers = 0;
+   for (int i = 0; i < mask.size(); i++)
+   {
+     if((int)mask[i] == 1)
+     {
+       inliers++;
        //inliersCoords1.push_back(slamMatchedCoords[i]);
        //inliersCoords2.push_back(groundTruthMatchedCoords[i]);
-     //}
-   /*}*/
+     }
+   }
+
+   _inliers = inliers;
   
    //!< draw matches
    cv::drawMatches( slamMap, _slamKeypoints, groundTruthMap, _groundTruthKeypoints,
                    filteredMatches, imgmatches, cv::Scalar::all(-1), cv::Scalar::all(-1),
                    reinterpret_cast<const std::vector<char>&> (mask), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
    
-   _matchedImage = imgmatches.clone();
+   _finalMatchedImage = imgmatches.clone();
     ////-- Show detected matches
     if(!params.benchmarking)
     {
@@ -318,7 +374,7 @@ namespace feature_evaluation
    cv::Mat image(_slamMap.size(), _slamMap.type());
    cv::Mat image1(_slamMap.size(), _slamMap.type(), cv::Scalar(127));
    //image1 = _slamMap;
-   std::cout << "H.type=" << T.type() << std::endl;
+   //std::cout << "T.type=" << T.type() << std::endl;
 
    cv::warpAffine(_groundTruthMap, image, T, image.size(), cv::INTER_NEAREST, IPL_BORDER_CONSTANT, cv::Scalar::all(127));
     
@@ -330,64 +386,153 @@ namespace feature_evaluation
   vertices.push_back(cv::Point2f(s.width-1, s.height-1));
   vertices.push_back(cv::Point2f(s.width-1, 0));
   cv::transform(vertices, vertices, T);
-  cv::RotatedRect rotatedRect = cv::minAreaRect(vertices);
-  cv::Mat maskImage = cv::Mat(image.size(), CV_8U, cv::Scalar(0));
-  for(int i = 0; i < image.rows; ++i)
+  double tWidth = cv::norm(vertices[0]-vertices[3]);
+  double tHeight = cv::norm(vertices[0]-vertices[1]);
+  //std::cout << tWidth << " " << tHeight << std::endl;
+  if(tWidth > 10000 && tHeight > 10000)
   {
-      for(int j = 0; j < image.cols; ++j)
-      {
-          cv::Point p = cv::Point(j,i);   // pay attention to the cordination
-          if(_mapUtils.isInROI(p,vertices))
-          {
-              maskImage.at<uchar>(i,j) = 255;
-          }
-      }
-  }   
+    ROS_WARN("Too large transformed image");
+    return;
+  }
+
+
+/*  for (int i =0; i < vertices.size(); i++)*/
+  /*std::cout << vertices[i] << std::endl;*/
+  cv::Mat maskImage = cv::Mat(image.size(), CV_8U, cv::Scalar(0));
  
+  std::vector< std::vector<cv::Point> >  co_ordinates;
+  co_ordinates.push_back(std::vector<cv::Point>());
+  co_ordinates[0].push_back(vertices[0]);
+  co_ordinates[0].push_back(vertices[1]);
+  co_ordinates[0].push_back(vertices[2]);
+  co_ordinates[0].push_back(vertices[3]);
+  cv::drawContours(maskImage,co_ordinates, 0, cv::Scalar(255),CV_FILLED, 8);
+  int nonzero = cv::countNonZero(image);
+  double  obstaclePercentage = 1.0 - (double) nonzero/image.total();
+  if(cv::countNonZero(maskImage) == 0 || nonzero == 0 || obstaclePercentage > 0.30)
+  {
+    ROS_WARN("SOMETHING WENT WRONG");
+    return;
+  }
+  //_slamMap.copyTo(image1,maskImage);                                                
+
    for (int i = 0; i < image1.rows; i++)
      for (int j = 0; j < image1.cols; j++)
-      //if(maskImage.at<unsigned char>(i, j) == 255)
-        image1.at<unsigned char>(i, j) = _slamMap.at<unsigned char>(i, j);
-  if(!params.benchmarking)
+      if(maskImage.at<unsigned char>(i, j) == 255)
+        if(image.at<unsigned char>(i, j) == 0 || image.at<unsigned char>(i,j) ==255 )
+          image1.at<unsigned char>(i, j) = _slamMap.at<unsigned char>(i, j);
+  
+  /* double mse1, mse2;*/
+   //mse1 = getMSE(image1, image);
+   //mse2 = getMSE(_slamMap, image);
+
+   //double overlapError = 1 - (mse1/mse2);
+
+   /*std::cout <<  " overlapError= " << overlapError << std::endl;  */
+  
+    int agr,dis;
+    agreement(image, image1, agr, dis);
+    //std::cout << "agr=" << agr << " dis=" <<  dis << std::endl;
+    _acceptance = 1.0 - dis / (double)(agr + dis);
+    //std::cout << "Acceptance=" << _acceptance << std::endl;
+if(!params.benchmarking)
   {
     cv::imshow("GroundTruthMap Transformed", image);
-    cv::imshow ("SLamMap Cropped", image1);
+    cv::imshow ("SLamMap Overlapped", image1);
+    cv::imshow("MaskImage", maskImage);
     cv::waitKey(1000);
   }
-    std::cout << "image1 type " << image1.type() << " " << image1.channels() <<  " " << image1.size() << std::endl;
-    std::cout << "image type " << image.type() << " " << image.channels() <<  " " << image.size() << std::endl;
+  /*  std::cout << "image1 type " << image1.type() << " " << image1.channels() <<  " " << image1.size() << std::endl;*/
+    //std::cout << "image type " << image.type() << " " << image.channels() <<  " " << image.size() << std::endl;
 
-    //!< compute OMSE metric only on overlapping regions
-    _omseMetric =  new OmseMetric(image, image1);
+    //!< compute OMSE metric 
+    _omseMetric.reset(new OmseMetric(image, image1));
     params.closestPointMethod = "Brushfire";
     _omseMetric->calculateMetric(params);
- 
-     
-    //!< blend slamMap onto the transformed groundTruthMap
-    addWeighted(image, .5, slamMap, .5, 0.0, image);
-     std::cout << "image type " << image.type() << " " << image.channels() << std::endl;
+    double omse1 = _omseMetric->getResult();
+    //std::cout << omse1 << std::endl;
+   if(omse1 == std::numeric_limits<double>::max())
+  {
+    ROS_WARN("SOMETHING WENT WRONG");
+    return;
+  }
 
-    _mergedImage = image.clone();
+
+/*    _omseMetric.reset(new OmseMetric(image, _slamMap));*/
+    //params.closestPointMethod = "Brushfire";
+    //_omseMetric->calculateMetric(params);
+    //double omse2 = _omseMetric->getResult();
+
+    //_omseMetric.reset(new OmseMetric(image1, image));
+    //params.closestPointMethod = "Brushfire";
+    //_omseMetric->calculateMetric(params);
+    //double omse3 = _omseMetric->getResult();
+
+    _quality = std::exp(-(3/std::sqrt(tWidth*tWidth+tHeight*tHeight)* omse1));
+    //double quality2 = std::exp(-(3/std::sqrt(tWidth*tWidth+tHeight*tHeight)* omse3));
+    //std::cout << "OMSE=" << omse2 << std::endl;
+    //std::cout << "only overlap region OMSE(map1-map2)=" << omse1 << std::endl;
+    //std::cout << "only overlap region OMSE(map2-map1)=" << omse3 << std::endl;
+    //std::cout << "quality1=  " << _quality << std::endl;
+    //std::cout << "quality2=  " << quality2 << std::endl;
+    //double overlapOMSE = 1 - (omse1 / omse2);
+
+    // stich,merge blend images computing optimal size
+    cv::Mat mergedImage = merge_images(T, vertices);
+
+    cv::Mat usefulMergedImage = cv::Mat(image.size(), image.type());
+    addWeighted(image, .5, image1, .5, 0.0, usefulMergedImage);
+ /*   cv::imshow("usefulMergedImage", usefulMergedImage);*/
+    /*cv::waitKey(1000);*/
+    double overlapped = 0;
+    double overlapped1 = 0;
+    double overlapped2 = 0;
+
+    for (int i = 0; i < usefulMergedImage.rows; i++)
+      for (int j = 0; j < usefulMergedImage.cols; j++)
+      {
+        if(usefulMergedImage.at<uchar>(i,j) == 0 || usefulMergedImage.at<uchar>(i,j) == 255)
+          overlapped++;
+      }
+
+    for (int i = 0; i < _groundTruthMap.rows; i++)
+      for (int j = 0; j < _groundTruthMap.cols; j++)
+      {
+        if(_groundTruthMap.at<uchar>(i,j) == 0 || _groundTruthMap.at<uchar>(i,j) == 255)
+          overlapped1++;
+      }
+
+    for (int i = 0; i < _slamMap.rows; i++)
+      for (int j = 0; j < _slamMap.cols; j++)
+      {
+        if(_slamMap.at<uchar>(i,j) == 0 || _slamMap.at<uchar>(i,j) == 255)
+          overlapped2++;
+      }
+
+       _overlap = overlapped / (overlapped1 + overlapped2 -overlapped) * 100;
+    //std::cout << " Overlapping Area = " <<  _overlap << std::endl;
+
+    _mergedImage = mergedImage.clone();
     if(!params.benchmarking)
     {
-      cv::imshow("MergedImage", image);
+      cv::imshow("MergedImage", mergedImage);
       cv::waitKey(1000);
     }
 
-    std::cout << mask.size() << std::endl;
-    int counter = 0;
-    for( int i = 0; i < filteredMatches.size(); i++ )
-    {
-      //std::cout << (int)mask[i]<<std::endl;
-      if( int(mask[i]) == 1)
-      {
- /*     ROS_INFO( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  --Distance %f  \n", i, filteredMatches[i].queryIdx, filteredMatches[i].trainIdx, filteredMatches[i].distance );*/
-      /*counter++;*/
-      }
-    }
+    //std::cout << mask.size() << std::endl;
+  /*  int counter = 0;*/
+    //for( int i = 0; i < filteredMatches.size(); i++ )
+    //{
+      ////std::cout << (int)mask[i]<<std::endl;
+      //if( int(mask[i]) == 1)
+      //{
+ //[>     ROS_INFO( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  --Distance %f  \n", i, filteredMatches[i].queryIdx, filteredMatches[i].trainIdx, filteredMatches[i].distance );<]
+      //[>counter++;<]
+      //}
+    /*}*/
 
-    std::cout << counter << std::endl;
-    _result = _omseMetric->getResult();
+    //std::cout << counter << std::endl;
+    _result = omse1;//_omseMetric->getResult();
     //_result = 0;
 }
 
@@ -466,7 +611,110 @@ void FeatureMetrics::knnMatching(const cv::Mat& descriptors1,
     }
 }
 
+double FeatureMetrics::getMSE(const cv::Mat& image1, const cv::Mat& image)
+{
+    cv::Mat m1, m2, s1;
+    image1.copyTo(m1);
+    image.copyTo(m2);
+    cv::absdiff(m1, m2, s1);       // |I1 - I2|
+    s1.convertTo(s1, CV_32F);  // cannot make a square on 8 bits
+    s1 = s1.mul(s1);           // |I1 - I2|^2
 
+    cv::Scalar sum = cv::sum(s1);        // sum elements per channel
+
+    double sse = sum.val[0] + sum.val[1] + sum.val[2]; // sum channels
+
+    double mse  = sse / (double)(m1.channels() * m1.total());
+
+    printf("mse = %f", mse);  
+
+    return mse;
+}
+
+void FeatureMetrics::agreement(const cv::Mat& image, const cv::Mat&image1, int& agr, int& dis)
+{
+  int a,d;
+  a = d = 0;
+  for(int i = 0; i < image.rows; i++)
+    for(int j  = 0; j < image.cols; j++)
+    {
+      if(image.at<uchar>(i,j) == 255 && image1.at<uchar>(i,j) == 255)
+      {
+        a++;
+      }
+  
+      if(image.at<uchar>(i,j) == 0 && image1.at<uchar>(i,j) == 0)
+      {
+        a++;
+      }
+
+      if(image.at<uchar>(i,j) == 0 && image1.at<uchar>(i,j) == 255)
+      {
+        d++;
+      }
+  
+      if(image.at<uchar>(i,j) == 255 && image1.at<uchar>(i,j) == 0)
+      {
+        d++;
+      }
+      agr = a;
+      dis = d;
+
+    }
+
+}
+
+cv::Mat FeatureMetrics::merge_images(const cv::Mat& T,std::vector<cv::Point2f> vertices)
+{
+  double offsetX = 0.0;
+  double offsetY = 0.0;
+  //Get max offset outside of the image
+  for(size_t i = 0; i < 4; i++) {
+    if(vertices[i].x < offsetX) {
+      offsetX = vertices[i].x;
+    }
+
+    if(vertices[i].y < offsetY) {
+      offsetY = vertices[i].y;
+    }
+  }
+
+  offsetX = -offsetX;
+  offsetY = -offsetY;
+  //std::cout << "offsetX=" << offsetX << " ; offsetY=" << offsetY << std::endl;
+
+  //Get max width and height for the new size of the panorama
+  double maxX = std::max((double) _slamMap.cols+offsetX, (double) std::max(vertices[2].x, vertices[3].x)+offsetX);
+  double maxY = std::max((double) _slamMap.rows+offsetY, (double) std::max(vertices[1].y, vertices[3].y)+offsetY);
+  //std::cout << "maxX=" << maxX << " ; maxY=" << maxY << std::endl;
+
+  cv::Size size_warp(maxX, maxY);
+  cv::Mat panorama(size_warp, _slamMap.type());
+  cv::Mat panorama1(size_warp, _slamMap.type(), cv::Scalar(127));
+
+
+  //Create the transformation matrix to be able to have all the pixels
+  //cv::Mat H2 = cv::Mat::eye(2, 3, CV_64F);
+  cv::Mat T1= cv::Mat(2,3, T.type());
+  T.copyTo(T1);
+  T1.at<double>(0,2) = T1.at<double>(0,2) + offsetX;
+  T1.at<double>(1,2) = T1.at<double>(1,2) + offsetY;
+
+  cv::warpAffine(_groundTruthMap, panorama, T1, size_warp, cv::INTER_NEAREST, IPL_BORDER_CONSTANT, cv::Scalar::all(127));
+
+  for (int i = 0; i < _slamMap.rows; i++)
+    for( int j = 0; j < _slamMap.cols; j++)
+      panorama1.at<uchar>(i+offsetY, j+offsetX) = _slamMap.at<uchar>(i,j);
+/*  if(!params.benchmarking)*/
+  //{
+    //cv::imshow("panorama", panorama);
+    //cv::imshow("panorama1", panorama1);
+    //cv::waitKey(1000);
+  /*}*/
+  addWeighted(panorama1, .5, panorama, .5, 0.0, panorama1);
+
+  return panorama1;
+}
 void FeatureMetrics::estimateTransform(const std::vector<cv::Point2f>& coords1, const std::vector<cv::Point2f>& coords2,
                        int nIters, double thresh, int minNpoints,
                        std::vector<uchar>& inliers,
@@ -565,12 +813,24 @@ void FeatureMetrics::estimateTransform(const std::vector<cv::Point2f>& coords1, 
 
 }
 
-  sensor_msgs::Image FeatureMetrics::getMatchedImage()
+  sensor_msgs::Image FeatureMetrics::getInitialMatchedImage()
   {
     cv_bridge::CvImage out_msg;
     sensor_msgs::Image temp;
-    out_msg.image = _matchedImage;
-    std::cout << _matchedImage.type() << " " << _matchedImage.channels() << std::endl;
+    out_msg.image = _initialMatchedImage;
+    out_msg.encoding = sensor_msgs::image_encodings::BGR8;
+    //std::cout << _initialMatchedImage.type() << " " << _initialMatchedImage.channels() << std::endl;
+    out_msg.toImageMsg(temp);
+    return temp;
+  }
+ 
+   sensor_msgs::Image FeatureMetrics::getFinalMatchedImage()
+  {
+    cv_bridge::CvImage out_msg;
+    sensor_msgs::Image temp;
+    out_msg.image = _finalMatchedImage;
+    out_msg.encoding = sensor_msgs::image_encodings::BGR8;
+    //std::cout << _finalMatchedImage.type() << " " << _finalMatchedImage.channels() << std::endl;
     out_msg.toImageMsg(temp);
     return temp;
   }
@@ -580,7 +840,8 @@ void FeatureMetrics::estimateTransform(const std::vector<cv::Point2f>& coords1, 
     cv_bridge::CvImage out_msg;
     sensor_msgs::Image temp;
     out_msg.image = _mergedImage;
-    std::cout << _mergedImage.type() << " " << _mergedImage.channels() << std::endl;
+    out_msg.encoding = sensor_msgs::image_encodings::MONO8;
+    //std::cout << _mergedImage.type() << " " << _mergedImage.channels() << std::endl;
     out_msg.toImageMsg(temp);
     return temp;
   }

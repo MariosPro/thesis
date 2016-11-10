@@ -31,19 +31,19 @@ namespace feature_evaluation
    * @oaram slamMap [const cv::Mat&] the slam map
    * that will be used.
    */
-  Metric* MetricFactory::createMetricInstance(std::string name, 
+  boost::shared_ptr<Metric> MetricFactory::createMetricInstance(std::string name, 
                                               const cv::Mat& groundTruthMap,
                                               const cv::Mat& slamMap)
   {
-    if (name == "OMSE") return new OmseMetric(groundTruthMap, slamMap);
-    else if (name == "FEATURES") return new FeatureMetrics(groundTruthMap, slamMap);
+    if (name == "OMSE") return boost::shared_ptr<Metric>(new OmseMetric(groundTruthMap, slamMap));
+    else if (name == "FEATURES") return boost::shared_ptr<Metric>(new FeatureMetrics(groundTruthMap, slamMap));
 
     else
       {
         ROS_FATAL_STREAM("[feature_evaluation]: Invalid metric method!"
             << " Detection cannot continue!");
-        return NULL;
+        return boost::shared_ptr<Metric>();
       }
-      return NULL;
+      return boost::shared_ptr<Metric>();
   }
 }  // namespace feature_evaluation

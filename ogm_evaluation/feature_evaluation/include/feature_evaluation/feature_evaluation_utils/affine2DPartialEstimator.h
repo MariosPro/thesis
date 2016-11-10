@@ -34,7 +34,7 @@ class Affine2DPartialEstimator
 {
 public:
   Affine2DPartialEstimator(double _threshold, double _confidence, int _modelPoints, int _maxIters);
-  
+  ~Affine2DPartialEstimator(){};
   int runKernel(cv::InputArray _m1, cv::InputArray _m2, 
                 cv::OutputArray _model);
 

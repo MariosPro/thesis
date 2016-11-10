@@ -41,10 +41,16 @@ namespace feature_evaluation
        MetricFactory()
        {
        };
-
-       Metric* createMetricInstance(std::string name,
+      
+      virtual ~MetricFactory()
+      {
+        std::cout << "destroying Metric Factory instance" << std::endl;
+      };
+      boost::shared_ptr<Metric> createMetricInstance(std::string name,
                                     const cv::Mat& groundTruthMap,
                                     const cv::Mat& slamMap);
+
+
    };
 }
 #endif

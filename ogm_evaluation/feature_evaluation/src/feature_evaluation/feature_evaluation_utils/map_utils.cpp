@@ -28,7 +28,6 @@ namespace feature_evaluation
   **/
   MapUtils::MapUtils()
   {
-
   }
   
   /**
@@ -101,6 +100,21 @@ namespace feature_evaluation
       }
     return sum/frees;
   }
+
+  int MapUtils::maxBrushfireDistance(const cv::Mat& map, int** brushfire)
+  {
+    int max = 0;
+    for (int i = 0; i < map.rows; i++)
+      for (int j = 0;  j < map.cols; j++)
+      {
+        if(max < brushfire[i][j])
+        {
+          max = brushfire[i][j];
+        }
+      }
+    return max;
+
+  }
   /** decide whether point p is in the ROI.
   *** The ROI is a rotated rectangle whose 4 corners are stored in roi[] 
   **/
@@ -128,5 +142,79 @@ namespace feature_evaluation
       double k = (a.y-b.y) / (a.x-b.x);
       double j = a.y - k*a.x;
       return k*p.x - p.y + j;
+  }
+
+  void MapUtils::findUsefulBoundaries(cv::Mat& map)
+  {
+    int largest_area=0;
+    int largest_contour_index=0;
+    cv::Rect bounding_rect;
+
+    cv::Mat thr(map.rows, map.cols,CV_8UC1); 
+    cv::Mat dst(map.rows, map.cols, CV_8UC1, cv::Scalar::all(0));
+    cv::threshold(map, thr, 127, 255, CV_THRESH_TOZERO); //Threshold the unknown
+
+    std::vector<std::vector<cv::Point> > contours; // Vector for storing contour
+    std::vector<cv::Vec4i> hierarchy;
+
+      findContours(thr, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE ); // Find the contours in the image
+     
+       for( int i = 0; i< contours.size(); i++ ) // iterate through each contour. 
+        {
+           double a= cv::contourArea( contours[i],false);  //  Find the area of contour
+           if(a > largest_area)
+           {
+             largest_area = a;
+             largest_contour_index = i;                //Store the index of largest contour
+              bounding_rect = cv::boundingRect(contours[i]); // Find the bounding rectangle for biggest contour
+           }
+        }
+
+  /*  cv::Scalar color( 255,255,255);*/
+    /*cv::drawContours( dst, contours,largest_contour_index, color, CV_FILLED, 8, hierarchy ); // Draw the largest contour using previously stored index.*/
+
+       int padding = 10;
+       cv::Rect paddingRect = cv::Rect(bounding_rect.x - padding, bounding_rect.y - padding, bounding_rect.width + (padding * 2), bounding_rect.height + (padding * 2));
+
+    cv::Rect mapRect = cv::Rect(0, 0, map.cols, map.rows);
+    // rect that contains all that is in BOTH rects:
+    cv::Rect fittingRect = paddingRect & mapRect;
+    map = cv::Mat(map, fittingRect);
+    /*imshow( "src", map );*/
+    //imshow( "largest Contour", dst );
+    /*cv::waitKey(0);*/
+  }
+  void MapUtils::morphologicalFiltering(cv::Mat& src)
+  {
+    // Create a structuring element (SE)
+    int morph_size = 2;
+    cv::Mat element = getStructuringElement( cv::MORPH_RECT, cv::Size( 2*morph_size + 1, 2*morph_size+1 ), cv::Point( morph_size, morph_size ) );
+  
+    cv::Mat thr;
+    src.copyTo(thr);
+      for (int i = 0; i < thr.rows; i++)
+        for (int j = 0; j < thr.cols; j++)
+          if(thr.at<uchar>(i, j) == 0)
+            thr.at<uchar>(i, j) = 255;
+
+     for (int i = 0; i < thr.rows; i++)
+        for (int j = 0; j < thr.cols; j++)
+          if(thr.at<uchar>(i, j) < 255)
+            thr.at<uchar>(i, j) = 0;
+
+     cv::Mat dst; // result matrix
+     cv::morphologyEx( thr, dst, cv::MORPH_CLOSE, element, cv::Point(-1,-1), 1 );   
+    for (int i = 0; i < dst.rows; i++)
+        for (int j = 0; j < dst.cols; j++)
+          if(dst.at<uchar>(i, j) == 0)
+            dst.at<uchar>(i, j) = 127;
+  for (int i = 0; i < dst.rows; i++)
+        for (int j = 0; j < dst.cols; j++)
+          if(src.at<uchar>(i, j) == 127 && dst.at<uchar>(i,j)!=127)
+            src.at<uchar>(i, j) = 255;
+
+  /*  imshow("source", src);*/
+    //imshow("result", dst);
+    /*cv::waitKey(0);*/
   }
 }  // namespace feature_evaluation

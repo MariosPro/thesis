@@ -76,6 +76,7 @@ namespace feature_evaluation
       **/
       virtual ~FeatureMetrics(void) 
       {
+        //std::cout  << "Destroying Feature metric" << std::endl;
       }
 
       /**
@@ -108,8 +109,16 @@ namespace feature_evaluation
                             int nIters, double thresh, int minNpoints,
                             std::vector<uchar>& inliers,
                             cv::Mat& best_model, double& best_error);
+      double getMSE(const cv::Mat& image1, const cv::Mat& image);
+      
+      void agreement(const cv::Mat& image, const cv::Mat&image1, int& agr, int& dis);
+      
+      cv::Mat merge_images(const cv::Mat& T,std::vector<cv::Point2f> vertices);
 
-      sensor_msgs::Image getMatchedImage();
+
+      sensor_msgs::Image getInitialMatchedImage();
+      
+      sensor_msgs::Image getFinalMatchedImage();
 
       sensor_msgs::Image getMergedImage();
 
@@ -174,11 +183,11 @@ namespace feature_evaluation
 
      std::vector<cv::Point2f>  coord1,coord2;
 
-     Metric* _omseMetric;
+     boost::shared_ptr<Metric> _omseMetric;
 
      Alignment _alignment;
 
-     MapUtils _mapUtils;
+     MapUtils* _mapUtils;
 
      ogm_communications::MapPose _transform;
 
@@ -188,8 +197,10 @@ namespace feature_evaluation
 
      std::string _results_dir;
 
-     cv::Mat _matchedImage;
-     
+     cv::Mat _initialMatchedImage;
+      
+     cv::Mat _finalMatchedImage;
+
      cv::Mat _mergedImage;
   };
 }

@@ -59,7 +59,8 @@ namespace feature_evaluation
       **/
       virtual ~OmseMetric(void) 
       {
-      }
+        //std::cout  << "Destroying OMSE metric" << std::endl;
+      };
 
       /**
       @brief calculate the obstacle metric.
@@ -91,7 +92,9 @@ namespace feature_evaluation
       **/
       double calculateDistance(cv::Point p1, cv::Point p2, std::string distNorm);
 
-      sensor_msgs::Image getMatchedImage();
+      sensor_msgs::Image getInitialMatchedImage();
+
+      sensor_msgs::Image getFinalMatchedImage();
 
       sensor_msgs::Image getMergedImage();
 
@@ -115,7 +118,7 @@ namespace feature_evaluation
       int **_brushfire;
 
       //!< the MapUtils instance
-      MapUtils _mapUtils;
+      MapUtils* _mapUtils;
       
       //!< the Alignment instance
       Alignment _alignment;

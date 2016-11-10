@@ -51,13 +51,21 @@ namespace feature_evaluation
       @brief Default destructor
       @return void
       **/ 
-      virtual ~Metric(void) 
-      {
-      }
-      
+      virtual ~Metric(void);
+           
       double getResult();
 
-      virtual sensor_msgs::Image getMatchedImage() = 0;
+      double getAcceptance();
+
+      int getMatches();
+
+      double getQuality();
+
+      double getOverlap();
+
+      virtual sensor_msgs::Image getInitialMatchedImage() = 0;
+      
+      virtual sensor_msgs::Image getFinalMatchedImage() = 0;
 
       virtual sensor_msgs::Image getMergedImage() = 0;
 
@@ -83,6 +91,15 @@ namespace feature_evaluation
       //!< the metric result
       double _result;
 
+      double _acceptance;
+
+      double _quality;
+
+      double _overlap;
+
+      int _inliers;
+
+  typedef boost::shared_ptr<Metric> MetricPtr;
   };
 }
 #endif
