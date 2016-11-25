@@ -80,7 +80,7 @@ namespace feature_evaluation
     _params.scaleMapsBrushfire = req.scaleMapsBrushfire;
     _params.binary = req.binary;
     _params.manualAlignment = req.manualAlignment;
-    _params.benchmarking = false;
+    _params.benchmarking = true;
     _params.morphologicalFiltering = req.morphologicalFiltering;
     _params.gaussianBlur1 = req.gaussianBlur1;
     _params.gaussianBlur2 = req.gaussianBlur2;
@@ -107,6 +107,7 @@ namespace feature_evaluation
     //std::cout << "result" << res.result << std::endl;
     if(req.method == "FEATURES")
     {
+      res.featuresImage = _metric->getFeaturesImage();
       res.initialMatchedImage = _metric->getInitialMatchedImage();
       res.finalMatchedImage = _metric->getFinalMatchedImage();
       res.mergedImage = _metric->getMergedImage();

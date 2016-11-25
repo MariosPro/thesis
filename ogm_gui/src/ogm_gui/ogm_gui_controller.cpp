@@ -147,11 +147,11 @@ namespace ogm_gui
   void CGuiController::setupWidgets(void)
   {
       gui_connector_.addToGrid(validation_connector_.getLoader(), 0, 0, 0, 0);
-      
+
       initial_slam_map_ = slam_map_ = QImage((
         ogm_gui_tools::getRosPackagePath("ogm_resources") +
         std::string("/maps/slam_final_1.png")).c_str());
- 
+
       initial_map_ = running_map_ = QImage((
         ogm_gui_tools::getRosPackagePath("ogm_resources") +
         std::string("/maps/slam_env_1.png")).c_str());
@@ -543,17 +543,17 @@ namespace ogm_gui
       {
         QImage initialMatchingImage( &srv.response.initialMatchedImage.data[0], srv.response.initialMatchedImage.width,
             srv.response.initialMatchedImage.height, srv.response.initialMatchedImage.step, QImage::Format_RGB888);
-        QImage temp = initialMatchingImage;
         QImage finalMatchingImage( &srv.response.finalMatchedImage.data[0], srv.response.finalMatchedImage.width,
             srv.response.finalMatchedImage.height, srv.response.finalMatchedImage.step, QImage::Format_RGB888);
-        QImage temp2 = finalMatchingImage;
         QImage mergedImage( &srv.response.mergedImage.data[0], srv.response.mergedImage.width,
             srv.response.mergedImage.height, srv.response.mergedImage.step, QImage::Format_Indexed8);
-        QImage temp1 = mergedImage;
-        
-        map_connector_.displayInitialMatchingImage(&temp);
-        map_connector_.displayFinalMatchingImage(&temp2);
-        map_connector_.displayMergedImage(&temp1);
+        QImage featuresImage( &srv.response.featuresImage.data[0], srv.response.featuresImage.width,
+            srv.response.featuresImage.height, srv.response.featuresImage.step, QImage::Format_RGB888);
+
+        map_connector_.displayFeaturesImage(&featuresImage);
+        map_connector_.displayInitialMatchingImage(&initialMatchingImage);
+        map_connector_.displayFinalMatchingImage(&finalMatchingImage);
+        map_connector_.displayMergedImage(&mergedImage);
       }
     }
     else

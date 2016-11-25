@@ -115,6 +115,7 @@ namespace feature_evaluation
       
       cv::Mat merge_images(const cv::Mat& T,std::vector<cv::Point2f> vertices);
 
+      sensor_msgs::Image getFeaturesImage();
 
       sensor_msgs::Image getInitialMatchedImage();
       
@@ -198,6 +199,8 @@ namespace feature_evaluation
      std::string _results_dir;
 
      cv::Mat _initialMatchedImage;
+
+     cv::Mat _featuresImage;
       
      cv::Mat _finalMatchedImage;
 

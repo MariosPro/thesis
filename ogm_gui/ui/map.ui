@@ -32,6 +32,11 @@
      </item>
      <item>
       <property name="text">
+       <string>Features</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
        <string>Initial Feature Matching</string>
       </property>
      </item>
@@ -79,6 +84,36 @@
          <width>0</width>
          <height>0</height>
         </size>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="features">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <widget class="QLabel" name="featuresLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>361</width>
+         <height>211</height>
+        </rect>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </widget>

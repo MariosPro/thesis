@@ -92,6 +92,8 @@ namespace feature_evaluation
       **/
       double calculateDistance(cv::Point p1, cv::Point p2, std::string distNorm);
 
+      sensor_msgs::Image getFeaturesImage();
+
       sensor_msgs::Image getInitialMatchedImage();
 
       sensor_msgs::Image getFinalMatchedImage();

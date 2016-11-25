@@ -112,6 +112,11 @@ namespace ogm_gui{
     loader_.setMapTransparency(t);
     Q_EMIT mapTransparencyChanged(t);
   }
+ 
+  void CMapConnector::displayFeaturesImage(QImage* img)
+  {
+    loader_.displayFeaturesImage(img);
+  }
 
   void CMapConnector::displayInitialMatchingImage(QImage* img)
   {

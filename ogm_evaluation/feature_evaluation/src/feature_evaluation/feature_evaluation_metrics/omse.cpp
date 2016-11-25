@@ -180,6 +180,10 @@ namespace feature_evaluation
     }
     return dst;
   }
+  sensor_msgs::Image OmseMetric::getFeaturesImage()
+  {
+
+  }
 
   sensor_msgs::Image OmseMetric::getInitialMatchedImage()
   {

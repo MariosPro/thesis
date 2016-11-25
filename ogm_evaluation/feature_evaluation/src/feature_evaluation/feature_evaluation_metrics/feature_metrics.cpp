@@ -209,6 +209,21 @@ namespace feature_evaluation
    cv::Mat img_keypoints_1, img_keypoints_2;
    cv::drawKeypoints( groundTruthMap, _groundTruthKeypoints, img_keypoints_1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
    cv::drawKeypoints( slamMap, _slamKeypoints, img_keypoints_2, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
+   
+   if (img_keypoints_1.rows > img_keypoints_2.rows)
+   {
+     _featuresImage= cv::Mat(img_keypoints_1.rows, img_keypoints_1.cols + img_keypoints_2.cols, img_keypoints_1.type());
+     img_keypoints_1.copyTo(_featuresImage(cv::Rect(0, 0, img_keypoints_1.cols, img_keypoints_1.rows)));
+     img_keypoints_2.copyTo(_featuresImage(cv::Rect(img_keypoints_1.cols, 0, img_keypoints_2.cols, img_keypoints_2.rows)));
+   }
+
+   else
+   {
+     _featuresImage = cv::Mat(img_keypoints_2.rows, img_keypoints_1.cols + img_keypoints_2.cols, img_keypoints_2.type());
+     img_keypoints_2.copyTo(_featuresImage(cv::Rect(0, 0, img_keypoints_2.cols, img_keypoints_2.rows)));
+     img_keypoints_1.copyTo(_featuresImage(cv::Rect(img_keypoints_2.cols, 0, img_keypoints_1.cols, img_keypoints_1.rows)));
+   }
+
     if(!params.benchmarking)
     {
 
@@ -382,12 +397,12 @@ namespace feature_evaluation
   cv::Size s = _groundTruthMap.size();
   std::vector<cv::Point2f> vertices;
   vertices.push_back(cv::Point2f(0, 0));
-  vertices.push_back(cv::Point2f(0, s.height-1));
-  vertices.push_back(cv::Point2f(s.width-1, s.height-1));
-  vertices.push_back(cv::Point2f(s.width-1, 0));
+  vertices.push_back(cv::Point2f(0, s.height - 1));
+  vertices.push_back(cv::Point2f(s.width - 1, s.height - 1));
+  vertices.push_back(cv::Point2f(s.width - 1, 0));
   cv::transform(vertices, vertices, T);
-  double tWidth = cv::norm(vertices[0]-vertices[3]);
-  double tHeight = cv::norm(vertices[0]-vertices[1]);
+  double tWidth = cv::norm(vertices[0] - vertices[3]);
+  double tHeight = cv::norm(vertices[0] - vertices[1]);
   //std::cout << tWidth << " " << tHeight << std::endl;
   if(tWidth > 10000 && tHeight > 10000)
   {
@@ -812,6 +827,15 @@ void FeatureMetrics::estimateTransform(const std::vector<cv::Point2f>& coords1, 
   }
 
 }
+  sensor_msgs::Image FeatureMetrics::getFeaturesImage()
+  {
+    cv_bridge::CvImage out_msg;
+    sensor_msgs::Image temp;
+    out_msg.image = _featuresImage;
+    out_msg.encoding = sensor_msgs::image_encodings::BGR8;
+    out_msg.toImageMsg(temp);
+    return temp;
+  }
 
   sensor_msgs::Image FeatureMetrics::getInitialMatchedImage()
   {

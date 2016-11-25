@@ -62,7 +62,7 @@ namespace ogm_gui
 
       std::pair<int,int> newDims;
 
-      bool _initialMatched, _finalMatched, _merged;
+      bool _initialMatched, _finalMatched, _merged, _featuresDisplayed;
 
       /**
       @brief Return the dimensions according to the container size
@@ -134,6 +134,8 @@ namespace ogm_gui
       void displayInitialMatchingImage(QImage* img);
 
       void displayMergedImage(QImage* img);
+
+      void displayFeaturesImage(QImage* img);
 
       /**
       @brief Returns the pos of the object to the scene

@@ -29,6 +29,7 @@ float64 overlapArea
 float64 quality
 float64 meanExTime
 int64 matches
+sensor_msgs/Image featuresImage
 sensor_msgs/Image initialMatchedImage
 sensor_msgs/Image finalMatchedImage
 sensor_msgs/Image mergedImage

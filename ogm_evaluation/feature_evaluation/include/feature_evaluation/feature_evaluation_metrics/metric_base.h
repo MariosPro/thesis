@@ -62,6 +62,8 @@ namespace feature_evaluation
       double getQuality();
 
       double getOverlap();
+ 
+      virtual sensor_msgs::Image getFeaturesImage() = 0;
 
       virtual sensor_msgs::Image getInitialMatchedImage() = 0;
       

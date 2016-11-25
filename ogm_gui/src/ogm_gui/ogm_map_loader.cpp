@@ -53,6 +53,7 @@ namespace ogm_gui
     _initialMatched = false;
     _finalMatched = false;
     _merged = false;
+    _featuresDisplayed = false;
     //mapGraphicsView->show();
   }
 
@@ -98,6 +99,20 @@ namespace ogm_gui
   {
     transparency = t;
   }
+  
+  void CMapLoader::displayFeaturesImage(QImage* img)
+  {
+    if(!img->isNull())
+    {
+      newDims = checkDimensions(img->width(), img->height(),
+                               this->stackedWidget->width(), this->stackedWidget->height() - 20, false);
+      featuresLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
+                Qt::IgnoreAspectRatio,
+                Qt::SmoothTransformation));
+      featuresLabel->resize(newDims.first, newDims.second);
+      _featuresDisplayed = true;
+    }
+  }
 
   void CMapLoader::displayInitialMatchingImage(QImage* img)
   {
@@ -135,15 +150,12 @@ namespace ogm_gui
   {
    if(!img->isNull())
    {
-
      newDims = checkDimensions(img->width(), img->height(),
                                  this->stackedWidget->width(), this->stackedWidget->height() - 20, false);
-
-      mergedLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
+     mergedLabel->setPixmap(QPixmap::fromImage(*img).scaled(newDims.first,newDims.second,
                   Qt::IgnoreAspectRatio,
                   Qt::SmoothTransformation));
       mergedLabel->resize(newDims.first, newDims.second);
-      
       _merged = true;
     }
   }
@@ -205,7 +217,6 @@ namespace ogm_gui
             *img).scaled(newDims.first,newDims.second,
                 Qt::IgnoreAspectRatio,
                 Qt::SmoothTransformation)));
-
       mapGraphicsView->resize(newDims.first, newDims.second);
       scene->setSceneRect(0, 0, newDims.first, newDims.second);
       mapGraphicsView->fitInView(scene->sceneRect());
@@ -216,7 +227,6 @@ namespace ogm_gui
       newDims = checkDimensions(img->width(), img->height(),
                                 slam_map->boundingRect().width(),
                                 slam_map->boundingRect().height(), true);
-
       QPixmap pixmap = QPixmap::fromImage(
           (*img).scaled(newDims.first, newDims.second,
               Qt::IgnoreAspectRatio,
@@ -224,12 +234,21 @@ namespace ogm_gui
       makeTransparent(&pixmap, transparency);
       ground_truth_map->setPixmap(pixmap);
     }
-    
+
+    if(_featuresDisplayed)
+    {
+      newDims = checkDimensions(featuresLabel->pixmap()->width(), featuresLabel->pixmap()->height(),
+                             this->stackedWidget->width(), this->stackedWidget->height() - 20, false);
+      featuresLabel->setPixmap(featuresLabel->pixmap()->scaled(newDims.first,newDims.second,
+              Qt::IgnoreAspectRatio,
+              Qt::SmoothTransformation));
+      featuresLabel->resize(newDims.first, newDims.second);
+    }
+
     if(_initialMatched)
     {
       newDims = checkDimensions(initialMatchingLabel->pixmap()->width(), initialMatchingLabel->pixmap()->height(),
                              this->stackedWidget->width(), this->stackedWidget->height() - 20, false);
-
       initialMatchingLabel->setPixmap(initialMatchingLabel->pixmap()->scaled(newDims.first,newDims.second,
               Qt::IgnoreAspectRatio,
               Qt::SmoothTransformation));
@@ -240,7 +259,6 @@ namespace ogm_gui
     {
       newDims = checkDimensions(finalMatchingLabel->pixmap()->width(), finalMatchingLabel->pixmap()->height(),
                              this->stackedWidget->width(), this->stackedWidget->height() - 20, false);
-
       finalMatchingLabel->setPixmap(finalMatchingLabel->pixmap()->scaled(newDims.first,newDims.second,
               Qt::IgnoreAspectRatio,
               Qt::SmoothTransformation));
@@ -251,7 +269,6 @@ namespace ogm_gui
     {
       newDims = checkDimensions(mergedLabel->pixmap()->width(), mergedLabel->pixmap()->height(),
                              this->stackedWidget->width(), this->stackedWidget->height() - 20, false);
-
       mergedLabel->setPixmap(mergedLabel->pixmap()->scaled(newDims.first,newDims.second,
               Qt::IgnoreAspectRatio,
               Qt::SmoothTransformation));

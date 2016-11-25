@@ -103,7 +103,9 @@ namespace ogm_gui
       void setMapScale(double s);
 
       void setMapTransparency(double t);
-
+  
+      void displayFeaturesImage(QImage* img);
+      
       void displayInitialMatchingImage(QImage* img);
  
       void displayFinalMatchingImage(QImage* img);
