@@ -70,7 +70,7 @@ catkin_package(
 #----------------------------------------------------------------------------------------------------#
 set(QT_FORMS
   ui/map.ui
-  ui/alignment.ui
+  #ui/alignment.ui
   ui/mainWindow.ui
   ui/validation.ui
   )
@@ -81,7 +81,6 @@ QT_WRAP_CPP(ogm_gui_node SAMPLE_MOC_SRCS include/ogm_gui/ogm_gui_controller.h)
 QT_WRAP_CPP(ogm_gui_node SAMPLE_MOC_SRCS include/ogm_gui/ogm_gui_connector.h)
 QT_WRAP_CPP(ogm_gui_node SAMPLE_MOC_SRCS include/ogm_gui/ogm_validation_connector.h)
 QT_WRAP_CPP(ogm_gui_node SAMPLE_MOC_SRCS include/ogm_gui/ogm_map_connector.h)
-QT_WRAP_CPP(ogm_gui_node SAMPLE_MOC_SRCS include/ogm_gui/ogm_alignment_connector.h)
 QT_WRAP_CPP(ogm_gui_node SAMPLE_MOC_SRCS include/ogm_gui/ogm_map_item.h)
 
 #----------------------------------------------------------------------------------------------------#
@@ -97,8 +96,6 @@ add_executable(ogm_gui_node
   src/ogm_gui/ogm_gui_controller.cpp
   src/ogm_gui/ogm_validation_connector.cpp
   src/ogm_gui/ogm_validation_loader.cpp
-  src/ogm_gui/ogm_alignment_connector.cpp
-  src/ogm_gui/ogm_alignment_loader.cpp
   src/ogm_gui/ogm_map_connector.cpp
   src/ogm_gui/ogm_map_loader.cpp
   src/ogm_gui/ogm_map_item.cpp
