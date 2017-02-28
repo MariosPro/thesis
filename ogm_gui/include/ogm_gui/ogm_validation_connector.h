@@ -133,6 +133,16 @@ namespace ogm_gui
       void resetMapProperties();
 
       void displayMetricResult(QString method, double result);
+      
+      void displayQualityMetric(double result);
+      
+      void displayAcceptanceIndicator(double result);
+
+      void displayInliers(double result);
+ 
+      void displayOverlapArea(double result);
+ 
+      void displayExecutionTime(double result);
 
       /**
       @brief Returns the CValidationLoader object

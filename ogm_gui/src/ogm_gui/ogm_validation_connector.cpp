@@ -107,7 +107,7 @@ namespace ogm_gui
       this, SLOT(distanceComboBoxActivated(const QString&)));
 
    QObject::connect(
-      loader.featuresPushButton, SIGNAL(clicked(bool)),
+      loader.executePushButton, SIGNAL(clicked(bool)),
       this, SLOT(featureMatchingTriggered()));
  
    QObject::connect(
@@ -465,7 +465,32 @@ namespace ogm_gui
     if (method == "OMSE")
       loader.obstacleLabel->setText(QString().setNum(result));
     if (method == "FEATURES")
-      loader.featuresLabel->setText(QString().setNum(result));
+      loader.omseLabel->setText(QString().setNum(result));
+  }
+
+  void CValidationConnector::displayQualityMetric(double result)
+  {
+    loader.qualityLabel->setText(QString().setNum(result));
+  }
+
+  void CValidationConnector::displayAcceptanceIndicator(double result)
+  {
+    loader.acceptanceLabel->setText(QString().setNum(result));
+  }
+
+  void CValidationConnector::displayInliers(double result)
+  {
+    loader.inliersLabel->setText(QString().setNum(result));
+  }
+
+  void CValidationConnector::displayOverlapArea(double result)
+  {
+    loader.overlapLabel->setText(QString().setNum(result));
+  }
+
+  void CValidationConnector::displayExecutionTime(double result)
+  {
+    loader.executionLabel->setText(QString().setNum(result));
   }
 
   void CValidationConnector::binaryMapsChecked()

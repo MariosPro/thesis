@@ -39,7 +39,7 @@ namespace ogm_gui
       ogm_gui_tools::getRosPackagePath("ogm_gui") +
       std::string("/resources/images/translate_down.png")).c_str())));
 
-    featuresPushButton->setIcon(QIcon(QString::fromUtf8((
+    executePushButton->setIcon(QIcon(QString::fromUtf8((
       ogm_gui_tools::getRosPackagePath("ogm_gui") +
       std::string("/resources/images/translate_down.png")).c_str())));
  

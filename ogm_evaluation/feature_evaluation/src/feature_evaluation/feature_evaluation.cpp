@@ -41,8 +41,6 @@ namespace feature_evaluation
     {
       _groundTruthMap = mapToMat(req.groundTruthMap);
       _slamMap = mapToMat(req.slamMap);
-/*      ROS_INFO_STREAM("GROUND TRUTH MAP SIZE=" << _groundTruthMap.size() << "type=" << _groundTruthMap.type() << "channels="<< _groundTruthMap.channels());*/
-      /*ROS_INFO_STREAM("SLAM MAP SIZE=" << _slamMap.size()<<  "type=" << _slamMap.type() << "channels=" <<_slamMap.channels());*/
       _transform = req.transform;
     if (req.manualAlignment)
     {
@@ -102,7 +100,7 @@ namespace feature_evaluation
       totaltime += elapsed;
     }
     double meantime = totaltime /3;
-   ROS_INFO_STREAM("EXECUTION TIME:" << meantime);
+    ROS_INFO_STREAM("EXECUTION TIME:" << meantime);
     res.result = _metric->getResult();
     //std::cout << "result" << res.result << std::endl;
     if(req.method == "FEATURES")

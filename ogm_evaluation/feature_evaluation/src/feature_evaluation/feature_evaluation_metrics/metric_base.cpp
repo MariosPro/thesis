@@ -64,6 +64,4 @@ namespace feature_evaluation
     return _overlap;
   }
 
-
-
 } // namespace feature_evaluation

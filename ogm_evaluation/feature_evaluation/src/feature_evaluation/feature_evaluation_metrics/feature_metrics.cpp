@@ -84,7 +84,7 @@ namespace feature_evaluation
 
     if(params.descriptor == "SIFT" || params.descriptor == "SURF" || params.descriptor == "BRIEF" ||
        params.descriptor == "BRISK" || params.descriptor == "FREAK" || params.descriptor == "ORB")
-    _descriptorExtractor = cv::DescriptorExtractor::create(params.descriptor);
+      _descriptorExtractor = cv::DescriptorExtractor::create(params.descriptor);
 
     if(params.descriptor == "ALL CUSTOMS")
     {
@@ -112,8 +112,8 @@ namespace feature_evaluation
 
     //!< scale the two Maps
     double slamMeanDist, groundTruthMeanDist;
-   if(params.scaleMapsBrushfire)  
-   {
+    if(params.scaleMapsBrushfire)  
+    {
       int** brushfire = new int*[groundTruthMap.rows];
         for(int i = 0; i < groundTruthMap.rows; i++)
           brushfire[i] = new int[groundTruthMap.cols];
@@ -122,30 +122,27 @@ namespace feature_evaluation
         for(int i = 0; i < slamMap.rows; i++)
           brushfire1[i] = new int[slamMap.cols];
 
-       _mapUtils->brushfireSearch(_groundTruthMap, brushfire);
+      _mapUtils->brushfireSearch(_groundTruthMap, brushfire);
       groundTruthMeanDist = _mapUtils->meanBrushfireDistance(_groundTruthMap, brushfire);
       _mapUtils->brushfireSearch(_slamMap, brushfire1);
       slamMeanDist = _mapUtils->meanBrushfireDistance(_slamMap, brushfire1);
 
       double scalingFactor = groundTruthMeanDist / slamMeanDist;
 
-    for (int i = 0; i <groundTruthMap.rows; i++)
-        delete[] brushfire[i];
+      for (int i = 0; i <groundTruthMap.rows; i++)
+      delete[] brushfire[i];
       delete[] brushfire;
 
-    std::cout << "delete1" << std::endl;
-   for (int i = 0; i <slamMap.rows; i++)
-        delete[] brushfire1[i];
+      for (int i = 0; i <slamMap.rows; i++)
+      delete[] brushfire1[i];
       delete[] brushfire1;
 
-    std::cout << "delete2" << std::endl;
-    // resize slam produced map using meanBrushfireDistance
-    cv::resize(_slamMap, _slamMap, cv::Size(), scalingFactor, scalingFactor, cv::INTER_NEAREST);
-    cv::resize(slamMap, slamMap, cv::Size(), scalingFactor, scalingFactor, cv::INTER_NEAREST);
+      // resize slam produced map using meanBrushfireDistance
+      cv::resize(_slamMap, _slamMap, cv::Size(), scalingFactor, scalingFactor, cv::INTER_NEAREST);
+      cv::resize(slamMap, slamMap, cv::Size(), scalingFactor, scalingFactor, cv::INTER_NEAREST);
 
-    ROS_INFO_STREAM("SCALING FACTOR=" << scalingFactor);
-    std::cout << "SLAM AFTER RESIZE=" << slamMap.size() << std::endl;
-
+      ROS_INFO_STREAM("SCALING FACTOR=" << scalingFactor);
+      std::cout << "SLAM AFTER RESIZE=" << slamMap.size() << std::endl;
     }
 
     //!< detect Keypoints
@@ -207,8 +204,8 @@ namespace feature_evaluation
 
    //!< draw Keypoints
    cv::Mat img_keypoints_1, img_keypoints_2;
-   cv::drawKeypoints( groundTruthMap, _groundTruthKeypoints, img_keypoints_1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
-   cv::drawKeypoints( slamMap, _slamKeypoints, img_keypoints_2, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT );
+   cv::drawKeypoints(groundTruthMap, _groundTruthKeypoints, img_keypoints_1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT);
+   cv::drawKeypoints(slamMap, _slamKeypoints, img_keypoints_2, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT);
    
    if (img_keypoints_1.rows > img_keypoints_2.rows)
    {
@@ -261,7 +258,7 @@ namespace feature_evaluation
     }
     //!< draw matches
     cv::Mat imgmatches, imgmatches1, imgmatches2;
-    cv::drawMatches( slamMap, _slamKeypoints, groundTruthMap, _groundTruthKeypoints,
+    cv::drawMatches(slamMap, _slamKeypoints, groundTruthMap, _groundTruthKeypoints,
                    filteredMatches, imgmatches1, cv::Scalar::all(-1), cv::Scalar::all(-1));
 
    _initialMatchedImage = imgmatches1.clone();

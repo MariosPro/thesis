@@ -554,6 +554,13 @@ namespace ogm_gui
         map_connector_.displayInitialMatchingImage(&initialMatchingImage);
         map_connector_.displayFinalMatchingImage(&finalMatchingImage);
         map_connector_.displayMergedImage(&mergedImage);
+        validation_connector_.displayQualityMetric(srv.response.quality);
+        validation_connector_.displayAcceptanceIndicator(srv.response.acceptance);
+        validation_connector_.displayInliers(srv.response.matches);
+        validation_connector_.displayOverlapArea(srv.response.overlapArea);
+        validation_connector_.displayExecutionTime(srv.response.meanExTime);
+
+
       }
     }
     else
