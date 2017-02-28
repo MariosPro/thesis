@@ -165,6 +165,7 @@ namespace ogm_server
     srv.request.matchingRatio = req.matchingRatio;
     srv.request.ransacReprjError = req.ransacReprjError;
     srv.request.scaleMapsBrushfire = req.scaleMapsBrushfire;
+    srv.request.morphologicalFiltering = req.morphologicalFiltering;
     srv.request.binary = req.binary;
     srv.request.manualAlignment = req.manualAlignment;
     srv.request.gaussianBlur1 = req.gaussianBlur1;
@@ -180,8 +181,15 @@ namespace ogm_server
     {
       ROS_INFO("[ogm_server] Map Evaluation metric succesfully completed");
       res.result =  srv.response.result;
-      res.matchedImage = srv.response.matchedImage;
+      res.matches = srv.response.matches;
+      res.acceptance = srv.response.acceptance;
+      res.quality = srv.response.quality;
+      res.overlapArea = srv.response.overlapArea;
+      res.featuresImage = srv.response.featuresImage;
+      res.initialMatchedImage = srv.response.initialMatchedImage;
+      res.finalMatchedImage = srv.response.finalMatchedImage;
       res.mergedImage = srv.response.mergedImage;
+      res.meanExTime = srv.response.meanExTime;
     }
     else
     {
